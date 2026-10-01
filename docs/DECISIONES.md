@@ -106,6 +106,38 @@ AA. Se usa como fondo de CTAs con texto `navy-900` (5,4:1) y, para texto sobre f
 variante `accent-text` `#82601F` (5,4:1). Verificado sobre `paper-50`: `muted` 6,8:1, `danger`
 4,8:1, `positive-text` 5,9:1. En modo oscuro: `muted` 8,6:1, `accent-text` 8,7:1, `danger` 6,5:1.
 
+## D-13 · Publicación de las guías: contenido interno y corchetes
+
+La guía dice que "los campos entre corchetes son decisiones institucionales pendientes. No se
+publican hasta estar confirmados". Al renderizar `/guia`, `/guia-hacker` y `/rubrica`,
+`prepararParaPublicar()` (`lib/content/markdown.ts`), sin modificar los `.md`:
+
+- Quita lo interno: los metadatos del borrador (Versión, Responsable), la nota sobre los corchetes,
+  la alerta de calendario del POA y la sección "Decisiones pendientes antes de abrir la convocatoria".
+- Una celda pendiente (`[MONTO USD]`, `[LISTA]`, `[CONFIRMAR]`) se muestra como "Por anunciar".
+- Una nota pendiente detrás de un valor (`n8n · [CONFIRMAR acuerdo…]`) o el marcador
+  `[CONFIRMAR]` al inicio de una frase se muestran como "(por confirmar)". Los añadidos
+  `[+ CONFIRMAR …]` se omiten.
+- Las fechas propuestas (`[28 oct]`) se muestran como "28 oct (por confirmar)".
+- La cláusula de propiedad intelectual se publica con la nota "(texto sujeto a revisión legal)".
+
+Cuando el comité confirme un dato, basta con editar el `.md`: el corchete desaparece y el valor se
+publica tal cual.
+
+## D-14 · Portada regenerada cada 5 minutos
+
+La portada es estática con `revalidate = 300`: el bloque de inscripciones (abren el…, abiertas,
+cerradas) depende de la fecha. La cuenta regresiva se calcula en el navegador con una resta de
+instantes, así que es correcta en cualquier zona horaria. El servidor pinta guiones del mismo ancho
+para evitar saltos de diseño (CLS = 0).
+
+## D-15 · Tests e2e contra el build de producción
+
+Playwright levanta `npm run build && next start` en el puerto 3100 y prueba dos perfiles: móvil
+de 360 px y escritorio. Verifica la cuenta regresiva con reloj simulado y el navegador en Tokio,
+`prefers-reduced-motion`, que solo el infinito se anime, la ausencia de desplazamiento horizontal,
+las anclas del índice y que no se publiquen notas internas.
+
 ## Diferencias entre el prompt y las guías (gana la guía)
 
 1. **Sede:** "Unidad Educativa Particular Eight Academy, sede La Prensa". La dirección y el aforo

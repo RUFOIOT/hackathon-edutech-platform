@@ -34,7 +34,7 @@ jobs:
       - name: Tests de reglas de seguridad (emuladores)
         run: npx firebase-tools@15 emulators:exec --only firestore,storage --project demo-edutech "npx vitest run --project rules"
 
-      - name: Build
-        run: npm run build
-        env:
-          NEXT_PUBLIC_FIREBASE_PROJECT_ID: demo-edutech
+      # Playwright arranca `npm run build && next start` (ver playwright.config.ts): cubre también el build.
+      - run: npx playwright install --with-deps chromium
+      - name: Build y tests e2e
+        run: npm run test:e2e

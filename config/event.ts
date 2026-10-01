@@ -138,6 +138,61 @@ export const PREMIOS: { premio: string; alcance: string; beneficio: string }[] =
 /** Auspiciantes y aliados: vacío hasta que el comité confirme (guía §12, decisiones 3 y 4). */
 export const ALIADOS: { nombre: string; url: string }[] = [];
 
+/** Agenda oficial (guía §4). `hito` marca los bloques que la guía destaca en negrita. */
+export const AGENDA: { dia: "Viernes 6" | "Sábado 7"; hora: string; bloque: string; hito?: boolean }[] = [
+  { dia: "Viernes 6", hora: "13:30", bloque: "Check-in con QR, entrega de credenciales y kit" },
+  { dia: "Viernes 6", hora: "14:30", bloque: "Inauguración, presentación de tracks, aliados y jurado" },
+  { dia: "Viernes 6", hora: "15:15", bloque: "Matchmaking de inscritos individuales y confirmación de equipos" },
+  { dia: "Viernes 6", hora: "15:30", bloque: "Kick-off oficial: se habilita la creación de repositorios", hito: true },
+  { dia: "Viernes 6", hora: "16:00", bloque: "Taller express de n8n (30 min)" },
+  { dia: "Viernes 6", hora: "17:00", bloque: "Ronda de mentoría 1 · validación del problema" },
+  { dia: "Viernes 6", hora: "19:00", bloque: "Checkpoint 1: README con problema, usuario y arquitectura (commit obligatorio)" },
+  { dia: "Viernes 6", hora: "21:00", bloque: "Cierre de sede. El hacking remoto continúa; los commits fuera de sede son válidos" },
+  { dia: "Sábado 7", hora: "08:00", bloque: "Apertura de sede, desayuno" },
+  { dia: "Sábado 7", hora: "09:00", bloque: "Ronda de mentoría 2 · demo y pitch" },
+  { dia: "Sábado 7", hora: "10:30", bloque: "Checkpoint 2: demo funcional mínima desplegada o ejecutable" },
+  { dia: "Sábado 7", hora: "12:00", bloque: "Code freeze: tag entrega y formulario de entrega cerrados", hito: true },
+  { dia: "Sábado 7", hora: "12:00", bloque: "Validación automática de repositorios" },
+  { dia: "Sábado 7", hora: "13:30", bloque: "Show and Tell · ronda semifinal por track (salas paralelas)" },
+  { dia: "Sábado 7", hora: "17:00", bloque: "Final: top 5 en plenaria" },
+  { dia: "Sábado 7", hora: "18:30", bloque: "Deliberación, premiación y cierre" },
+];
+
+/** Preguntas frecuentes: Guía del Hacker §10 y reglas de la guía §3 y §7. */
+export const FAQ: { pregunta: string; respuesta: string }[] = [
+  {
+    pregunta: "¿Quién puede participar?",
+    respuesta:
+      "Estudiantes de colegio de 14 a 17 años (categoría Junior, con autorización firmada del representante legal y un mentor adulto asignado) y mayores de 18: universitarios, profesionales y docentes (categoría Open).",
+  },
+  {
+    pregunta: "¿Necesito tener equipo para inscribirme?",
+    respuesta:
+      "No. Los equipos son de 2 a 5 personas, pero puedes inscribirte solo: la organización forma equipos el viernes en el bloque de matchmaking.",
+  },
+  { pregunta: "¿Puedo cambiar de track durante el evento?", respuesta: "Sí, hasta el checkpoint 1 del viernes a las 19:00." },
+  {
+    pregunta: "¿Puedo usar un proyecto que ya tenía?",
+    respuesta:
+      "No como proyecto. Puedes llegar con ideas, bocetos e investigación, y reutilizar librerías o componentes genéricos declarándolos en PRIOR_WORK.md.",
+  },
+  {
+    pregunta: "¿Debo quedarme toda la noche en la sede?",
+    respuesta: "No. La sede cierra a las 21:00 del viernes. Pueden seguir trabajando de forma remota y los commits cuentan.",
+  },
+  { pregunta: "¿La IA está permitida?", respuesta: "Sí, y debe declararse en AI_USAGE.md. El jurado valora el criterio con el que la usaron." },
+  {
+    pregunta: "¿Puedo usar datos reales de estudiantes?",
+    respuesta:
+      "No. Se trabaja solo con datos sintéticos o anonimizados, conforme a la LOPDP. La mesa técnica entrega un dataset ficticio de un colegio.",
+  },
+  {
+    pregunta: "¿Qué pasa si mi demo falla en vivo?",
+    respuesta:
+      "El jurado evalúa con lo que ve y con el repositorio. Un video de respaldo solo se usa si la mesa técnica confirma una falla de conectividad de la sede.",
+  },
+];
+
 /** Guía del Hacker §9. */
 export const MENTORIA_TEMAS = ["producto", "tecnica", "n8n", "ia", "pitch"] as const;
 export type MentoriaTema = (typeof MENTORIA_TEMAS)[number];

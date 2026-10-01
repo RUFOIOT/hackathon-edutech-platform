@@ -26,6 +26,7 @@ npm run lint
 npm run typecheck
 npm test             # unitarios (Vitest, proyecto "unit")
 npm run test:rules   # reglas de Firestore contra el emulador (proyecto "rules")
+npm run test:e2e     # Playwright (build + next start en :3100; móvil 360 px y escritorio)
 npm run build
 ```
 
@@ -59,6 +60,11 @@ El enlace mágico se imprime en la terminal de los emuladores.
   prohibido por ESLint fuera de `scripts/` y `tests/`.
 - **Modelo de datos:** `lib/models/tipos.ts` (una interfaz por colección, con el formato del id).
 - **Rúbrica:** `lib/models/rubrica.ts`; el tope por C2 = 1 se aplica por juez (D-05).
+- **Guías públicas:** se renderizan desde `content/*.md` con `cargarGuia()`; los corchetes
+  pendientes y las secciones internas se filtran al publicar (D-13). Agenda, FAQ, premios y tracks
+  viven en `config/event.ts`.
+- **Movimiento:** el trazo del infinito del hero es la única animación automática del sitio
+  (`.trazo-infinito`); un test e2e lo garantiza. Respeta `prefers-reduced-motion`.
 - **Copys:** voz activa y desde el usuario ("Inscribir a mi equipo" → "Equipo inscrito"). Errores
   que dicen qué pasó y cómo corregirlo. Sin etiquetas en mayúsculas ni numeraciones decorativas.
 - **Accesibilidad AA:** foco visible, contraste verificado (`accent-text` para texto en brass),
@@ -69,7 +75,7 @@ El enlace mágico se imprime en la terminal de los emuladores.
 ## Estado por fase
 
 - [x] Fase 1 · Fundaciones
-- [ ] Fase 2 · Web pública
+- [x] Fase 2 · Web pública
 - [ ] Fase 3 · Registro y portal de equipos
 - [ ] Fase 4 · GitHub y entregas
 - [ ] Fase 5 · Jurado y resultados

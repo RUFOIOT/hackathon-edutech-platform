@@ -35,6 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <ul className="ml-auto flex flex-wrap gap-4 text-sm">
               <li><Link href="/tracks" className="underline-offset-4 hover:underline">Tracks</Link></li>
               <li><Link href="/guia" className="underline-offset-4 hover:underline">Guía</Link></li>
+              <li><Link href="/guia-hacker" className="underline-offset-4 hover:underline">Guía del hacker</Link></li>
               <li><Link href="/rubrica" className="underline-offset-4 hover:underline">Rúbrica</Link></li>
               <li><Link href="/ingresar" className="underline-offset-4 hover:underline">Ingresar</Link></li>
             </ul>

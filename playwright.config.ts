@@ -41,6 +41,8 @@ export default defineConfig({
     // El registro se prueba a 360 px: el formulario se usa sobre todo desde el celular.
     { name: "registro", testMatch: /registro\.spec/, use: { ...devices["Pixel 7"], viewport: { width: 360, height: 780 } } },
     { name: "entrega", testMatch: /entrega\.spec/, use: { ...devices["Pixel 7"], viewport: { width: 360, height: 780 } } },
+    // El jurado evalúa desde el celular.
+    { name: "jurado", testMatch: /jurado\.spec/, use: { ...devices["Pixel 7"], viewport: { width: 360, height: 780 } } },
   ],
   webServer: [
     {

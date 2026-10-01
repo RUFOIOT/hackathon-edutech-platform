@@ -43,6 +43,11 @@ beforeEach(async () => {
     await setDoc(doc(db, "judges/juez1"), { nombre: "Juez 1", roomId: "sala-1" });
     await setDoc(doc(db, "judges/juez2"), { nombre: "Juez 2", roomId: "sala-1" });
     await setDoc(doc(db, "judges/juez3"), { nombre: "Juez 3", roomId: "sala-2" });
+    await setDoc(doc(db, "judges/juezFinal"), { nombre: "Juez final", roomId: "sala-1", final: true });
+    await setDoc(doc(db, "teams/equipo-c"), { nombre: "Equipo C", track: "T2", roomId: "sala-2", finalista: true });
+    await setDoc(doc(db, "presentation_slots/final_1"), { roomId: "final", teamId: "equipo-c", ronda: "final", orden: 1 });
+    await setDoc(doc(db, "presentation_slots/sala-2_1"), { roomId: "sala-2", teamId: "equipo-b", ronda: "semifinal", orden: 1 });
+    await setDoc(doc(db, "public_state/pantalla"), { aviso: null });
     await setDoc(doc(db, "scores/semifinal_juez1_equipo-a"), { judgeId: "juez1", teamId: "equipo-a", roomId: "sala-1", ronda: "semifinal" });
     await setDoc(doc(db, "scores/semifinal_juez2_equipo-a"), { judgeId: "juez2", teamId: "equipo-a", roomId: "sala-1", ronda: "semifinal" });
 
@@ -145,8 +150,28 @@ describe("jurado", () => {
     await assertSucceeds(getDoc(doc(as("juez3"), "repositories/equipo-b")));
   });
 
+  it("el jurado de la final ve a los finalistas de otras salas; un juez de semifinal no", async () => {
+    await assertSucceeds(getDoc(doc(as("juezFinal"), "teams/equipo-c")));
+    await assertFails(getDoc(doc(as("juez1"), "teams/equipo-c")));
+    await assertFails(getDoc(doc(as("juezFinal"), "teams/equipo-b"))); // de otra sala y no finalista
+  });
+
+  it("orden de presentación: cada juez ve el de su sala; el jurado final, el de la final", async () => {
+    await assertSucceeds(getDoc(doc(as("juez3"), "presentation_slots/sala-2_1")));
+    await assertFails(getDoc(doc(as("juez1"), "presentation_slots/sala-2_1")));
+    await assertSucceeds(getDoc(doc(as("juezFinal"), "presentation_slots/final_1")));
+    await assertFails(getDoc(doc(as("juez1"), "presentation_slots/final_1")));
+  });
+
   it("NO escribe puntajes desde el cliente (pasan por el servidor con bloqueo por sala)", async () => {
     await assertFails(setDoc(doc(as("juez1"), "scores/semifinal_juez1_equipo-a"), { c1: 5 }, { merge: true }));
+  });
+});
+
+describe("pantalla", () => {
+  it("el estado del proyector es público para leer y nadie lo escribe desde el cliente", async () => {
+    await assertSucceeds(getDoc(doc(env.unauthenticatedContext().firestore(), "public_state/pantalla")));
+    await assertFails(setDoc(doc(as("admin1"), "public_state/pantalla"), { aviso: "x" }));
   });
 });
 

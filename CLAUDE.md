@@ -78,6 +78,12 @@ El enlace mágico se imprime en la terminal de los emuladores.
   `lib/github/servicio.ts` y los endpoints para n8n y para la GitHub App en `app/api/github/*`.
 - **Plantilla de equipos:** `template-repo/` (se publica con `scripts/setup-org.md`). Si cambian las
   secciones del README, actualizar `SECCIONES_CHECKPOINT1/2` en `lib/github.ts`.
+- **Puntajes:** toda la aritmética vive en `lib/scoring.ts` (`scoreTotal`, `roomNormalization`,
+  `tiebreak`, `seleccionarFinalistas`, `rankingFinal`, `calcularPremios`). La hoja del juez usa la
+  misma función para el total en vivo. No dupliques fórmulas en otros archivos.
+- **Jurado:** las escrituras pasan por `lib/jurado/servicio.ts`, que repite en código las reglas de
+  acceso por sala/final de `firestore.rules`. Firestore no admite arrays anidados: aplánalos antes
+  de guardarlos (pasó con la auditoría de empates).
 - **Copys:** voz activa y desde el usuario ("Inscribir a mi equipo" → "Equipo inscrito"). Errores
   que dicen qué pasó y cómo corregirlo. Sin etiquetas en mayúsculas ni numeraciones decorativas.
 - **Accesibilidad AA:** foco visible, contraste verificado (`accent-text` para texto en brass),
@@ -91,7 +97,7 @@ El enlace mágico se imprime en la terminal de los emuladores.
 - [x] Fase 2 · Web pública
 - [x] Fase 3 · Registro y portal de equipos
 - [x] Fase 4 · GitHub y entregas
-- [ ] Fase 5 · Jurado y resultados
+- [x] Fase 5 · Jurado y resultados
 - [ ] Fase 6 · Dashboard 360 y exportaciones
 - [ ] Fase 7 · n8n
 - [ ] Fase 8 · Endurecimiento y despliegue

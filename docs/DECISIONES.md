@@ -245,6 +245,54 @@ ocurre después del code freeze, marca `submissions.tagMovidoTrasFreeze` y lo au
 `resolveDeliveryTag` compara el SHA actual con el registrado en la entrega, lo que detecta un tag
 movido a un commit **anterior** al freeze aunque no haya llegado el webhook.
 
+## D-30 · Normalización con desviación estándar poblacional
+
+La rúbrica define z = (puntaje − promedio de la sala) ÷ desviación de la sala, pero no dice si la
+desviación es poblacional o muestral. Se usa la **poblacional** (σ): la sala es toda la población
+evaluada, no una muestra. Si σ = 0 (todos empatan), z = 0. Una sala con menos de 4 equipos queda
+"sin normalizar" (z = null): la propuesta de finalistas solo toma salas normalizadas y avisa al
+comité, que decide esos cupos (rúbrica §5). Si el comité prefiere la muestral, se cambia en una
+línea de `roomNormalization` y en su test.
+
+## D-31 · Orden de asignación de premios especiales
+
+La guía permite como máximo un premio general y un premio especial por equipo, pero no fija el
+orden entre especiales. Se asignan en este orden: mejor por track (T1, T2, T3), n8n, Junior. Un
+equipo que ya ganó un especial pasa al siguiente elegible. Si no queda nadie elegible, la
+interfaz dice "Sin ganador elegible: decide el comité". Un empate en C4 para el premio n8n se
+marca para que desempate el representante de n8n. La Aceleradora la elige el comité entre el top
+10 (lista ordenada por C1 + C5).
+
+## D-32 · Rondas y jurado de la final
+
+`events.rondaActiva` decide qué ronda evalúa el jurado. Al confirmar los finalistas, el comité
+marca `teams.finalista`, pasa a la ronda "final" y se genera el orden en la sala `final`, desde
+las 17:00. El jurado de la final son los jueces con `judges.final = true`: las reglas de Firestore
+les permiten leer a los finalistas de cualquier sala (con tests). Los puntajes de la final
+empiezan desde cero (`scores/final_*`) y no arrastran los de la semifinal.
+
+## D-33 · Bloqueo de puntajes por sala
+
+Un juez puede corregir su puntaje mientras la sala esté abierta. Al cerrarla, todos los puntajes
+de la sala quedan con `bloqueado = true` y el servidor rechaza cambios. Reabrir la sala exige un
+motivo, que queda en la auditoría. La rúbrica pide registrar el puntaje "durante los 3 minutos
+posteriores" a cada presentación: la plataforma no lo bloquea por reloj, porque una caída de la red
+dejaría puntajes sin registrar. El cierre de sala lo hace la coordinación.
+
+## D-34 · Cronómetro y avisos en tiempo real
+
+El cronómetro guarda en `public_state/cronometro_{sala}` el inicio (en ms) y el tiempo acumulado,
+no una cuenta que se actualiza cada segundo: así una pausa o un corte de red no lo desfasan. Cada
+proyector calcula el tiempo con su propio reloj, por eso **el equipo del proyector debe tener la
+hora sincronizada** (RUNBOOK). Las fases de la Guía del Hacker §7 se muestran con texto, no solo
+con color: exposición (0–8 min), preguntas (8–12) y "tiempo cumplido".
+
+## D-35 · Retroalimentación anónima
+
+Al publicar, cada equipo recibe en `results/{teamId}` todas las fortalezas y recomendaciones de los
+jueces, sin identificar quién las escribió. La auditoría de la publicación guarda el orden final,
+los empates resueltos por el comité y la Aceleradora.
+
 ## Diferencias entre el prompt y las guías (gana la guía)
 
 1. **Sede:** "Unidad Educativa Particular Eight Academy, sede La Prensa". La dirección y el aforo

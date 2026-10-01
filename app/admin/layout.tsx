@@ -1,11 +1,19 @@
+import Link from "next/link";
+import { puedeEntrarAdmin } from "@/lib/auth/roles";
 import { requireSesion } from "@/lib/auth/session";
 import { FASES, faseActual } from "@/lib/event/phase";
+import { ahora } from "@/lib/event/reloj";
 import { BotonSalir } from "@/components/boton-salir";
 
 /** Barra superior del dashboard: fase actual del evento calculada desde config/event.ts. */
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  await requireSesion("/admin");
-  const actual = faseActual();
+  const id = await requireSesion("/admin");
+  const secciones = [
+    { href: "/admin", nombre: "Dashboard" },
+    { href: "/admin/jurado", nombre: "Jurado y salas" },
+    { href: "/admin/resultados", nombre: "Resultados" },
+  ].filter((s) => puedeEntrarAdmin(id, s.href));
+  const actual = faseActual(ahora());
   return (
     <div>
       <div className="border-b border-border bg-surface">
@@ -26,6 +34,17 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </div>
         </div>
       </div>
+      <nav aria-label="Secciones de administración" className="border-b border-border">
+        <ul className="mx-auto flex max-w-7xl flex-wrap gap-x-6 gap-y-1 px-4 py-2 text-sm">
+          {secciones.map((s) => (
+            <li key={s.href}>
+              <Link href={s.href} className="underline-offset-4 hover:underline">
+                {s.nombre}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
       {children}
     </div>
   );

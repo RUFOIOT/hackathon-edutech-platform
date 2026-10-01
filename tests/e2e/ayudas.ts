@@ -33,7 +33,7 @@ export async function ingresar(page: Page, email: string, desde = "/registro") {
   destino.searchParams.set("oobCode", codigo!.oobCode);
   destino.searchParams.set("mode", "signIn");
   await page.goto(destino.toString());
-  await expect(page.getByRole("heading", { name: "Inscripción", level: 1 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Inscripción", level: 1 })).toBeVisible({ timeout: 20_000 });
 }
 
 /** Avisos de error de la app (excluye el anunciador de rutas de Next.js, que también es role=alert). */
@@ -98,3 +98,35 @@ export async function inscribirEquipo(browser: Browser, opciones: { email: strin
   return { ctx, page, codigo };
 }
 
+
+/**
+ * firebase-admin contra los emuladores, desde el proceso de Playwright: prepara datos que en la
+ * vida real crea el comité (salas, jueces, orden de presentación) sin recorrer toda la UI de admin.
+ */
+export async function adminEmulador() {
+  process.env.FIRESTORE_EMULATOR_HOST ??= "127.0.0.1:8080";
+  process.env.FIREBASE_AUTH_EMULATOR_HOST ??= "127.0.0.1:9099";
+  const { getApps, initializeApp } = await import("firebase-admin/app");
+  const { getFirestore } = await import("firebase-admin/firestore");
+  const { getAuth } = await import("firebase-admin/auth");
+  const app = getApps()[0] ?? initializeApp({ projectId: "demo-edutech" });
+  return { db: getFirestore(app), auth: getAuth(app) };
+}
+
+/** Inicia sesión con enlace mágico desde /ingresar y espera llegar al destino. */
+export async function ingresarComo(page: Page, email: string, destino: string) {
+  await page.goto(`/ingresar?siguiente=${encodeURIComponent(destino)}`);
+  await page.getByLabel("Correo electrónico").fill(email);
+  await page.getByRole("button", { name: "Enviarme el enlace" }).click();
+  await expect(page.getByRole("status")).toContainText("Enlace enviado");
+  const res = await fetch(`${EMULADOR_AUTH}/emulator/v1/projects/demo-edutech/oobCodes`);
+  const { oobCodes } = (await res.json()) as { oobCodes: { email: string; oobLink: string; oobCode: string }[] };
+  const codigo = oobCodes.filter((c) => c.email === email).at(-1)!;
+  const url = new URL(new URL(codigo.oobLink).searchParams.get("continueUrl")!);
+  url.searchParams.set("apiKey", "demo-api-key");
+  url.searchParams.set("oobCode", codigo.oobCode);
+  url.searchParams.set("mode", "signIn");
+  await page.goto(url.toString());
+  // En frío (primer arranque del emulador) crear la sesión puede tardar más que los 5 s por defecto.
+  await expect(page).toHaveURL(new RegExp(`${destino.replace(/\//g, "\\/")}$`), { timeout: 20_000 });
+}

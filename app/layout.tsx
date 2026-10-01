@@ -37,6 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <li><Link href="/guia" className="underline-offset-4 hover:underline">Guía</Link></li>
               <li><Link href="/guia-hacker" className="underline-offset-4 hover:underline">Guía del hacker</Link></li>
               <li><Link href="/rubrica" className="underline-offset-4 hover:underline">Rúbrica</Link></li>
+              <li><Link href="/resultados" className="underline-offset-4 hover:underline">Resultados</Link></li>
               <li><Link href="/ingresar" className="underline-offset-4 hover:underline">Ingresar</Link></li>
             </ul>
           </nav>

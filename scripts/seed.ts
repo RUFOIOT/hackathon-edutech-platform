@@ -11,6 +11,7 @@ import { getFirestore, Timestamp } from "firebase-admin/firestore";
 import { EVENT, ROLES_EQUIPO, TRACKS, TRACK_CODES, type TrackCode } from "../config/event";
 import { calcularCategoria, categoriaEquipo, type Categoria } from "../lib/models/categoria";
 import { RUBRICA } from "../lib/models/rubrica";
+import { scoreTotal } from "../lib/scoring";
 
 process.env.FIRESTORE_EMULATOR_HOST ??= "127.0.0.1:8080";
 process.env.FIREBASE_AUTH_EMULATOR_HOST ??= "127.0.0.1:9099";
@@ -61,7 +62,6 @@ async function main() {
   const batch = db.batch();
   const set = (path: string, data: Record<string, unknown>) => batch.set(db.doc(path), data);
 
-  set(`events/${EVENT.id}`, { nombre: EVENT.nombre, resultadosPublicados: false, resultadosPublicadosAt: null });
   for (const code of TRACK_CODES) set(`tracks/${code}`, { codigo: code, nombre: TRACKS[code].nombre, pregunta: TRACKS[code].pregunta });
   for (const c of RUBRICA) set(`rubric_criteria/${c.codigo}`, { ...c });
   set("public_state/pantalla", { aviso: null, cronometro: null });
@@ -188,14 +188,14 @@ async function main() {
 
   // 4 jueces ficticios: 2 en sala-1, 1 en sala-2, 1 en sala-3.
   const jueces = [
-    { uid: "juez-1", roomId: "sala-1", perfil: "tecnico" },
-    { uid: "juez-2", roomId: "sala-1", perfil: "educativo" },
+    { uid: "juez-1", roomId: "sala-1", perfil: "tecnico", final: true },
+    { uid: "juez-2", roomId: "sala-1", perfil: "educativo", final: true },
     { uid: "juez-3", roomId: "sala-2", perfil: "tecnico" },
     { uid: "juez-4", roomId: "sala-3", perfil: "negocio" },
   ];
   for (const [i, j] of jueces.entries()) {
     await crearUsuario(j.uid, `${j.uid}@edutech.test`, `Juez Ficticio ${i + 1}`);
-    set(`judges/${j.uid}`, { nombre: `Juez Ficticio ${i + 1}`, perfil: j.perfil, roomId: j.roomId });
+    set(`judges/${j.uid}`, { nombre: `Juez Ficticio ${i + 1}`, perfil: j.perfil, roomId: j.roomId, final: "final" in j && j.final === true });
   }
 
   // Staff de desarrollo, uno por rol.
@@ -209,6 +209,45 @@ async function main() {
   for (const s of staff) {
     await crearUsuario(s.uid, `${s.uid}@edutech.test`, s.uid);
     set(`staff/${s.uid}`, { nombre: s.uid, roles: s.roles });
+  }
+
+  // Orden de semifinal y puntajes de ejemplo: sala-1 (T1, 4 equipos) se normaliza; sala-2 y
+  // sala-3 (3 equipos) quedan "sin normalizar" para ver ese caso en /admin/resultados.
+  set(`events/${EVENT.id}`, { nombre: EVENT.nombre, resultadosPublicados: false, resultadosPublicadosAt: null, rondaActiva: "semifinal" });
+  const inicioShow = new Date(EVENT.fechas.showAndTell.iso).getTime();
+  for (const sala of salas) {
+    const equiposSala = tamanos.map((_, e) => ({ e, teamId: `equipo-${dd(e + 1)}` })).filter(({ e }) => TRACK_CODES[e % 3] === sala.track);
+    equiposSala.forEach(({ e, teamId }, orden) => {
+      set(`presentation_slots/semifinal_${sala.id}_${teamId}`, {
+        roomId: sala.id,
+        teamId,
+        equipo: NOMBRES_EQUIPO[e],
+        track: sala.track,
+        ronda: "semifinal",
+        orden: orden + 1,
+        horaProgramada: Timestamp.fromMillis(inicioShow + orden * 15 * 60_000),
+        inicioReal: null,
+        finReal: null,
+      });
+      for (const j of jueces.filter((x) => x.roomId === sala.id)) {
+        const n = () => int(2, 5);
+        const niveles = { c1: n(), c2: n(), c3: n(), c4: n(), c5: n(), c6: n() };
+        set(`scores/semifinal_${j.uid}_${teamId}`, {
+          judgeId: j.uid,
+          teamId,
+          roomId: sala.id,
+          ronda: "semifinal",
+          ...niveles,
+          total: scoreTotal(niveles),
+          tiempoUsadoSeg: int(420, 720),
+          demoEnVivo: rnd() > 0.15,
+          fortaleza: "Fortaleza ficticia del seed: problema bien acotado y demo clara.",
+          recomendacion: "Recomendación ficticia del seed: medir el impacto con datos de un piloto.",
+          enviadoAt: ts("2026-11-07T14:00:00-05:00"),
+          bloqueado: false,
+        });
+      }
+    });
   }
 
   set("stats/inscripciones", { personas: n, equipos: tamanos.length, listaEspera: 0 });

@@ -14,6 +14,8 @@ export interface EventDoc {
   nombre: string;
   resultadosPublicados: boolean;
   resultadosPublicadosAt: Fecha | null;
+  /** Ronda que evalúa el jurado: la cambia el comité al confirmar finalistas. */
+  rondaActiva: "semifinal" | "final";
 }
 
 /** tracks/{T1|T2|T3} */
@@ -94,6 +96,7 @@ export interface TeamDoc {
   capitanId: string;
   /** Tiene integrantes Junior: la organización debe asignar un mentor adulto (guía §3). */
   requiereAdulto: boolean;
+  finalista?: boolean;
   problemaCandidato: string;
   roomId: string | null; // denormalizado desde presentation_slots para las reglas del jurado
   adultoResponsableId: string | null;
@@ -236,7 +239,8 @@ export interface MentorRequestDoc {
 export interface JudgeDoc {
   nombre: string;
   perfil: "tecnico" | "educativo" | "negocio";
-  roomId: string | null;
+  roomId: string | null; // sala de semifinal
+  final: boolean; // integra el jurado de la final (evalúa a los finalistas)
 }
 
 /** rooms/{roomId} */
@@ -284,6 +288,7 @@ export interface ScoreDoc {
   c4: number;
   c5: number;
   c6: number;
+  total: number; // scoreTotal(c1..c6), con el tope de C2 = 1 aplicado
   tiempoUsadoSeg: number;
   demoEnVivo: boolean;
   fortaleza: string;

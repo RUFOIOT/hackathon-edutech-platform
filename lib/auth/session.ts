@@ -47,6 +47,16 @@ export async function requireAdmin(ruta: string): Promise<Identidad> {
   return id;
 }
 
+/** Para Server Actions de /admin: devuelve el uid o lanza un error legible (no redirige). */
+export async function exigirAdmin(ruta: string): Promise<string> {
+  const id = await getIdentidad();
+  if (!id || !puedeEntrarAdmin(id, ruta)) {
+    const { ErrorRegistro } = await import("@/lib/registro/servicio");
+    throw new ErrorRegistro("No tienes permiso para esta acción o tu sesión expiró.");
+  }
+  return id.uid;
+}
+
 export async function requireJuez(ruta: string): Promise<Identidad> {
   const id = await requireSesion(ruta);
   if (!id.esJuez) redirect("/sin-acceso");

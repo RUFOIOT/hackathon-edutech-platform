@@ -29,9 +29,16 @@ service cloud.firestore {
 
     function isJudge() { return signedIn() && exists(docPath('judges', uid())); }
     function judgeRoom() { return get(docPath('judges', uid())).data.get('roomId', null); }
+    function judgeIsFinal() { return get(docPath('judges', uid())).data.get('final', false) == true; }
     function teamRoom(teamId) { return get(docPath('teams', teamId)).data.get('roomId', null); }
-    // Un juez solo ve equipos de su sala.
-    function judgeSeesTeam(teamId) { return isJudge() && judgeRoom() != null && teamRoom(teamId) == judgeRoom(); }
+    function teamIsFinalist(teamId) { return get(docPath('teams', teamId)).data.get('finalista', false) == true; }
+    // Un juez solo ve equipos de su sala; el jurado de la final ve además a los finalistas.
+    function judgeSeesTeam(teamId) {
+      return isJudge() && (
+        (judgeRoom() != null && teamRoom(teamId) == judgeRoom()) ||
+        (judgeIsFinal() && teamIsFinalist(teamId))
+      );
+    }
 
     // ---------- Público ----------
     match /events/{id} { allow read: if true; }
@@ -89,7 +96,7 @@ service cloud.firestore {
       allow read: if isStaff() || isJudge();
     }
     match /presentation_slots/{id} {
-      allow read: if isOps() || (isJudge() && resource.data.roomId == judgeRoom());
+      allow read: if isOps() || (isJudge() && (resource.data.roomId == judgeRoom() || (judgeIsFinal() && resource.data.ronda == 'final')));
     }
     match /conflicts/{id} {
       allow read: if (signedIn() && resource.data.judgeId == uid()) || isComite();

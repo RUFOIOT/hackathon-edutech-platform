@@ -5,6 +5,7 @@ const PESTANAS = [
   { href: "/mi-equipo", nombre: "Mi equipo" },
   { href: "/mi-equipo/repositorio", nombre: "Repositorio" },
   { href: "/mi-equipo/entrega", nombre: "Entregar proyecto" },
+  { href: "/mi-equipo/resultado", nombre: "Resultado" },
 ];
 
 export default function LayoutMiEquipo({ children }: { children: React.ReactNode }) {

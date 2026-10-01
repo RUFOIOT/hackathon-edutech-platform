@@ -96,7 +96,12 @@ export default async function Evaluacion({ params }: { params: Promise<{ teamId:
 
       <div className="mt-6">
         {ctx.conflicto ? (
-          <p className="rounded border border-border bg-surface p-4">Declaraste conflicto de interés con este equipo: no lo evalúas.</p>
+          <p className="rounded border border-border bg-surface p-4">
+            Conflicto declarado: no evalúas a este equipo y tu ausencia no afecta su promedio.{" "}
+            <Link href="/jurado" className="underline">
+              Volver a la lista
+            </Link>
+          </p>
         ) : (
           <HojaEvaluacion
             teamId={teamId}

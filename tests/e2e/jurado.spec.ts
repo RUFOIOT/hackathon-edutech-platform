@@ -83,7 +83,8 @@ test.describe("jurado", () => {
     await page.getByRole("radio", { name: /^Sí, no evaluar/ }).check();
     await page.getByLabel("Motivo del conflicto").fill("Fui docente de dos integrantes este año.");
     await page.getByRole("button", { name: "Declarar conflicto" }).click();
-    await expect(page.getByRole("status")).toContainText("Conflicto declarado");
+    // La confirmación del cliente y la página ya revalidada dicen lo mismo.
+    await expect(page.getByText(/^Conflicto declarado/)).toBeVisible();
     await page.goto("/jurado");
     await expect(lista.getByRole("link", { name: new RegExp(`Equipo A ${sufijo}.*Evaluado: 80/100`) })).toBeVisible();
     await expect(lista.getByRole("link", { name: new RegExp(`Equipo B ${sufijo}.*Conflicto declarado`) })).toBeVisible();

@@ -39,7 +39,6 @@ export async function enviarConflicto(teamId: string, motivo: string): Promise<{
   try {
     await declararConflicto(await juez(), teamId, motivo);
     revalidatePath("/jurado");
-    revalidatePath(`/jurado/${teamId}`);
     return { ok: true };
   } catch (err) {
     return manejar(err);

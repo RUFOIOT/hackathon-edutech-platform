@@ -1,0 +1,50 @@
+# Verificaciones automáticas de la Hackathon EduTech Eight Academy by n8n.
+# No las desactiven: la plataforma y el jurado revisan este resultado.
+name: Checks de la hackathon
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  archivos:
+    name: Archivos obligatorios
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verificar la estructura de la Guía del Hacker (§4.2)
+        run: |
+          faltan=0
+          for f in README.md PRIOR_WORK.md AI_USAGE.md LICENSE .env.example data/README.md; do
+            if [ ! -f "$f" ]; then echo "::error file=$f::Falta $f (Guía del Hacker §4.2)"; faltan=1; fi
+          done
+          if [ ! -d docs ]; then echo "::error::Falta la carpeta docs/"; faltan=1; fi
+          if [ ! -d src ]; then echo "::error::Falta la carpeta src/"; faltan=1; fi
+          if git ls-files | grep -E '(^|/)\.env(\.[^/]*)?$' | grep -vE '\.(example|sample|template)$'; then
+            echo "::error::Hay un archivo .env versionado: bórralo del repositorio y rota las claves"; faltan=1
+          fi
+          if [ -d n8n ] && ! ls n8n/*.json >/dev/null 2>&1; then
+            echo "::warning::La carpeta n8n/ no tiene workflows exportados (.json)"
+          fi
+          exit $faltan
+
+  secretos:
+    name: Secretos (gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # todo el historial: una clave borrada en un commit posterior sigue expuesta
+      - name: Instalar gitleaks
+        env:
+          GITLEAKS_VERSION: "8.30.1"
+        run: |
+          curl -sSfL -o gitleaks.tar.gz "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          curl -sSfL -o checksums.txt "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_checksums.txt"
+          grep "linux_x64.tar.gz" checksums.txt | sed 's/ .*linux_x64.tar.gz/  gitleaks.tar.gz/' | sha256sum -c -
+          tar -xzf gitleaks.tar.gz gitleaks
+      - name: Buscar secretos en el historial
+        run: ./gitleaks git --config .gitleaks.toml --redact --verbose .

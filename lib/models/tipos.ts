@@ -191,7 +191,24 @@ export interface SubmissionDoc {
   tagSha: string;
   tagCommitAt: Fecha;
   enviadoAt: Fecha;
+  enviadoPor: string;
+  envios: number;
+  /** El webhook registró un movimiento del tag entrega después del code freeze (A2). */
+  tagMovidoTrasFreeze?: boolean;
 }
+
+/** tag_events/{X-GitHub-Delivery} · movimientos del tag entrega recibidos por webhook */
+export interface TagEventDoc {
+  repo: string;
+  teamId: string | null;
+  tag: string;
+  accion: "creado" | "movido" | "eliminado";
+  sha: string | null;
+  recibidoAt: Fecha;
+  trasFreeze: boolean;
+}
+
+/** blob_scans/{sha} · caché del análisis de secretos por contenido (solo servidor) */
 
 /** admissibility/{teamId} */
 export interface AdmissibilityDoc {

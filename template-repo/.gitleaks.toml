@@ -1,0 +1,9 @@
+# Configuración de gitleaks: reglas por defecto + permitir los archivos de ejemplo sin valores.
+title = "Hackathon EduTech · gitleaks"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Archivos de ejemplo y documentación de la plantilla"
+paths = ['''\.env\.example$''', '''(^|/)README\.md$''']

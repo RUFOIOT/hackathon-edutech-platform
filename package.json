@@ -21,6 +21,8 @@
     "plantilla:autorizacion": "tsx scripts/generar-plantilla-autorizacion.ts"
   },
   "dependencies": {
+    "@octokit/auth-app": "^8.3.1",
+    "@octokit/rest": "^22.0.1",
     "firebase": "^12.19.0",
     "firebase-admin": "^14.5.0",
     "hast-util-to-string": "^3.0.1",

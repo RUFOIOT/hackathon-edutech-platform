@@ -57,6 +57,10 @@ beforeEach(async () => {
     await setDoc(doc(db, "stats/inscripciones"), { personas: 1 });
     await setDoc(doc(db, "data_requests/ana_eliminacion"), { participantId: "ana" });
     await setDoc(doc(db, "registration_drafts/ana"), { paso: 2 });
+    await setDoc(doc(db, "blob_scans/abc"), { hallazgos: [] });
+    await setDoc(doc(db, "tag_events/d1"), { teamId: "equipo-a", accion: "movido" });
+    await setDoc(doc(db, "admissibility/equipo-a"), { a1: true });
+    await setDoc(doc(db, "repo_snapshots/s1"), { teamId: "equipo-a", commitsEnVentana: 3 });
   });
 });
 
@@ -105,10 +109,17 @@ describe("participantes", () => {
 
 describe("colecciones internas", () => {
   it("invitaciones, outbox de eventos, contadores y solicitudes LOPDP no se leen desde el cliente", async () => {
-    for (const ruta of ["invitations/equipo-a_x", "event_outbox/e1", "stats/inscripciones", "data_requests/ana_eliminacion"]) {
+    for (const ruta of ["invitations/equipo-a_x", "event_outbox/e1", "stats/inscripciones", "data_requests/ana_eliminacion", "blob_scans/abc", "tag_events/d1"]) {
       await assertFails(getDoc(doc(as("ana"), ruta)));
       await assertFails(getDoc(doc(as("admin1"), ruta)));
     }
+  });
+
+  it("snapshots del repo: el equipo los ve; la admisibilidad solo la operación", async () => {
+    await assertSucceeds(getDoc(doc(as("ana"), "repo_snapshots/s1")));
+    await assertFails(getDoc(doc(as("beto"), "repo_snapshots/s1")));
+    await assertFails(getDoc(doc(as("ana"), "admissibility/equipo-a")));
+    await assertSucceeds(getDoc(doc(as("tecnica1"), "admissibility/equipo-a")));
   });
 
   it("el borrador de inscripción solo lo lee su dueño", async () => {

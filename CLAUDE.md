@@ -73,6 +73,11 @@ El enlace mágico se imprime en la terminal de los emuladores.
   `despachar()` después del commit (`lib/eventos.ts`). Nunca llamar a `emitEvent` suelto.
 - **Hora del servidor:** usar `ahora()` (`lib/event/reloj.ts`), no `new Date()`, en reglas de negocio
   con fechas (permite simularla con emuladores, D-16).
+- **GitHub:** la lógica vive en `lib/github.ts` y recibe un `GitHubCliente` inyectable (D-26). Los
+  tests usan un cliente simulado; nunca llaman a la API real. La persistencia está en
+  `lib/github/servicio.ts` y los endpoints para n8n y para la GitHub App en `app/api/github/*`.
+- **Plantilla de equipos:** `template-repo/` (se publica con `scripts/setup-org.md`). Si cambian las
+  secciones del README, actualizar `SECCIONES_CHECKPOINT1/2` en `lib/github.ts`.
 - **Copys:** voz activa y desde el usuario ("Inscribir a mi equipo" → "Equipo inscrito"). Errores
   que dicen qué pasó y cómo corregirlo. Sin etiquetas en mayúsculas ni numeraciones decorativas.
 - **Accesibilidad AA:** foco visible, contraste verificado (`accent-text` para texto en brass),
@@ -85,7 +90,7 @@ El enlace mágico se imprime en la terminal de los emuladores.
 - [x] Fase 1 · Fundaciones
 - [x] Fase 2 · Web pública
 - [x] Fase 3 · Registro y portal de equipos
-- [ ] Fase 4 · GitHub y entregas
+- [x] Fase 4 · GitHub y entregas
 - [ ] Fase 5 · Jurado y resultados
 - [ ] Fase 6 · Dashboard 360 y exportaciones
 - [ ] Fase 7 · n8n

@@ -1,0 +1,28 @@
+# Secretos: nunca se versionan (usa .env.example para documentar las variables)
+.env
+.env.*
+!.env.example
+*.pem
+*-service-account*.json
+serviceAccount*.json
+
+# Dependencias y builds
+node_modules/
+.next/
+dist/
+build/
+out/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Sistema y editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Datos: solo sintéticos y documentados en data/README.md
+data/*.local.*

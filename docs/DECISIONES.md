@@ -202,6 +202,49 @@ revisión legal y del DECE. La plantilla de autorización (`public/plantilla-aut
 genera con `npm run plantilla:autorizacion` y dice "BORRADOR" hasta que se apruebe el formato
 (guía §12, decisión 6).
 
+## D-25 · Subida del pitch: URL firmada en producción, por el servidor con emuladores
+
+El PDF del pitch (hasta 20 MB) no cabe en una función de Netlify (D-17). En producción, el servidor
+emite una URL firmada v4 de subida directa a Storage para `pitches/{teamId}.pdf`, válida 10 minutos
+y con la cabecera `x-goog-content-length-range: 0,20971520`. Al entregar, el servidor verifica que
+el archivo exista, pese 20 MB o menos y empiece con `%PDF-`. El emulador de Storage no firma URLs,
+así que con emuladores (y solo entonces) la subida pasa por una Server Action. **Requiere configurar
+CORS en el bucket** para PUT desde el dominio de la app (docs/DEPLOY.md, Fase 8).
+
+## D-26 · Cliente de GitHub inyectable
+
+`lib/github.ts` (`validateRepo`, `snapshotRepo`, `resolveDeliveryTag`, `calcularAdmisibilidad`) no
+importa Octokit: recibe un `GitHubCliente`. En producción es `lib/github/cliente.ts` (Octokit con la
+GitHub App) y en los tests unitarios un cliente simulado. En los e2e, Octokit apunta con
+`GITHUB_API_BASE` a un servidor simulado.
+
+## D-27 · Checkpoints con heurísticas, confirmados por la mesa técnica
+
+- **Checkpoint 1:** debe haber un commit que toque `README.md` antes de las 19:00, y el README
+  actual debe tener las secciones Problema, Usuario, Evidencia y Arquitectura con al menos 40
+  caracteres propios cada una. Los marcadores `<!-- COMPLETAR -->` de la plantilla no cuentan, así
+  que el README sin tocar nunca lo cumple (hay un test que lo verifica).
+- **Checkpoint 2:** debe haber un commit en `src/` antes de las 10:30 y una sección "Cómo correrlo"
+  completa. Son solo indicios: el snapshot marca `checkpoint2RequiereRevision` y la mesa técnica lo
+  confirma.
+
+## D-28 · Secretos: análisis rápido en la plataforma y gitleaks en la plantilla
+
+Los snapshots analizan el árbol actual con patrones (sk-, ghp_/github_pat_, AKIA, PEM, cuenta de
+servicio de Google, JWT con `role: service_role`) y alertan si hay un `.env` versionado. El
+resultado se guarda por SHA de blob (`blob_scans`), así cada archivo se analiza una sola vez, y
+los hallazgos se enmascaran: nunca se guarda el secreto. El Action de la plantilla corre gitleaks
+v8.30.1 sobre **todo el historial**, con verificación del checksum del binario. Validado en local:
+no reporta nada sobre la plantilla limpia y detecta un token de GitHub plantado.
+
+## D-29 · Movimientos del tag de entrega
+
+El webhook de la GitHub App registra cada push, create o delete del tag `entrega` en `tag_events`,
+usando como id el `X-GitHub-Delivery`, así que un reintento de GitHub no duplica el registro. Si
+ocurre después del code freeze, marca `submissions.tagMovidoTrasFreeze` y lo audita. Además,
+`resolveDeliveryTag` compara el SHA actual con el registrado en la entrega, lo que detecta un tag
+movido a un commit **anterior** al freeze aunque no haya llegado el webhook.
+
 ## Diferencias entre el prompt y las guías (gana la guía)
 
 1. **Sede:** "Unidad Educativa Particular Eight Academy, sede La Prensa". La dirección y el aforo

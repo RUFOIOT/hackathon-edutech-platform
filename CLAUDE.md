@@ -26,7 +26,7 @@ npm run lint
 npm run typecheck
 npm test             # unitarios (Vitest, proyecto "unit")
 npm run test:rules   # reglas de Firestore contra el emulador (proyecto "rules")
-npm run test:e2e     # Playwright (build + next start en :3100; móvil 360 px y escritorio)
+npm run test:e2e     # Playwright: emuladores + simulado n8n/GitHub (:3999) + build en :3100
 npm run build
 ```
 
@@ -65,6 +65,14 @@ El enlace mágico se imprime en la terminal de los emuladores.
   viven en `config/event.ts`.
 - **Movimiento:** el trazo del infinito del hero es la única animación automática del sitio
   (`.trazo-infinito`); un test e2e lo garantiza. Respeta `prefers-reduced-motion`.
+- **Registro:** `lib/registro/servicio.ts` hace toda la inscripción en UNA transacción (cupo,
+  equipo, invitaciones, consentimientos, auditoría y outbox). Los esquemas Zod de
+  `lib/validation/registro.ts` se usan en el cliente y en el servidor. El borrador vive en
+  `registration_drafts/{uid}`.
+- **Eventos a n8n:** siempre con `encolarEn(tx, tipo, payload)` dentro de la transacción y
+  `despachar()` después del commit (`lib/eventos.ts`). Nunca llamar a `emitEvent` suelto.
+- **Hora del servidor:** usar `ahora()` (`lib/event/reloj.ts`), no `new Date()`, en reglas de negocio
+  con fechas (permite simularla con emuladores, D-16).
 - **Copys:** voz activa y desde el usuario ("Inscribir a mi equipo" → "Equipo inscrito"). Errores
   que dicen qué pasó y cómo corregirlo. Sin etiquetas en mayúsculas ni numeraciones decorativas.
 - **Accesibilidad AA:** foco visible, contraste verificado (`accent-text` para texto en brass),
@@ -76,7 +84,7 @@ El enlace mágico se imprime en la terminal de los emuladores.
 
 - [x] Fase 1 · Fundaciones
 - [x] Fase 2 · Web pública
-- [ ] Fase 3 · Registro y portal de equipos
+- [x] Fase 3 · Registro y portal de equipos
 - [ ] Fase 4 · GitHub y entregas
 - [ ] Fase 5 · Jurado y resultados
 - [ ] Fase 6 · Dashboard 360 y exportaciones

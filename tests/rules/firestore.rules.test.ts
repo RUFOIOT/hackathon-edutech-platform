@@ -52,6 +52,11 @@ beforeEach(async () => {
     await setDoc(doc(db, "staff/checkin1"), { roles: ["checkin"] });
     await setDoc(doc(db, "audit_log/1"), { accion: "x" });
     await setDoc(doc(db, "results/equipo-a"), { teamId: "equipo-a", publicado: false });
+    await setDoc(doc(db, "invitations/equipo-a_x"), { teamId: "equipo-a", email: "x@edutech.test" });
+    await setDoc(doc(db, "event_outbox/e1"), { type: "registration.created", payload: { email: "x@edutech.test" } });
+    await setDoc(doc(db, "stats/inscripciones"), { personas: 1 });
+    await setDoc(doc(db, "data_requests/ana_eliminacion"), { participantId: "ana" });
+    await setDoc(doc(db, "registration_drafts/ana"), { paso: 2 });
   });
 });
 
@@ -95,6 +100,20 @@ describe("participantes", () => {
     const anon = env.unauthenticatedContext().firestore();
     await assertFails(getDoc(doc(anon, "participants/ana")));
     await assertFails(getDoc(doc(anon, "teams/equipo-a")));
+  });
+});
+
+describe("colecciones internas", () => {
+  it("invitaciones, outbox de eventos, contadores y solicitudes LOPDP no se leen desde el cliente", async () => {
+    for (const ruta of ["invitations/equipo-a_x", "event_outbox/e1", "stats/inscripciones", "data_requests/ana_eliminacion"]) {
+      await assertFails(getDoc(doc(as("ana"), ruta)));
+      await assertFails(getDoc(doc(as("admin1"), ruta)));
+    }
+  });
+
+  it("el borrador de inscripción solo lo lee su dueño", async () => {
+    await assertSucceeds(getDoc(doc(as("ana"), "registration_drafts/ana")));
+    await assertFails(getDoc(doc(as("beto"), "registration_drafts/ana")));
   });
 });
 

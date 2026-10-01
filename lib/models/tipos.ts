@@ -49,8 +49,12 @@ export interface ParticipantDoc {
   accesibilidad: string;
   categoria: Categoria;
   perfilTecnico: PerfilTecnico;
+  githubVerificado: "existe" | "sin-verificar";
+  modoInscripcion: "equipo" | "individual" | "unirse";
   teamId: string | null;
   enListaEspera: boolean;
+  /** Lo que pidió quien quedó en lista de espera, para que la organización lo atienda. */
+  solicitudEquipo: Record<string, unknown> | null;
   createdAt: Fecha;
 }
 
@@ -59,7 +63,8 @@ export interface GuardianDoc {
   participantId: string;
   nombre: string;
   documento: string; // cédula: único dato de identidad que se pide (prompt §10)
-  contacto: string;
+  contacto: { correo: string; celular: string };
+  parentesco: string;
   archivoPath: string | null; // Storage privado
   estado: "pendiente" | "validado" | "rechazado";
   validadoPor: string | null;
@@ -70,6 +75,7 @@ export interface ConsentDoc {
   participantId: string;
   tipo: "reglas" | "datos_personales" | "uso_imagen" | "autorizacion_menor";
   version: string;
+  texto: string; // texto exacto aceptado (lib/content/consentimientos.ts)
   aceptado: boolean;
   timestamp: Fecha;
   ip: string | null;
@@ -81,12 +87,54 @@ export interface TeamDoc {
   slug: string;
   track: TrackCode;
   categoria: "JUNIOR" | "OPEN" | "MIXTO";
-  codigoInvitacion: string;
+  codigoInvitacion: string; // 6 caracteres sin letras ambiguas
   estado: "incompleto" | "completo" | "descalificado";
+  miembros: number;
+  conteoCategorias: Record<Categoria, number>;
+  capitanId: string;
+  /** Tiene integrantes Junior: la organización debe asignar un mentor adulto (guía §3). */
+  requiereAdulto: boolean;
   problemaCandidato: string;
   roomId: string | null; // denormalizado desde presentation_slots para las reglas del jurado
   adultoResponsableId: string | null;
   createdAt: Fecha;
+}
+
+/** invitations/{teamId}_{correo normalizado} */
+export interface InvitationDoc {
+  teamId: string;
+  email: string;
+  estado: "pendiente" | "aceptada";
+  invitadoPor: string;
+  creadaAt: Fecha;
+  participantId?: string;
+}
+
+/** registration_drafts/{authUid} · progreso del registro por pasos (ver lib/registro/servicio.ts, Borrador) */
+
+/** stats/inscripciones · contadores para cupo y lista de espera, actualizados en la misma transacción */
+export interface StatsInscripcionesDoc {
+  personas: number;
+  equipos: number;
+  listaEspera: number;
+}
+
+/** event_outbox/{eventId} · eventos hacia n8n (D-19) */
+export interface EventOutboxDoc {
+  id: string;
+  type: string;
+  occurredAt: string;
+  payload: Record<string, unknown>;
+  estado: "pendiente" | "enviado";
+  intentos: number;
+  ultimoError: string | null;
+}
+
+/** data_requests/{participantId}_{tipo} · solicitudes LOPDP */
+export interface DataRequestDoc {
+  participantId: string;
+  tipo: "eliminacion";
+  estado: "pendiente" | "atendida";
 }
 
 /** team_members/{teamId}_{participantId} */

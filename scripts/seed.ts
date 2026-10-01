@@ -144,7 +144,12 @@ async function main() {
       slug: slug(nombreEquipo),
       track,
       categoria: categoriaEquipo(categorias),
-      codigoInvitacion: `INV-${dd(e + 1)}${int(1000, 9999)}`,
+      // Código de 6 caracteres sin letras ambiguas, como los reales (lib/registro/reglas.ts).
+      codigoInvitacion: `SEED${"ABCDEFGHJK"[e]}${e < 9 ? "Z" : "Y"}`,
+      miembros: tam,
+      conteoCategorias: { JUNIOR: categorias.filter((c) => c === "JUNIOR").length, OPEN: categorias.filter((c) => c === "OPEN").length },
+      capitanId: `p-${String(n - tam + 1).padStart(3, "0")}`,
+      requiereAdulto: categorias.includes("JUNIOR"),
       estado: tam >= EVENT.equipo.min ? "completo" : "incompleto",
       problemaCandidato: `Problema candidato ficticio del equipo ${nombreEquipo}.`,
       roomId: sala.id,
@@ -205,6 +210,8 @@ async function main() {
     await crearUsuario(s.uid, `${s.uid}@edutech.test`, s.uid);
     set(`staff/${s.uid}`, { nombre: s.uid, roles: s.roles });
   }
+
+  set("stats/inscripciones", { personas: n, equipos: tamanos.length, listaEspera: 0 });
 
   await batch.commit();
   console.log(`Seed listo: ${n} participantes, ${tamanos.length} equipos, ${salas.length} salas, ${jueces.length} jueces, ${staff.length} staff.`);

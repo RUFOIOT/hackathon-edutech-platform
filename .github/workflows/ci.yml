@@ -32,7 +32,7 @@ jobs:
       - run: npm test
 
       - name: Tests de reglas de seguridad (emuladores)
-        run: npx firebase-tools@15 emulators:exec --only firestore,storage --project demo-edutech "npx vitest run --project rules"
+        run: npm run test:rules
 
       # Playwright arranca `npm run build && next start` (ver playwright.config.ts): cubre también el build.
       - run: npx playwright install --with-deps chromium

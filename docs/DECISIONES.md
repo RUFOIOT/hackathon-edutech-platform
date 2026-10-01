@@ -138,6 +138,70 @@ de 360 px y escritorio. Verifica la cuenta regresiva con reloj simulado y el nav
 `prefers-reduced-motion`, que solo el infinito se anime, la ausencia de desplazamiento horizontal,
 las anclas del índice y que no se publiquen notas internas.
 
+## D-16 · Reloj simulable solo con emuladores
+
+`lib/event/reloj.ts` (`ahora()`) devuelve la hora real, salvo que `APP_FECHA_SIMULADA` esté
+definida **y** la app apunte a los emuladores (`FIRESTORE_EMULATOR_HOST`). Sirve para los tests e2e
+(hoy, 1 oct, las inscripciones aún no abren) y para el ensayo del runbook. Un despliegue real nunca
+define `FIRESTORE_EMULATOR_HOST`, así que la simulación no puede activarse en producción.
+
+## D-17 · Límite de archivos en Server Actions (Netlify)
+
+Netlify limita el cuerpo de una función a unos 6 MB. La autorización Junior se sube en la Server
+Action con un máximo de **4 MB** (`bodySizeLimit: 5mb`), validando que sea un PDF real (cabecera
+`%PDF-`). El PDF del pitch (hasta 20 MB, Fase 4) **no** puede pasar por una función: se subirá
+directo a Storage con una URL firmada de subida emitida por el servidor.
+
+## D-18 · Firma HMAC sobre timestamp y cuerpo
+
+`X-Signature: sha256=<hex>` es el HMAC-SHA256 de `${X-Timestamp}.${cuerpo}`, no solo del cuerpo.
+Así un cuerpo firmado no puede reenviarse con otro timestamp para burlar la ventana de 5 minutos.
+La verificación usa comparación en tiempo constante. Los workflows de n8n (Fase 7) verifican con la
+misma fórmula.
+
+## D-19 · Outbox de eventos hacia n8n
+
+Cada evento se escribe en `event_outbox` dentro de la misma transacción que el cambio que lo
+origina, y se envía después del commit. Si n8n no responde, el evento queda `pendiente` con su
+error y se reintenta (endpoint de reintento en la Fase 7). Así una caída de n8n no bloquea
+inscripciones ni pierde correos.
+
+## D-20 · Lista de espera
+
+El cupo se controla con contadores en `stats/inscripciones`, actualizados en la misma transacción
+que la inscripción, así que dos inscripciones simultáneas no pueden pasarse del cupo. Quien entra
+con el cupo lleno queda en lista de espera: se guarda su inscripción y lo que pidió
+(`solicitudEquipo`), pero **no** crea equipo ni se une a uno. La organización lo atiende desde
+`/admin/participantes` (Fase 6).
+
+## D-21 · Equipos con integrantes Junior
+
+La guía exige un "mentor adulto asignado" por la organización. La inscripción marca
+`requiereAdulto` en el equipo y `/mi-equipo` lo muestra como pendiente. La organización asigna
+`adultoResponsableId` desde `/admin/equipos` (Fase 6). El registro no puede exigirlo de entrada
+porque lo asigna la organización.
+
+## D-22 · Invitaciones y tamaño de equipo
+
+El código de invitación es por equipo: 6 caracteres sin letras ambiguas (sin O, 0, I ni 1) para
+dictarlo sin errores. Las invitaciones pendientes cuentan para el máximo de 5. El evento
+`team.completed` se emite cuando el equipo llega al mínimo de 2 integrantes. Una persona solo puede
+estar en un equipo: participants está indexado por uid y la unión se valida en transacción.
+
+## D-23 · Verificación del usuario de GitHub sin bloqueo
+
+Si GitHub responde 404, el paso 2 se rechaza con un mensaje claro. Si GitHub no responde o limita
+la cuota, la inscripción sigue y queda marcada `githubVerificado: "sin-verificar"` para revisión
+de la mesa técnica.
+
+## D-24 · Consentimientos con texto exacto
+
+Cada consentimiento guarda su tipo, la versión (`2026-10-v1`), el **texto exacto** aceptado, la
+fecha y la IP. Los textos están en `lib/content/consentimientos.ts` como borrador, pendientes de
+revisión legal y del DECE. La plantilla de autorización (`public/plantilla-autorizacion.pdf`) se
+genera con `npm run plantilla:autorizacion` y dice "BORRADOR" hasta que se apruebe el formato
+(guía §12, decisión 6).
+
 ## Diferencias entre el prompt y las guías (gana la guía)
 
 1. **Sede:** "Unidad Educativa Particular Eight Academy, sede La Prensa". La dirección y el aforo

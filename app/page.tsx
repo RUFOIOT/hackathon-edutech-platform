@@ -3,6 +3,7 @@ import { AGENDA, ALIADOS, EVENT, FAQ, PREMIOS, PREMIO_TRANSVERSAL, TRACKS, TRACK
 import { HeroInfinito } from "@/components/hero-infinito";
 import { diaEnEcuador, fechaEnEcuador } from "@/lib/event/countdown";
 import { faseActual, inscripcionesAbiertas } from "@/lib/event/phase";
+import { ahora } from "@/lib/event/reloj";
 
 // Se regenera cada 5 minutos: el estado de las inscripciones depende de la fecha.
 export const revalidate = 300;
@@ -11,7 +12,8 @@ const boton = "inline-block rounded bg-accent px-5 py-3 font-medium text-on-acce
 const enlace = "font-medium text-positive-text underline underline-offset-4";
 
 function EstadoInscripciones() {
-  if (inscripcionesAbiertas()) {
+  const t = ahora();
+  if (inscripcionesAbiertas(t)) {
     return (
       <div className="flex flex-wrap items-center justify-center gap-4">
         <Link href="/registro" className={boton}>
@@ -24,7 +26,7 @@ function EstadoInscripciones() {
     );
   }
   const apertura = EVENT.fechas.aperturaInscripciones;
-  if (faseActual() === "Convocatoria") {
+  if (faseActual(t) === "Convocatoria") {
     return (
       <p className="text-center">
         Las inscripciones abren el <strong>{diaEnEcuador(fecha("aperturaInscripciones"))}</strong>

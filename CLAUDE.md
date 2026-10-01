@@ -1,0 +1,78 @@
+# CLAUDE.md · Plataforma Hackathon EduTech Eight Academy by n8n
+
+Web pública, registro, portal de equipos, jurado y dashboard 360 del evento (6–7 nov 2026, Quito).
+Interfaz, comentarios clave y documentación en **español**.
+
+## Fuente de verdad
+
+`content/01_GUIA_HACKATHON.md`, `02_GUIA_HACKER.md`, `03_RUBRICA_EVALUACION.md`. Si el código o el
+prompt contradicen una guía, gana la guía y se reporta. Datos institucionales pendientes viven en
+`config/event.ts` como `POR_CONFIRMAR` y se muestran como "Por anunciar" (`mostrar()`). Nunca
+inventar montos, auspiciantes, direcciones ni nombres de jurado.
+
+## Stack
+
+Next.js 15 (App Router, Server Actions) · TypeScript estricto · Tailwind CSS 4 (tokens en
+`app/globals.css`) · **Firebase** (Auth con enlace mágico, Firestore, Storage) · Zod · Vitest ·
+Netlify. Ver `docs/DECISIONES.md` para el porqué de cada elección.
+
+## Comandos
+
+```bash
+npm run dev          # Next en :3000 (usa .env.local)
+npm run emulators    # Auth :9099, Firestore :8080, Storage :9199, UI :4000 (persiste en .firebase-data/)
+npm run seed         # datos ficticios en los emuladores (40 participantes, 10 equipos, 3 salas, 4 jueces)
+npm run lint
+npm run typecheck
+npm test             # unitarios (Vitest, proyecto "unit")
+npm run test:rules   # reglas de Firestore contra el emulador (proyecto "rules")
+npm run build
+```
+
+Los emuladores necesitan Java 21+. En este Mac: `export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"`.
+
+`.env.local` para emuladores: `NEXT_PUBLIC_USE_FIREBASE_EMULATORS=true`,
+`NEXT_PUBLIC_FIREBASE_PROJECT_ID=demo-edutech`, `NEXT_PUBLIC_FIREBASE_API_KEY=demo-api-key`,
+`FIREBASE_PROJECT_ID=demo-edutech`, `FIRESTORE_EMULATOR_HOST=127.0.0.1:8080`,
+`FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099`, `FIREBASE_STORAGE_EMULATOR_HOST=127.0.0.1:9199`.
+
+Para ingresar en local: `/ingresar` con cualquier `*@edutech.test` del seed (`staff-admin`,
+`staff-comite`, `staff-tecnica`, `staff-checkin`, `staff-mentor`, `juez-1..4`, `p-001..p-040`).
+El enlace mágico se imprime en la terminal de los emuladores.
+
+## Arquitectura y convenciones
+
+- **El cliente solo lee.** `firestore.rules` niega toda escritura desde el SDK cliente. Toda
+  escritura va por Server Actions o rutas API con firebase-admin (`lib/firebase/admin.ts`),
+  valida con Zod, verifica permisos en código y escribe `audit_log` en el **mismo batch** con
+  `auditarEn()` (`lib/audit.ts`).
+- **Reglas = RLS.** Cada cambio de permisos lleva su test en `tests/rules/`. Los roles de
+  `/admin` están en `lib/auth/roles.ts` (`ACCESO_ADMIN`) y deben espejar `firestore.rules`.
+- **Sesión:** cookie httpOnly `__session` (cookie de sesión de Firebase, 5 días, revocable).
+  `middleware.ts` solo verifica que exista; la verificación real está en `lib/auth/session.ts`
+  (`requireSesion`, `requireAdmin(ruta)`, `requireJuez`).
+- **firebase-admin y el SDK cliente se inicializan de forma perezosa** (`adminDb()`, `clientAuth()`),
+  para que `next build` no requiera credenciales.
+- **Fechas:** ISO con offset `-05:00` en `config/event.ts`; nunca depender de la zona horaria del
+  servidor. La categoría se calcula con la edad al kick-off (`lib/models/categoria.ts`).
+- **Logs:** usar `log` de `lib/log.ts` (redacta correos, teléfonos y tokens). `console.log` está
+  prohibido por ESLint fuera de `scripts/` y `tests/`.
+- **Modelo de datos:** `lib/models/tipos.ts` (una interfaz por colección, con el formato del id).
+- **Rúbrica:** `lib/models/rubrica.ts`; el tope por C2 = 1 se aplica por juez (D-05).
+- **Copys:** voz activa y desde el usuario ("Inscribir a mi equipo" → "Equipo inscrito"). Errores
+  que dicen qué pasó y cómo corregirlo. Sin etiquetas en mayúsculas ni numeraciones decorativas.
+- **Accesibilidad AA:** foco visible, contraste verificado (`accent-text` para texto en brass),
+  formularios con `label`, `aria-invalid` y `role="alert"`. Responsive desde 360 px.
+- **Commits:** Conventional Commits. Al cerrar cada fase: lint, typecheck, tests, commit y resumen.
+- **Secretos:** solo en `.env.local` (git-ignored); documentar cada variable en `.env.example`.
+
+## Estado por fase
+
+- [x] Fase 1 · Fundaciones
+- [ ] Fase 2 · Web pública
+- [ ] Fase 3 · Registro y portal de equipos
+- [ ] Fase 4 · GitHub y entregas
+- [ ] Fase 5 · Jurado y resultados
+- [ ] Fase 6 · Dashboard 360 y exportaciones
+- [ ] Fase 7 · n8n
+- [ ] Fase 8 · Endurecimiento y despliegue

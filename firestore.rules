@@ -1,0 +1,122 @@
+rules_version = '2';
+
+// Reglas de seguridad de Firestore (equivalente a RLS).
+//
+// Principio: el SDK cliente SOLO LEE, y solo lo que le corresponde a cada rol.
+// Toda escritura pasa por Server Actions / rutas API con firebase-admin, que valida con Zod,
+// aplica las reglas de negocio y escribe audit_log en el mismo batch. Ver docs/DECISIONES.md (D-02).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- Helpers ----------
+    function signedIn() { return request.auth != null; }
+    function uid() { return request.auth.uid; }
+    function docPath(col, id) { return /databases/$(database)/documents/$(col)/$(id); }
+
+    function isStaff() { return signedIn() && exists(docPath('staff', uid())); }
+    function hasRole(r) { return isStaff() && r in get(docPath('staff', uid())).data.roles; }
+    function isAdmin() { return hasRole('admin'); }
+    // admin y comite: datos de representantes, puntajes, auditoría.
+    function isComite() { return hasRole('admin') || hasRole('comite'); }
+    // Operación del evento: comite + mesa técnica.
+    function isOps() { return isComite() || hasRole('mesa_tecnica'); }
+
+    function isParticipant() { return signedIn() && exists(docPath('participants', uid())); }
+    function myTeamId() {
+      return isParticipant() ? get(docPath('participants', uid())).data.get('teamId', null) : null;
+    }
+    function inMyTeam(teamId) { return teamId != null && myTeamId() == teamId; }
+
+    function isJudge() { return signedIn() && exists(docPath('judges', uid())); }
+    function judgeRoom() { return get(docPath('judges', uid())).data.get('roomId', null); }
+    function teamRoom(teamId) { return get(docPath('teams', teamId)).data.get('roomId', null); }
+    // Un juez solo ve equipos de su sala.
+    function judgeSeesTeam(teamId) { return isJudge() && judgeRoom() != null && teamRoom(teamId) == judgeRoom(); }
+
+    // ---------- Público ----------
+    match /events/{id} { allow read: if true; }
+    match /tracks/{id} { allow read: if true; }
+    match /rubric_criteria/{id} { allow read: if true; }
+    // Estado de /pantalla (cronómetro y avisos del proyector).
+    match /public_state/{id} { allow read: if true; }
+
+    // ---------- Participantes ----------
+    match /participants/{pid} {
+      allow read: if (signedIn() && uid() == pid) || isOps() || hasRole('checkin');
+    }
+    match /registration_drafts/{pid} {
+      allow read: if signedIn() && uid() == pid;
+    }
+    match /consents/{id} {
+      allow read: if (signedIn() && resource.data.participantId == uid()) || isAdmin();
+    }
+    // Representantes legales y autorizaciones: solo admin y comite (prompt §7 y §10).
+    match /guardians/{id} {
+      allow read: if isComite();
+    }
+    match /checkins/{id} {
+      allow read: if (signedIn() && resource.data.participantId == uid()) || isOps() || hasRole('checkin');
+    }
+
+    // ---------- Equipos ----------
+    match /teams/{teamId} {
+      allow read: if inMyTeam(teamId) || isStaff() || judgeSeesTeam(teamId);
+    }
+    match /team_members/{id} {
+      allow read: if inMyTeam(resource.data.teamId) || isStaff();
+    }
+    match /repositories/{teamId} {
+      allow read: if inMyTeam(teamId) || isOps() || judgeSeesTeam(teamId);
+    }
+    match /repo_snapshots/{id} {
+      allow read: if inMyTeam(resource.data.teamId) || isOps() || judgeSeesTeam(resource.data.teamId);
+    }
+    match /submissions/{teamId} {
+      allow read: if inMyTeam(teamId) || isOps() || judgeSeesTeam(teamId);
+    }
+    match /admissibility/{teamId} {
+      allow read: if isOps();
+    }
+    match /mentor_requests/{id} {
+      allow read: if inMyTeam(resource.data.teamId) || isOps() || hasRole('mentor');
+    }
+
+    // ---------- Jurado ----------
+    match /judges/{jid} {
+      allow read: if (signedIn() && uid() == jid) || isOps();
+    }
+    match /rooms/{id} {
+      allow read: if isStaff() || isJudge();
+    }
+    match /presentation_slots/{id} {
+      allow read: if isOps() || (isJudge() && resource.data.roomId == judgeRoom());
+    }
+    match /conflicts/{id} {
+      allow read: if (signedIn() && resource.data.judgeId == uid()) || isComite();
+    }
+    // Un juez nunca ve puntajes de otros jueces. La mesa técnica tampoco ve puntajes.
+    match /scores/{id} {
+      allow read: if (signedIn() && resource.data.judgeId == uid()) || isComite();
+    }
+    // Resultado por equipo: visible para el equipo solo cuando el comité publica.
+    match /results/{teamId} {
+      allow read: if isComite() || (inMyTeam(teamId) && resource.data.publicado == true);
+    }
+
+    // ---------- Comunicación y control ----------
+    match /announcements/{id} {
+      allow read: if isStaff() || (signedIn() && resource.data.alcance.tipo == 'todos');
+    }
+    match /audit_log/{id} {
+      allow read: if isComite();
+    }
+    match /staff/{sid} {
+      allow read: if (signedIn() && uid() == sid) || isAdmin();
+    }
+
+    // Nada se escribe desde el cliente. Cualquier colección no listada queda cerrada.
+    match /{document=**} {
+      allow write: if false;
+    }
+  }
+}

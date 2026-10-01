@@ -1,0 +1,12 @@
+rules_version = '2';
+
+// El cliente no accede directamente a Storage. Los PDFs de pitch y las autorizaciones de menores
+// se suben mediante Server Actions (firebase-admin) y se descargan con URLs firmadas de corta
+// duración emitidas solo a roles autorizados (prompt §10).
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

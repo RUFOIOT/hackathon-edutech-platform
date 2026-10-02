@@ -33,7 +33,7 @@
     "exceljs": "^4.4.0",
     "fflate": "^0.8.3",
     "firebase": "^12.19.0",
-    "firebase-admin": "^14.5.0",
+    "firebase-admin": "^13.10.0",
     "hast-util-to-string": "^3.0.1",
     "next": "^15.5.27",
     "qrcode": "^1.5.4",

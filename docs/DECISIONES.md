@@ -375,6 +375,13 @@ botones de inscripción e ingreso apuntan a la app completa cuando se define `UR
 no, no se muestran. El sitio se reconstruye cada día para que el estado de las inscripciones esté
 al día. El registro, el portal, el jurado y el dashboard se despliegan en Netlify (docs/DEPLOY.md).
 
+## D-45 · firebase-admin fijado en 13.x
+
+`firebase-admin@14` depende de `jwks-rsa@4`, que carga `jose@6` (solo ESM) con `require()`. En el
+runtime de funciones de Netlify eso falla al cargar (`ERR_REQUIRE_ESM`) y todas las rutas
+dinámicas responden 500, aunque `next start` local funcione. La rama 13.x usa `jwks-rsa@3` con
+`jose@4` (CommonJS). Antes de subir a 14, probar con `netlify serve` o un deploy de vista previa.
+
 ## Diferencias entre el prompt y las guías (gana la guía)
 
 1. **Sede:** "Unidad Educativa Particular Eight Academy, sede La Prensa". La dirección y el aforo

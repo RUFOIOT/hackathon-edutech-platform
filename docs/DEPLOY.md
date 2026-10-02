@@ -20,6 +20,11 @@ Pendiente:
 - [x] Authentication → acceso por enlace de correo y dominio `edutech-hackathon-2026.netlify.app` autorizado.
 - [x] Prueba en producción (02-oct-2026): token de Auth → sesión en Netlify → página privada →
   escritura en Firestore desde Netlify. Cuenta admin inicial creada en `staff/`.
+- [x] Prueba de registro en producción (02-oct-2026, con `INSCRIPCIONES_PRUEBA`): inscripción de un
+  equipo, QR y check-in. Inscripciones cerradas de nuevo y datos de la prueba borrados (solo queda
+  la cuenta admin en `staff/`).
+- [ ] **Bloqueante para Junior y para la entrega:** activar el plan Blaze y crear Storage (el bucket
+  `edutech-hackathon-2026.firebasestorage.app` no existe todavía); luego `firebase deploy --only storage`.
 - [ ] Rotar la clave de la cuenta de servicio (la primera pasó por la sesión de configuración).
 - [ ] Plan Blaze, Storage y `firebase deploy --only storage`.
 - [ ] GitHub App (`GITHUB_APP_*`, `GITHUB_WEBHOOK_SECRET`) y n8n (`N8N_WEBHOOK_BASE_URL`).

@@ -22,12 +22,25 @@ páginas que leen datos no funcionan en producción.
 | Portal del equipo | `/mi-equipo` | Integrantes: equipo, repositorio, mentoría, entrega, resultado, mis datos |
 | Jurado | `/jurado` | Jueces (pensado para el celular) |
 | Dashboard 360 | `/admin` | Comité, mesa técnica, check-in, mentores (cada rol ve lo suyo) |
+| Check-in con QR | `/admin/checkin` | Staff de puerta (escáner con la cámara del celular) |
+| Organización | `/admin/organizacion` | Admin: da y quita acceso al staff por correo |
 | Proyector de sala | `/pantalla` | Salas del Show and Tell |
 | Resultados | `/resultados` | Público, cuando el comité los publica |
 
 > El sitio de GitHub Pages es la **versión estática** de la web pública. El registro, el portal,
 > el jurado y el dashboard necesitan servidor y Firebase: se despliegan en Netlify
 > ([docs/DEPLOY.md](docs/DEPLOY.md)).
+
+## Uso rápido del panel
+
+1. Entra en https://edutech-hackathon-2026.netlify.app/ingresar con tu correo y abre el enlace que
+   llega (sin contraseñas).
+2. Como admin, en **Organización** das acceso al staff por correo con su rol (comité, mesa
+   técnica, check-in, mentor). Los jueces se registran en **Jurado y salas**.
+3. **QR de check-in:** cada inscrito tiene su QR en **Mi equipo**; el staff lo escanea en
+   **Check-in → Abrir cámara**. Sin QR, usa la búsqueda manual.
+
+Manual completo: **[docs/MANUAL_ADMIN.md](docs/MANUAL_ADMIN.md)**.
 
 ## Qué hace
 
@@ -106,6 +119,7 @@ docs/           decisiones, dataset, arquitectura, despliegue y runbook
 
 ## Documentación
 
+- [docs/MANUAL_ADMIN.md](docs/MANUAL_ADMIN.md): cómo usar el panel, roles y check-in con QR.
 - [docs/ARQUITECTURA.md](docs/ARQUITECTURA.md): cómo se conectan la app, Firebase, GitHub y n8n.
 - [docs/DEPLOY.md](docs/DEPLOY.md): despliegue en Netlify + Firebase y publicación en Pages.
 - [docs/RUNBOOK.md](docs/RUNBOOK.md): qué hacer el día del evento si algo falla.

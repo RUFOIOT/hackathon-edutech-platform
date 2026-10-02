@@ -109,6 +109,8 @@ El enlace mágico se imprime en la terminal de los emuladores.
 - **Sitio estático (Pages):** las páginas públicas no deben depender de Firebase ni de rutas
   dinámicas; usa `asset()` para archivos de `/public` y `enlacePlataforma()` para enlaces a
   registro, portal o resultados (`lib/sitio.ts`, D-44).
+- **Staff:** los roles se dan en `/admin/organizacion` (`guardarStaff`/`quitarStaff`); los jueces en
+  `/admin/jurado`. Si cambia una pantalla del panel, actualiza `docs/MANUAL_ADMIN.md`.
 - **Commits:** Conventional Commits. Al cerrar cada fase: lint, typecheck, tests, commit y resumen.
 - **Secretos:** solo en `.env.local` (git-ignored); documentar cada variable en `.env.example`.
 

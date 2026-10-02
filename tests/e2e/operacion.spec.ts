@@ -131,4 +131,27 @@ test.describe("operación", () => {
     expect((await db.doc(`data_requests/${u.uid}_eliminacion`).get()).get("estado")).toBe("atendida");
     await expect(auth.getUser(u.uid)).rejects.toThrow();
   });
+
+  test("el admin da y quita acceso al panel por correo desde Organización", async ({ page }) => {
+    const { db, auth } = await adminEmulador();
+    const admin = await crearStaff(["admin"], "admin-organizacion");
+    const nuevo = `mesa-${Date.now()}@edutech.test`;
+    await ingresarComo(page, admin, "/admin/organizacion");
+
+    await page.getByLabel("Correo").fill(nuevo);
+    await page.getByLabel("Nombre").fill("Mesa Nueva");
+    await page.getByRole("checkbox", { name: /^Check-in/ }).check();
+    await page.getByRole("button", { name: "Guardar acceso" }).click();
+    await expect(page.getByRole("status")).toContainText("Mesa Nueva tiene ahora: checkin");
+
+    const u = await auth.getUserByEmail(nuevo);
+    expect((await db.doc(`staff/${u.uid}`).get()).get("roles")).toEqual(["checkin"]);
+
+    await page.reload();
+    const fila = page.getByRole("listitem").filter({ hasText: nuevo });
+    await fila.getByRole("button", { name: "Quitar acceso a Mesa Nueva" }).click();
+    await fila.getByRole("button", { name: "Sí, confirmar" }).click();
+    await expect(fila).toHaveCount(0, { timeout: 15_000 });
+    expect((await db.doc(`staff/${u.uid}`).get()).exists).toBe(false);
+  });
 });

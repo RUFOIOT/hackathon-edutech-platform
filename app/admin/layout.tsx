@@ -20,6 +20,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: "/admin/comunicados", nombre: "Comunicados" },
     { href: "/admin/auditoria", nombre: "Auditoría" },
     { href: "/admin/privacidad", nombre: "Privacidad" },
+    { href: "/admin/organizacion", nombre: "Organización" },
   ].filter((s) => puedeEntrarAdmin(id, s.href));
   const actual = faseActual(ahora());
   return (

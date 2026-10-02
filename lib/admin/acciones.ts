@@ -6,12 +6,12 @@ import { z } from "zod";
 import { EVENT, MENTORIA_TEMAS, fecha } from "@/config/event";
 import type { ResultadoAccion } from "@/components/admin/accion";
 import { auditarEn } from "@/lib/audit";
-import { tieneRol } from "@/lib/auth/roles";
+import { STAFF_ROLES, tieneRol } from "@/lib/auth/roles";
 import { exigirAdmin, getIdentidad } from "@/lib/auth/session";
 import { verificarTokenQr } from "@/lib/checkin/qr";
 import { despachar, encolarEn } from "@/lib/eventos";
 import { ahora } from "@/lib/event/reloj";
-import { adminDb } from "@/lib/firebase/admin";
+import { adminAuth, adminDb } from "@/lib/firebase/admin";
 import { tomarSnapshot } from "@/lib/github/servicio";
 import { log } from "@/lib/log";
 import { categoriaEquipo, type Categoria } from "@/lib/models/categoria";
@@ -380,5 +380,52 @@ export async function aplicarPoliticaRetencion(): Promise<ResultadoAccion> {
     if (ahora() < fechaRetencion()) throw new ErrorRegistro("La política de retención todavía no vence.");
     const r = await aplicarRetencion({ actor: uid, ahora: ahora() });
     return `${r.anonimizados} personas anonimizadas; ${Object.values(r.borrados).reduce((a, b) => a + b, 0)} registros operativos borrados.`;
+  });
+}
+
+// ---------------------------------------------------------------------------------------------
+// Organización: roles del staff por correo (solo admin). La persona ingresa luego con ese correo.
+// ---------------------------------------------------------------------------------------------
+
+const staffSchema = z.object({
+  email: z.email({ error: "Escribe un correo válido." }).transform((e) => e.trim().toLowerCase()),
+  nombre: z.string().trim().min(2, "Escribe el nombre (mínimo 2 letras).").max(80),
+  roles: z.array(z.enum(STAFF_ROLES)).min(1, "Elige al menos un rol."),
+  temas: z.array(z.enum(MENTORIA_TEMAS)).default([]),
+});
+
+export async function guardarStaff(fd: FormData) {
+  return ejecutar("/admin/organizacion", async (uid) => {
+    const r = staffSchema.safeParse({ email: fd.get("email"), nombre: fd.get("nombre"), roles: fd.getAll("roles"), temas: fd.getAll("temas") });
+    if (!r.success) throw new ErrorRegistro(r.error.issues[0]!.message);
+    const u = await adminAuth()
+      .getUserByEmail(r.data.email)
+      .catch(() => adminAuth().createUser({ email: r.data.email, displayName: r.data.nombre }));
+    if (u.uid === uid && !r.data.roles.includes("admin")) throw new ErrorRegistro("No puedes quitarte el rol de admin a ti mismo.");
+    const ref = db().doc(`staff/${u.uid}`);
+    const antes = await ref.get();
+    const batch = db().batch();
+    batch.set(ref, { nombre: r.data.nombre, roles: r.data.roles, ...(r.data.roles.includes("mentor") ? { temas: r.data.temas } : { temas: FieldValue.delete() }) }, { merge: true });
+    auditarEn(batch, { actor: uid, accion: "staff.grant", entidad: "staff", entidadId: u.uid, antes: antes.exists ? { roles: antes.get("roles") } : null, despues: { roles: r.data.roles } });
+    await batch.commit();
+    return `${r.data.nombre} tiene ahora: ${r.data.roles.join(", ")}. Ingresa con su correo en /ingresar.`;
+  });
+}
+
+export async function quitarStaff(staffUid: string) {
+  return ejecutar("/admin/organizacion", async (uid) => {
+    if (staffUid === uid) throw new ErrorRegistro("No puedes quitarte del equipo organizador a ti mismo.");
+    const ref = db().doc(`staff/${staffUid}`);
+    const antes = await ref.get();
+    if (!antes.exists) throw new ErrorRegistro("Esa persona ya no está en el equipo organizador.");
+    const batch = db().batch();
+    batch.delete(ref);
+    auditarEn(batch, { actor: uid, accion: "staff.revoke", entidad: "staff", entidadId: staffUid, antes: { roles: antes.get("roles") } });
+    await batch.commit();
+    // Cierra sus sesiones abiertas para que pierda el acceso de inmediato.
+    await adminAuth()
+      .revokeRefreshTokens(staffUid)
+      .catch(() => undefined);
+    return `${antes.get("nombre")} ya no tiene acceso al panel.`;
   });
 }

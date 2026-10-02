@@ -1,0 +1,50 @@
+name: Sitio público (GitHub Pages)
+
+# Publica la web pública estática (portada, tracks, guías, rúbrica, privacidad, dataset).
+# La app completa (registro, portal, jurado, panel) se despliega en Netlify: docs/DEPLOY.md.
+on:
+  push:
+    branches: [main]
+  # Reconstruye cada día a las 06:00 de Ecuador: el estado de las inscripciones depende de la fecha.
+  schedule:
+    - cron: "0 11 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  construir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Exportar el sitio estático
+        run: npm run build:pages
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}
+          # URL de la app completa (Netlify) para los botones de inscripción e ingreso. Opcional.
+          NEXT_PUBLIC_URL_PLATAFORMA: ${{ vars.URL_PLATAFORMA }}
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out-pages
+
+  publicar:
+    needs: construir
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.despliegue.outputs.page_url }}
+    steps:
+      - id: despliegue
+        uses: actions/deploy-pages@v4

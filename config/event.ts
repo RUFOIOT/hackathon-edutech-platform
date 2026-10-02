@@ -31,6 +31,8 @@ export const EVENT = {
   id: "edutech-2026",
   nombre: "Hackathon EduTech Eight Academy by n8n",
   organiza: "Dirección de Innovación y Tecnología · EIGHT LABS",
+  /** Responsable del tratamiento de datos (LOPDP): razón social y correo para ejercer derechos. */
+  responsableDatos: { nombre: "Unidad Educativa Particular Eight Academy", correo: POR_CONFIRMAR, direccion: POR_CONFIRMAR },
   sede: {
     nombre: "Unidad Educativa Particular Eight Academy, sede La Prensa",
     ciudad: "Quito",

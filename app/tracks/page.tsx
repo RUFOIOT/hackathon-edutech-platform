@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PREMIO_TRANSVERSAL, TRACKS, TRACK_CODES } from "@/config/event";
+import { asset } from "@/lib/sitio";
 
 export const metadata: Metadata = { title: "Tracks", description: "Los tres tracks del hackathon, sus preguntas guía y retos de ejemplo." };
 
@@ -55,6 +56,21 @@ export default function Tracks() {
             <Link href={`/rubrica#${ANCLA_C4}`} className="font-medium text-positive-text underline underline-offset-4">
               Ver cómo se evalúa C4
             </Link>
+          </p>
+        </section>
+
+        <section aria-labelledby="dataset" className="rounded border border-border bg-surface p-6">
+          <h2 id="dataset" className="text-2xl font-semibold">
+            Dataset ficticio de un colegio
+          </h2>
+          <p className="mt-3 max-w-prose">
+            Está prohibido usar datos reales de estudiantes, familias o docentes. Para construir y demostrar, usa este dataset 100 % sintético:
+            240 estudiantes (códigos EST-###), notas, asistencia, pensiones, horarios y docentes, con su diccionario de datos.
+          </p>
+          <p className="mt-4">
+            <a href={asset("/dataset-ficticio-colegio.zip")} download className="inline-block rounded-full bg-accent px-5 py-2.5 font-medium text-on-accent">
+              Descargar dataset (ZIP, 119 KB)
+            </a>
           </p>
         </section>
       </div>

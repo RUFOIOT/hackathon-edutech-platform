@@ -1,7 +1,11 @@
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitest/config";
 
-const alias = { "@": fileURLToPath(new URL("./", import.meta.url)) };
+const alias = {
+  "@": fileURLToPath(new URL("./", import.meta.url)),
+  // Permite probar las funciones puras de módulos marcados como server-only.
+  "server-only": fileURLToPath(new URL("./tests/stubs/server-only.ts", import.meta.url)),
+};
 
 export default defineConfig({
   test: {

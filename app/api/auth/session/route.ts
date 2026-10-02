@@ -3,6 +3,7 @@ import { adminAuth } from "@/lib/firebase/admin";
 import { identidadDeUid, SESSION_COOKIE, SESSION_DAYS } from "@/lib/auth/session";
 import { destinoSeguro, inicioPara } from "@/lib/auth/roles";
 import { log } from "@/lib/log";
+import { ipDe, limitar, mensajeLimite } from "@/lib/seguridad/limite";
 
 /** Protección CSRF básica: la petición debe venir del mismo origen que la app. */
 function mismoOrigen(req: NextRequest): boolean {
@@ -16,6 +17,8 @@ function mismoOrigen(req: NextRequest): boolean {
  */
 export async function POST(req: NextRequest) {
   if (!mismoOrigen(req)) return NextResponse.json({ error: "Origen no permitido." }, { status: 403 });
+  const limite = await limitar("sesion", ipDe(req.headers));
+  if (!limite.ok) return NextResponse.json({ error: mensajeLimite(limite) }, { status: 429, headers: { "Retry-After": String(limite.reintentarEnSeg) } });
 
   const body = (await req.json().catch(() => null)) as { idToken?: unknown; siguiente?: unknown } | null;
   if (!body || typeof body.idToken !== "string") {

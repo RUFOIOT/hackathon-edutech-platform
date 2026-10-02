@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const PUBLICAS = ["/", "/tracks", "/guia", "/guia-hacker", "/rubrica"];
+const PUBLICAS = ["/", "/tracks", "/guia", "/guia-hacker", "/rubrica", "/privacidad"];
 
 test.describe("cuenta regresiva", () => {
   test("muestra el tiempo correcto al kick-off en hora de Ecuador, aunque el navegador esté en otra zona", async ({ browser }) => {

@@ -20,6 +20,7 @@ export const ACCESO_ADMIN: Record<string, readonly StaffRole[]> = {
   "/admin/resultados": ["admin", "comite"],
   "/admin/comunicados": ["admin", "comite"],
   "/admin/auditoria": ["admin", "comite"],
+  "/admin/privacidad": ["admin"],
   "/admin/mentoria": ["admin", "comite", "mesa_tecnica", "mentor"],
 };
 

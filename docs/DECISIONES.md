@@ -340,6 +340,41 @@ eventos sin workflow propio en la tabla del prompt se atienden en el más cercan
 `guardian.validated` y `checkin.created` en WF-01, `team.completed` en WF-02 y
 `submission.created` (acuse de recibo) en WF-06. Así ningún evento queda reintentándose sin destino.
 
+## D-41 · Límite de peticiones en Firestore, holgado por IP
+
+Netlify ejecuta funciones efímeras: un contador en memoria no sirve. `lib/seguridad/limite.ts`
+cuenta por ventana fija en `rate_limits/` (con TTL), guarda la IP solo como hash con sal y, si
+Firestore falla, deja pasar. Por IP los límites son altos porque un salón entero del colegio sale
+con la misma IP; lo estricto se aplica por cuenta (confirmar registro, unirse con código,
+invitar, descargar datos, pedir eliminación). El envío del enlace mágico lo limita Firebase.
+
+## D-42 · CSP con 'unsafe-inline' en scripts
+
+Next.js inyecta scripts en línea para hidratar. Usar nonces obligaría a renderizar todo en cada
+petición y perder la caché de las páginas públicas. Se acepta `'unsafe-inline'` en `script-src`
+y se cierra todo lo demás: `frame-ancestors 'none'`, `object-src 'none'`, `form-action 'self'`,
+`connect-src` limitado a Firebase. No se renderiza HTML de usuarios (los Markdown son las guías
+oficiales del repositorio).
+
+## D-43 · Anonimizar en vez de borrar
+
+Para cumplir la retención de 12 meses y las solicitudes de eliminación se anonimiza: se borran la
+cuenta, el contacto, la fecha de nacimiento, la institución, la autorización del representante
+(documento y archivo), las invitaciones y la IP de los consentimientos; quedan categoría, nivel,
+ciudad, perfil técnico y equipo para las estadísticas, y el registro de qué versión de cada
+consentimiento se aceptó. Antes del kick-off, quien pide la eliminación además sale de su equipo
+y libera su cupo. Lo ejecuta un admin desde `/admin/privacidad`; el plazo es configurable con
+`RETENCION_MESES`.
+
+## D-44 · GitHub Pages solo para la web pública
+
+GitHub Pages sirve archivos estáticos: no puede ejecutar Server Actions, rutas API ni middleware.
+`npm run build:pages` exporta en estático solo las páginas públicas (portada, tracks, guías,
+rúbrica, privacidad, dataset) sobre una copia del proyecto, con el basePath del repositorio. Los
+botones de inscripción e ingreso apuntan a la app completa cuando se define `URL_PLATAFORMA`; si
+no, no se muestran. El sitio se reconstruye cada día para que el estado de las inscripciones esté
+al día. El registro, el portal, el jurado y el dashboard se despliegan en Netlify (docs/DEPLOY.md).
+
 ## Diferencias entre el prompt y las guías (gana la guía)
 
 1. **Sede:** "Unidad Educativa Particular Eight Academy, sede La Prensa". La dirección y el aforo

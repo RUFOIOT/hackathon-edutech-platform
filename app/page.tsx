@@ -7,6 +7,7 @@ import { Revelar } from "@/components/revelar";
 import { diaEnEcuador, fechaEnEcuador } from "@/lib/event/countdown";
 import { faseActual, inscripcionesAbiertas } from "@/lib/event/phase";
 import { ahora } from "@/lib/event/reloj";
+import { asset, enlacePlataforma } from "@/lib/sitio";
 
 // Se regenera cada 5 minutos: el estado de las inscripciones depende de la fecha.
 export const revalidate = 300;
@@ -28,21 +29,22 @@ function IconoTrack({ track }: { track: TrackCode }) {
 
 function EstadoInscripciones({ oscuro = false }: { oscuro?: boolean }) {
   const t = ahora();
-  if (inscripcionesAbiertas(t)) {
+  const registro = enlacePlataforma("/registro");
+  if (inscripcionesAbiertas(t) && registro) {
     return (
       <div className="flex flex-wrap items-center justify-center gap-4">
-        <Link
-          href="/registro"
+        <a
+          href={registro}
           className="rounded-full bg-accent px-7 py-3.5 font-semibold text-on-accent shadow-[0_0_0_4px_color-mix(in_srgb,var(--color-accent)_25%,transparent)] transition hover:brightness-105"
         >
           Inscribir a mi equipo
-        </Link>
-        <Link
-          href="/registro"
+        </a>
+        <a
+          href={registro}
           className={`rounded-full border px-6 py-3.5 font-medium transition ${oscuro ? "border-paper-50/60 text-paper-50 hover:bg-paper-50/10" : "border-border hover:bg-surface"}`}
         >
           Inscribirme y buscar equipo
-        </Link>
+        </a>
       </div>
     );
   }
@@ -57,6 +59,8 @@ function EstadoInscripciones({ oscuro = false }: { oscuro?: boolean }) {
             Prepárate con la Guía del hacker
           </Link>
         </>
+      ) : inscripcionesAbiertas(t) ? (
+        "Las inscripciones están abiertas en la plataforma oficial del hackathon."
       ) : (
         "Las inscripciones están cerradas."
       )}
@@ -87,11 +91,11 @@ export default function Inicio() {
 
         <div className="mx-auto max-w-6xl px-4 pb-16 pt-10 text-center sm:pt-14">
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <Image src="/brand/eight-academy-logo.png" alt="Eight Academy, Unidad Educativa" width={507} height={125} priority className="h-10 w-auto rounded-xl sm:h-12" />
+            <Image src={asset("/brand/eight-academy-logo.png")} alt="Eight Academy, Unidad Educativa" width={507} height={125} priority className="h-10 w-auto rounded-xl sm:h-12" />
             <span aria-hidden="true" className="text-2xl font-light opacity-60">
               ×
             </span>
-            <Image src="/brand/n8n_full_white_logo.svg" alt="n8n" width={120} height={40} unoptimized className="h-7 w-auto sm:h-8" />
+            <Image src={asset("/brand/n8n_full_white_logo.svg")} alt="n8n" width={120} height={40} unoptimized className="h-7 w-auto sm:h-8" />
           </div>
           <h1 id="titulo" className="mx-auto mt-8 max-w-[18ch] text-[2.4rem] font-semibold leading-[1.05] sm:text-6xl">
             Hackathon <span className="bg-gradient-to-r from-ocho-azul via-ocho-rosa to-ocho-ambar bg-clip-text text-transparent">EduTech</span> Eight
@@ -191,7 +195,7 @@ export default function Inicio() {
 
           <Revelar className="mt-8">
             <div className="flex flex-col items-start gap-5 rounded-2xl bg-navy-900 p-6 text-paper-50 sm:flex-row sm:items-center">
-              <Image src="/brand/n8n_pink+white_logo.svg" alt="n8n" width={110} height={36} unoptimized className="h-8 w-auto" />
+              <Image src={asset("/brand/n8n_pink+white_logo.svg")} alt="n8n" width={110} height={36} unoptimized className="h-8 w-auto" />
               <div>
                 <p className="font-display text-xl font-semibold">{PREMIO_TRANSVERSAL}</p>
                 <p className="mt-1 text-sm opacity-85">
@@ -295,11 +299,11 @@ export default function Inicio() {
         </h2>
         <ul className="mt-8 flex flex-wrap items-center gap-10">
           <li>
-            <Image src="/brand/eight-academy-logo.png" alt="Eight Academy, Unidad Educativa (organiza)" width={507} height={125} className="h-12 w-auto rounded-xl" />
+            <Image src={asset("/brand/eight-academy-logo.png")} alt="Eight Academy, Unidad Educativa (organiza)" width={507} height={125} className="h-12 w-auto rounded-xl" />
           </li>
           <li>
-            <Image src="/brand/n8n_pink+black_logo.svg" alt="n8n (aliado tecnológico)" width={120} height={40} unoptimized className="h-9 w-auto dark:hidden" />
-            <Image src="/brand/n8n_pink+white_logo.svg" alt="n8n (aliado tecnológico)" width={120} height={40} unoptimized className="hidden h-9 w-auto dark:block" />
+            <Image src={asset("/brand/n8n_pink+black_logo.svg")} alt="n8n (aliado tecnológico)" width={120} height={40} unoptimized className="h-9 w-auto dark:hidden" />
+            <Image src={asset("/brand/n8n_pink+white_logo.svg")} alt="n8n (aliado tecnológico)" width={120} height={40} unoptimized className="hidden h-9 w-auto dark:block" />
           </li>
           {ALIADOS.map((a) => (
             <li key={a.nombre}>

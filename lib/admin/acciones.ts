@@ -16,6 +16,7 @@ import { tomarSnapshot } from "@/lib/github/servicio";
 import { log } from "@/lib/log";
 import { categoriaEquipo, type Categoria } from "@/lib/models/categoria";
 import type { Evento } from "@/lib/n8n";
+import { anonimizarParticipante, aplicarRetencion, fechaRetencion } from "@/lib/privacidad/retencion";
 import { estadoEquipo, generarCodigo, slugEquipo } from "@/lib/registro/reglas";
 import { ErrorRegistro, unirseConCodigo } from "@/lib/registro/servicio";
 
@@ -361,4 +362,23 @@ export async function pedirMentoria(fd: FormData): Promise<ResultadoAccion> {
     if (err instanceof ErrorRegistro) return { ok: false, error: err.message };
     return { ok: false, error: "No pudimos enviar la solicitud. Inténtalo de nuevo." };
   }
+}
+
+// ---------------------------------------------------------------------------------------------
+// Privacidad (LOPDP): solicitudes de eliminación y política de retención (D-43). Solo admin.
+// ---------------------------------------------------------------------------------------------
+
+export async function anonimizarSolicitud(participantId: string): Promise<ResultadoAccion> {
+  return ejecutar("/admin/privacidad", async (uid) => {
+    const r = await anonimizarParticipante(participantId, { actor: uid, motivo: "solicitud", ahora: ahora() });
+    return r.salioDeEquipo ? "Datos anonimizados. La persona salió de su equipo y se liberó su cupo." : "Datos anonimizados.";
+  });
+}
+
+export async function aplicarPoliticaRetencion(): Promise<ResultadoAccion> {
+  return ejecutar("/admin/privacidad", async (uid) => {
+    if (ahora() < fechaRetencion()) throw new ErrorRegistro("La política de retención todavía no vence.");
+    const r = await aplicarRetencion({ actor: uid, ahora: ahora() });
+    return `${r.anonimizados} personas anonimizadas; ${Object.values(r.borrados).reduce((a, b) => a + b, 0)} registros operativos borrados.`;
+  });
 }

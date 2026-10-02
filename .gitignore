@@ -17,3 +17,7 @@ ui-debug.log
 playwright-report/
 test-results/
 .DS_Store
+
+# Sitio estático para GitHub Pages (npm run build:pages)
+.pages-build/
+out-pages/

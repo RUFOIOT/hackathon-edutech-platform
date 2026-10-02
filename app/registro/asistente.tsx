@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ROLES_EQUIPO, TRACKS, TRACK_CODES } from "@/config/event";
 import { CONSENTIMIENTOS } from "@/lib/content/consentimientos";
@@ -467,6 +468,13 @@ function Paso5({ borrador, errores }: { borrador: Borrador; errores: Errores }) 
           Te unirás al equipo <strong>{borrador.equipoUnirse.nombre}</strong> ({borrador.equipoUnirse.track}).
         </p>
       )}
+      <p className="text-sm">
+        Antes de aceptar, puedes leer cómo tratamos tus datos en la{" "}
+        <Link href="/privacidad" target="_blank" className="font-medium text-positive-text underline underline-offset-4">
+          política de privacidad
+        </Link>
+        .
+      </p>
       {(["reglas", "datos_personales", "uso_imagen"] as const).map((tipo) => {
         const c = CONSENTIMIENTOS[tipo];
         const name = CAMPO_CONSENTIMIENTO[tipo];

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getIdentidad } from "@/lib/auth/session";
 import { adminDb } from "@/lib/firebase/admin";
+import { limitar, mensajeLimite } from "@/lib/seguridad/limite";
 
 export const dynamic = "force-dynamic";
 
@@ -11,6 +12,8 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   const id = await getIdentidad();
   if (!id?.esParticipante) return NextResponse.json({ error: "Ingresa para descargar tus datos." }, { status: 401 });
+  const limite = await limitar("misDatos", id.uid);
+  if (!limite.ok) return NextResponse.json({ error: mensajeLimite(limite) }, { status: 429, headers: { "Retry-After": String(limite.reintentarEnSeg) } });
   const db = adminDb();
   const [p, consents, guardian, checkins] = await Promise.all([
     db.doc(`participants/${id.uid}`).get(),

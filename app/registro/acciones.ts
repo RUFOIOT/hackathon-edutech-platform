@@ -8,6 +8,7 @@ import { ahora } from "@/lib/event/reloj";
 import { verificarUsuarioGithub } from "@/lib/github-usuarios";
 import { log } from "@/lib/log";
 import { calcularCategoria } from "@/lib/models/categoria";
+import { ipActual, ipDe, limitar, mensajeLimite } from "@/lib/seguridad/limite";
 import {
   buscarEquipoPorCodigo,
   cargarBorrador,
@@ -46,6 +47,8 @@ async function contexto(): Promise<{ uid: string } | { error: { ok: false; error
 export async function guardarPaso(paso: 1 | 2 | 3 | 4, datos: unknown): Promise<RespuestaPaso> {
   const ctx = await contexto();
   if ("error" in ctx) return ctx.error;
+  const limite = await limitar("registroPaso", ctx.uid);
+  if (!limite.ok) return fallo(mensajeLimite(limite));
   const borrador = await cargarBorrador(ctx.uid);
 
   if (paso === 1) {
@@ -116,14 +119,18 @@ export async function irAPaso(paso: number): Promise<void> {
 }
 
 async function ipCliente(): Promise<string | null> {
-  const h = await headers();
-  return h.get("x-nf-client-connection-ip") ?? h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null;
+  const ip = ipDe(await headers());
+  return ip === "desconocida" ? null : ip;
 }
 
 /** Paso 5: consentimientos (+ representante y PDF si es Junior) y confirmación final. */
 export async function confirmar(formData: FormData): Promise<RespuestaConfirmar> {
   const ctx = await contexto();
   if ("error" in ctx) return ctx.error;
+  for (const [nombre, clave] of [["registroConfirmar", ctx.uid], ["registroIp", await ipActual()]] as const) {
+    const limite = await limitar(nombre, clave);
+    if (!limite.ok) return fallo(mensajeLimite(limite));
+  }
   const borrador = await cargarBorrador(ctx.uid);
 
   // Revalida todo lo guardado: el servidor no confía en el orden en que llegó el cliente.

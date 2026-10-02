@@ -66,4 +66,69 @@ test.describe("operación", () => {
     const res = await page.request.get("/api/admin/exportar?formato=csv");
     expect(res.status()).toBe(403);
   });
+
+  test("las páginas llevan cabeceras de seguridad", async ({ request }) => {
+    const res = await request.get("/");
+    const h = res.headers();
+    expect(h["content-security-policy"]).toContain("frame-ancestors 'none'");
+    expect(h["content-security-policy"]).toContain("object-src 'none'");
+    expect(h["x-content-type-options"]).toBe("nosniff");
+    expect(h["x-frame-options"]).toBe("DENY");
+    expect(h["referrer-policy"]).toBe("strict-origin-when-cross-origin");
+    expect(h["permissions-policy"]).toContain("camera=(self)");
+    expect(h["x-powered-by"]).toBeUndefined();
+  });
+
+  test("el endpoint de sesión responde 429 al superar el límite por IP", async ({ request, baseURL }) => {
+    const ip = `203.0.113.${Math.floor(Math.random() * 250) + 1}`;
+    const pedir = () =>
+      request.post("/api/auth/session", { headers: { Origin: baseURL!, "X-Forwarded-For": ip }, data: { idToken: "no-es-un-token" } });
+    const estados: number[] = [];
+    for (let i = 0; i < 121; i++) estados.push((await pedir()).status());
+    expect(estados.slice(0, 120).every((s) => s === 401)).toBe(true);
+    const ultima = await pedir();
+    expect(ultima.status()).toBe(429);
+    expect(Number(ultima.headers()["retry-after"])).toBeGreaterThan(0);
+    // Otra IP no se ve afectada.
+    const otra = await request.post("/api/auth/session", { headers: { Origin: baseURL!, "X-Forwarded-For": "198.51.100.7" }, data: { idToken: "x" } });
+    expect(otra.status()).toBe(401);
+  });
+
+  test("el admin atiende una solicitud de eliminación: la persona queda anonimizada y sin cuenta", async ({ page }) => {
+    const { db, auth } = await adminEmulador();
+    const sufijo = Date.now();
+    const email = `borrar-${sufijo}@edutech.test`;
+    const u = await auth.createUser({ email });
+    await db.doc(`participants/${u.uid}`).set({
+      nombres: "Persona",
+      apellidos: `Borrable${sufijo}`,
+      email,
+      celular: "0999999999",
+      fechaNacimiento: "2010-05-01",
+      categoria: "JUNIOR",
+      nivel: "colegio",
+      ciudad: "Quito",
+      teamId: null,
+      enListaEspera: false,
+    });
+    await db.doc(`guardians/${u.uid}`).set({ participantId: u.uid, nombre: "Representante", documento: "1700000000", estado: "validado" });
+    await db.doc(`data_requests/${u.uid}_eliminacion`).set({ participantId: u.uid, tipo: "eliminacion", estado: "pendiente" });
+
+    const admin = await crearStaff(["admin"], "admin-privacidad");
+    await ingresarComo(page, admin, "/admin/privacidad");
+    const fila = page.getByRole("listitem").filter({ hasText: `Borrable${sufijo}` });
+    await fila.getByRole("button", { name: "Anonimizar a Persona" }).click();
+    await fila.getByRole("button", { name: "Sí, confirmar" }).click();
+    // Atendida, la solicitud sale de la lista de pendientes.
+    await expect(fila).toHaveCount(0, { timeout: 15_000 });
+
+    const p = await db.doc(`participants/${u.uid}`).get();
+    expect(p.get("anonimizado")).toBe(true);
+    expect(p.get("email")).toBeNull();
+    expect(p.get("celular")).toBeNull();
+    expect(p.get("categoria")).toBe("JUNIOR");
+    expect((await db.doc(`guardians/${u.uid}`).get()).exists).toBe(false);
+    expect((await db.doc(`data_requests/${u.uid}_eliminacion`).get()).get("estado")).toBe("atendida");
+    await expect(auth.getUser(u.uid)).rejects.toThrow();
+  });
 });

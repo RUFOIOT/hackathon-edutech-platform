@@ -11,6 +11,7 @@ import { ahora } from "@/lib/event/reloj";
 import { adminDb } from "@/lib/firebase/admin";
 import { invitacionesPermitidas } from "@/lib/registro/reglas";
 import { ErrorRegistro, invitacionId, unirseConCodigo } from "@/lib/registro/servicio";
+import { limitar, mensajeLimite, type NombreLimite } from "@/lib/seguridad/limite";
 import { CODIGO_INVITACION } from "@/lib/validation/registro";
 
 export type Respuesta = { ok: true; mensaje: string } | { ok: false; error: string };
@@ -20,6 +21,11 @@ async function participante() {
   if (!id?.esParticipante) throw new ErrorRegistro("Tu sesión expiró. Vuelve a ingresar.");
   const p = await adminDb().doc(`participants/${id.uid}`).get();
   return { uid: id.uid, p };
+}
+
+async function exigirLimite(nombre: NombreLimite, uid: string) {
+  const r = await limitar(nombre, uid);
+  if (!r.ok) throw new ErrorRegistro(mensajeLimite(r));
 }
 
 async function ejecutar(fn: () => Promise<string>): Promise<Respuesta> {
@@ -76,6 +82,7 @@ export async function invitar(correo: string): Promise<Respuesta> {
     if (!r.success) throw new ErrorRegistro("Escribe un correo válido.");
     const email = r.data.toLowerCase();
     const { uid, p } = await participante();
+    await exigirLimite("invitar", uid);
     const teamRef = adminDb().doc(`teams/${p.get("teamId")}`);
     const team = await teamRef.get();
     if (!team.exists || team.get("capitanId") !== uid) throw new ErrorRegistro("Solo el capitán puede invitar integrantes.");
@@ -109,6 +116,7 @@ export async function unirme(codigo: string): Promise<Respuesta> {
     const c = codigo.trim().toUpperCase();
     if (!CODIGO_INVITACION.test(c)) throw new ErrorRegistro("El código tiene 6 caracteres (letras y números).");
     const { uid } = await participante();
+    await exigirLimite("unirse", uid);
     const r = await unirseConCodigo(uid, c);
     return `Te uniste al equipo ${r.teamNombre}.`;
   });
@@ -118,6 +126,7 @@ export async function unirme(codigo: string): Promise<Respuesta> {
 export async function solicitarEliminacion(): Promise<Respuesta> {
   return ejecutar(async () => {
     const { uid } = await participante();
+    await exigirLimite("eliminacion", uid);
     const ref = adminDb().doc(`data_requests/${uid}_eliminacion`);
     const batch = adminDb().batch();
     batch.set(ref, { participantId: uid, tipo: "eliminacion", estado: "pendiente", creadaAt: FieldValue.serverTimestamp() });

@@ -31,6 +31,8 @@ npm run build
 npm run dataset:verificar  # KPIs del dashboard vs. docs/kpis.sql (con emuladores + seed)
 npm run n8n:generar  # regenera n8n/workflows/*.json desde scripts/generar-workflows.ts
 npm run n8n:test     # firma de ida y vuelta con los workflows reales (servidor de prueba)
+npm run ensayo       # checklist del runbook contra una instancia con seed (ENSAYO_APP_URL, ENSAYO_N8N_SECRET)
+npm run build:pages  # web pública estática para GitHub Pages (BASE_PATH=/<repo>)
 ```
 
 Los emuladores necesitan Java 21+. En este Mac: `export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"`.
@@ -99,6 +101,14 @@ El enlace mágico se imprime en la terminal de los emuladores.
 - **n8n:** los workflows se generan (`scripts/generar-workflows.ts`, D-40); nunca edites los JSON a
   mano. n8n no lee Firestore: pide datos a la app por `/api/n8n/consulta` con firma (D-39). Un
   evento nuevo necesita su webhook en algún workflow (el test de cobertura lo exige).
+- **Seguridad:** cabeceras y CSP en `next.config.ts` (D-42); toda entrada pública o acción sensible
+  pasa por `limitar()` de `lib/seguridad/limite.ts` (D-41). Si agregas un origen externo (scripts,
+  imágenes, APIs), actualiza la CSP.
+- **Privacidad:** un campo personal nuevo en `participants` debe sumarse a `camposAnonimos()`
+  (`lib/privacidad/retencion.ts`) y a `/privacidad` (D-43).
+- **Sitio estático (Pages):** las páginas públicas no deben depender de Firebase ni de rutas
+  dinámicas; usa `asset()` para archivos de `/public` y `enlacePlataforma()` para enlaces a
+  registro, portal o resultados (`lib/sitio.ts`, D-44).
 - **Commits:** Conventional Commits. Al cerrar cada fase: lint, typecheck, tests, commit y resumen.
 - **Secretos:** solo en `.env.local` (git-ignored); documentar cada variable en `.env.example`.
 
@@ -111,4 +121,4 @@ El enlace mágico se imprime en la terminal de los emuladores.
 - [x] Fase 5 · Jurado y resultados
 - [x] Fase 6 · Dashboard 360 y exportaciones
 - [x] Fase 7 · n8n
-- [ ] Fase 8 · Endurecimiento y despliegue
+- [x] Fase 8 · Endurecimiento y despliegue

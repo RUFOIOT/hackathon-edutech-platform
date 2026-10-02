@@ -10,17 +10,23 @@
 | Firebase | proyecto `edutech-hackathon-2026` (Firestore en `nam5`) | Reglas e índices publicados |
 | App web de Firebase | `1:998617029548:web:703bb14bf221e3a2c2f809` | Configurada en Netlify |
 
-Variables ya cargadas en Netlify: `APP_BASE_URL`, `NEXT_PUBLIC_FIREBASE_*`,
+Variables ya cargadas en Netlify: `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`, `APP_BASE_URL`, `NEXT_PUBLIC_FIREBASE_*`,
 `NEXT_PUBLIC_USE_FIREBASE_EMULATORS=false`, `FIREBASE_PROJECT_ID`, `GITHUB_ORG` y los secretos
 `CHECKIN_QR_SECRET`, `N8N_SHARED_SECRET` y `HASH_SALT` (generados al azar, solo en Netlify).
 
 Pendiente:
 
-- [ ] `FIREBASE_CLIENT_EMAIL` y `FIREBASE_PRIVATE_KEY` (cuenta de servicio) en Netlify.
-- [ ] Authentication → acceso por enlace de correo y dominio `edutech-hackathon-2026.netlify.app` autorizado.
+- [x] `FIREBASE_CLIENT_EMAIL` y `FIREBASE_PRIVATE_KEY` (cuenta de servicio) en Netlify.
+- [x] Authentication → acceso por enlace de correo y dominio `edutech-hackathon-2026.netlify.app` autorizado.
+- [x] Prueba en producción (02-oct-2026): token de Auth → sesión en Netlify → página privada →
+  escritura en Firestore desde Netlify. Cuenta admin inicial creada en `staff/`.
+- [ ] Rotar la clave de la cuenta de servicio (la primera pasó por la sesión de configuración).
 - [ ] Plan Blaze, Storage y `firebase deploy --only storage`.
 - [ ] GitHub App (`GITHUB_APP_*`, `GITHUB_WEBHOOK_SECRET`) y n8n (`N8N_WEBHOOK_BASE_URL`).
 - [ ] Variable `URL_PLATAFORMA` del repositorio cuando el ingreso funcione, para enlazar Pages con Netlify.
+
+Ojo: las variables creadas con *scopes* personalizados o marcadas como secretas desde la API no
+llegaron a guardarse en este plan de Netlify; se cargaron con el alcance por defecto (todos).
 
 Netlify no está conectado al repositorio todavía: los despliegues se suben desde un clon limpio
 (nunca desde la carpeta de trabajo, que tiene `.env.local` apuntando a los emuladores). Para

@@ -293,6 +293,31 @@ Al publicar, cada equipo recibe en `results/{teamId}` todas las fortalezas y rec
 jueces, sin identificar quién las escribió. La auditoría de la publicación guarda el orden final,
 los empates resueltos por el comité y la Aceleradora.
 
+## D-36 · El dataset del dashboard equivale a la vista `v_dashboard_dataset`
+
+Firestore no tiene vistas. `lib/dashboard/dataset.ts` arma una tabla plana (una fila por
+participante con su equipo, repositorio, entrega y puntajes) que cumple el papel de la vista
+del prompt. Los KPIs se calculan sobre esa tabla y `docs/kpis.sql` los recalcula con SQL sobre
+el CSV exportado (`npm run dataset:verificar`) para comprobar que coinciden.
+
+## D-37 · Tiempo real con token personalizado
+
+Las reglas de Firestore solo permiten leer con sesión de Firebase en el navegador, pero la
+sesión de la app vive en una cookie del servidor. `/api/auth/token-cliente` emite un token
+personalizado de corta duración para que el panel escuche cambios (`onSnapshot`) y refresque la
+página del servidor con un límite de frecuencia. Los datos se siguen leyendo en el servidor.
+
+## D-38 · Portada dinámica con la identidad de Eight Academy y n8n
+
+El prompt pedía que el único movimiento de la portada fuera el trazo del infinito. A pedido de
+la organización (02-oct-2026) la portada ahora es dinámica: manchas de color que derivan en el
+hero, una cinta con retos de ejemplo, revelado al hacer scroll y logos oficiales de Eight
+Academy y n8n (`public/brand/`). Los colores del infinito y de los acentos salen del logo del
+colegio (azul, rosa, verde, ámbar) y del rosa de n8n. Con `prefers-reduced-motion` no se anima
+nada y todo el contenido se ve de entrada (lo comprueba `tests/e2e/publico.spec.ts`).
+Las fotos y videos cortos se declaran en `config/medios.ts`; la galería y el video de fondo solo
+aparecen cuando hay material con autorización de uso de imagen.
+
 ## Diferencias entre el prompt y las guías (gana la guía)
 
 1. **Sede:** "Unidad Educativa Particular Eight Academy, sede La Prensa". La dirección y el aforo

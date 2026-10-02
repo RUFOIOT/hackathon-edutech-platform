@@ -40,21 +40,27 @@ export function HeroInfinito({ objetivoIso, etiquetaObjetivo }: { objetivoIso: s
 
   return (
     <div role="timer" aria-labelledby="cuenta-titulo" className="mx-auto w-full max-w-3xl">
-      <p id="cuenta-titulo" className="text-center text-sm text-muted">
+      <p id="cuenta-titulo" className="text-center text-sm opacity-80">
         Kick-off: {etiquetaObjetivo} (hora de Ecuador)
       </p>
       <div className="relative mt-3 aspect-[400/180] w-full">
         <svg viewBox="0 0 400 180" className="absolute inset-0 h-full w-full" aria-hidden="true" focusable="false">
-          <path d={TRAZO} fill="none" className="stroke-border" strokeWidth="5" strokeLinejoin="round" />
-          <path
-            d={TRAZO}
-            fill="none"
-            pathLength={100}
-            className="trazo-infinito stroke-accent"
-            strokeWidth="5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
+          {/* Los cuatro tramos del infinito con los colores del logo de Eight Academy. */}
+          {["var(--color-ocho-azul)", "var(--color-ocho-ambar)", "var(--color-ocho-rosa)", "var(--color-ocho-verde)"].map((color, i) => (
+            <path
+              key={color}
+              d={TRAZO}
+              fill="none"
+              pathLength={100}
+              stroke={color}
+              strokeWidth="11"
+              strokeLinecap="round"
+              strokeDasharray="23 77"
+              strokeDashoffset={-25 * i - 1}
+            />
+          ))}
+          {/* Destello que recorre el trazo: el único movimiento continuo del hero. */}
+          <path d={TRAZO} fill="none" pathLength={100} className="trazo-infinito" stroke="#ffffff" strokeOpacity="0.85" strokeWidth="4" strokeLinecap="round" />
         </svg>
         {r?.terminado ? (
           <p className="absolute inset-0 flex items-center justify-center font-display text-xl font-semibold">
@@ -64,13 +70,13 @@ export function HeroInfinito({ objetivoIso, etiquetaObjetivo }: { objetivoIso: s
           <div aria-hidden="true" className="tabular-nums">
             <div className="absolute top-1/2 left-[18.25%] -translate-x-1/2 -translate-y-1/2 text-center">
               <span className="block font-display text-2xl leading-none font-semibold sm:text-5xl">{r ? r.dias : "--"}</span>
-              <span className="text-xs text-muted sm:text-sm">{r?.dias === 1 ? "día" : "días"}</span>
+              <span className="text-xs opacity-80 sm:text-sm">{r?.dias === 1 ? "día" : "días"}</span>
             </div>
             <div className="absolute top-1/2 left-[81.75%] -translate-x-1/2 -translate-y-1/2 text-center">
               <span className="block font-display text-base leading-none font-semibold sm:text-3xl">
                 {r ? `${dos(r.horas)}:${dos(r.minutos)}:${dos(r.segundos)}` : "--:--:--"}
               </span>
-              <span className="text-xs text-muted sm:text-sm">h · min · s</span>
+              <span className="text-xs opacity-80 sm:text-sm">h · min · s</span>
             </div>
           </div>
         )}

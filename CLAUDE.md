@@ -28,6 +28,7 @@ npm test             # unitarios (Vitest, proyecto "unit")
 npm run test:rules   # reglas de Firestore contra el emulador (proyecto "rules")
 npm run test:e2e     # Playwright: emuladores + simulado n8n/GitHub (:3999) + build en :3100
 npm run build
+npm run dataset:verificar  # KPIs del dashboard vs. docs/kpis.sql (con emuladores + seed)
 ```
 
 Los emuladores necesitan Java 21+. En este Mac: `export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"`.
@@ -63,8 +64,10 @@ El enlace mágico se imprime en la terminal de los emuladores.
 - **Guías públicas:** se renderizan desde `content/*.md` con `cargarGuia()`; los corchetes
   pendientes y las secciones internas se filtran al publicar (D-13). Agenda, FAQ, premios y tracks
   viven en `config/event.ts`.
-- **Movimiento:** el trazo del infinito del hero es la única animación automática del sitio
-  (`.trazo-infinito`); un test e2e lo garantiza. Respeta `prefers-reduced-motion`.
+- **Movimiento e identidad (D-38):** la portada es dinámica (`.mancha`, `.cinta`, `.revelar`,
+  `.trazo-infinito`, `.borde-ocho` en `globals.css`; colores `ocho-*` y `n8n`). Todo se apaga con
+  `prefers-reduced-motion` y un test e2e lo garantiza. Logos oficiales en `public/brand/`; fotos y
+  videos solo con autorización de imagen, declarados en `config/medios.ts`.
 - **Registro:** `lib/registro/servicio.ts` hace toda la inscripción en UNA transacción (cupo,
   equipo, invitaciones, consentimientos, auditoría y outbox). Los esquemas Zod de
   `lib/validation/registro.ts` se usan en el cliente y en el servidor. El borrador vive en
@@ -88,6 +91,9 @@ El enlace mágico se imprime en la terminal de los emuladores.
   que dicen qué pasó y cómo corregirlo. Sin etiquetas en mayúsculas ni numeraciones decorativas.
 - **Accesibilidad AA:** foco visible, contraste verificado (`accent-text` para texto en brass),
   formularios con `label`, `aria-invalid` y `role="alert"`. Responsive desde 360 px.
+- **Dashboard:** el dataset plano (`lib/dashboard/dataset.ts`) es la única fuente de KPIs y
+  exportaciones. Un KPI nuevo lleva su consulta en `docs/kpis.sql` (`-- kpi: ruta`). Contacto solo
+  para admin; puntajes para admin y comité. Columnas documentadas en `docs/DATASET.md`.
 - **Commits:** Conventional Commits. Al cerrar cada fase: lint, typecheck, tests, commit y resumen.
 - **Secretos:** solo en `.env.local` (git-ignored); documentar cada variable en `.env.example`.
 
@@ -98,6 +104,6 @@ El enlace mágico se imprime en la terminal de los emuladores.
 - [x] Fase 3 · Registro y portal de equipos
 - [x] Fase 4 · GitHub y entregas
 - [x] Fase 5 · Jurado y resultados
-- [ ] Fase 6 · Dashboard 360 y exportaciones
+- [x] Fase 6 · Dashboard 360 y exportaciones
 - [ ] Fase 7 · n8n
 - [ ] Fase 8 · Endurecimiento y despliegue

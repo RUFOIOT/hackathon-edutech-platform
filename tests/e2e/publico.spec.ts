@@ -44,14 +44,16 @@ test.describe("movimiento", () => {
     await ctx.close();
   });
 
-  test("ningún otro elemento de la portada se anima solo", async ({ page }) => {
+  test("con prefers-reduced-motion nada de la portada se anima y todo el contenido es visible", async ({ browser }) => {
+    const ctx = await browser.newContext({ reducedMotion: "reduce" });
+    const page = await ctx.newPage();
     await page.goto("/");
-    const animados = await page.evaluate(() =>
-      [...document.querySelectorAll("*")]
-        .filter((el) => getComputedStyle(el).animationName !== "none")
-        .map((el) => el.getAttribute("class") ?? el.tagName),
-    );
-    expect(animados).toEqual([expect.stringContaining("trazo-infinito")]);
+    const r = await page.evaluate(() => ({
+      animados: [...document.querySelectorAll("*")].filter((el) => getComputedStyle(el).animationName !== "none").length,
+      ocultos: [...document.querySelectorAll(".revelar")].filter((el) => getComputedStyle(el).opacity !== "1").length,
+    }));
+    expect(r).toEqual({ animados: 0, ocultos: 0 });
+    await ctx.close();
   });
 });
 
@@ -67,7 +69,7 @@ test.describe("páginas públicas", () => {
 
   test("los premios sin confirmar se muestran como 'Por anunciar'", async ({ page }) => {
     await page.goto("/");
-    const fila = page.getByRole("row", { name: /1er lugar general/ });
+    const fila = page.getByRole("region", { name: "Premios" }).getByRole("listitem").filter({ hasText: "1er lugar general" });
     await expect(fila).toContainText("Por anunciar");
     await expect(page.getByText("[POR CONFIRMAR]")).toHaveCount(0);
   });

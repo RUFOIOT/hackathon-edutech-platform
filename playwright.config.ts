@@ -43,6 +43,8 @@ export default defineConfig({
     { name: "entrega", testMatch: /entrega\.spec/, use: { ...devices["Pixel 7"], viewport: { width: 360, height: 780 } } },
     // El jurado evalúa desde el celular.
     { name: "jurado", testMatch: /jurado\.spec/, use: { ...devices["Pixel 7"], viewport: { width: 360, height: 780 } } },
+    // Check-in el día del evento: instancia con la hora del sábado 7.
+    { name: "operacion", testMatch: /operacion\.spec/, use: { ...devices["Pixel 7"], viewport: { width: 360, height: 780 }, baseURL: "http://localhost:3101" } },
   ],
   webServer: [
     {

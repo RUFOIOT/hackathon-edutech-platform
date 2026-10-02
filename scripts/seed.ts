@@ -230,6 +230,7 @@ async function main() {
         finReal: null,
       });
       for (const j of jueces.filter((x) => x.roomId === sala.id)) {
+        if (j.uid === "juez-1" && teamId === "equipo-04") continue; // declaró conflicto (ver abajo)
         const n = () => int(2, 5);
         const niveles = { c1: n(), c2: n(), c3: n(), c4: n(), c5: n(), c6: n() };
         set(`scores/semifinal_${j.uid}_${teamId}`, {
@@ -249,6 +250,84 @@ async function main() {
       }
     });
   }
+
+  // Operación del evento (para KPIs verificables del dashboard): check-in del viernes, mentorías,
+  // repositorios con snapshot, entregas, admisibilidad y un conflicto de interés.
+  const ahoraSeed = new Date("2026-11-07T11:00:00-05:00");
+  for (let i = 1; i <= 34; i++) {
+    if (i % 4 === 0) continue; // ~25 % ausentes
+    const pid = `p-${String(i).padStart(3, "0")}`;
+    set(`checkins/${pid}_viernes`, { participantId: pid, dia: "viernes", timestamp: ts(`2026-11-06T13:${dd(30 + (i % 30))}:00-05:00`), staffId: "staff-checkin" });
+  }
+  const temas = ["n8n", "tecnica", "pitch", "n8n", "producto", "ia"];
+  temas.forEach((tema, i) => {
+    const abierta = new Date(`2026-11-06T${dd(17 + i)}:00:00-05:00`);
+    const atendida = i < 4 ? new Date(abierta.getTime() + (8 + i * 6) * 60_000) : null;
+    set(`mentor_requests/seed-${i + 1}`, {
+      teamId: `equipo-${dd(i + 1)}`,
+      tema,
+      estado: atendida ? "atendida" : "abierta",
+      mentorId: atendida ? "staff-mentor" : null,
+      abiertaAt: Timestamp.fromDate(abierta),
+      atendidaAt: atendida ? Timestamp.fromDate(atendida) : null,
+    });
+  });
+  for (let e = 1; e <= 7; e++) {
+    const teamId = `equipo-${dd(e)}`;
+    const track = TRACK_CODES[(e - 1) % 3] as TrackCode;
+    const commitsPorHora: Record<string, number> = { "2026-11-06T16": e, "2026-11-06T18": 2, "2026-11-07T09": e % 3 + 1 };
+    const total = Object.values(commitsPorHora).reduce((a, b) => a + b, 0);
+    const alertas =
+      e === 6
+        ? [{ tipo: "secreto", nivel: "roja", detalle: "Clave de API tipo sk- en src/config.ts:3 (sk-p…)" }]
+        : e === 7
+          ? [{ tipo: "un-solo-autor", nivel: "ambar", detalle: "Todos los commits son de demo-p-031." }]
+          : [];
+    const snapshot = {
+      repositoryId: teamId,
+      teamId,
+      tomadoEn: Timestamp.fromDate(ahoraSeed),
+      commitsEnVentana: total,
+      autores: e === 7 ? ["demo-p-031"] : ["demo-a", "demo-b"],
+      ultimoCommitAt: ts("2026-11-07T09:40:00-05:00"),
+      commitsPorHora,
+      archivosObligatorios: { "README.md": true, "PRIOR_WORK.md": true, "AI_USAGE.md": e !== 5, ".env.example": true, "docs/": true, "n8n/*.json": e <= 3, LICENSE: true, "data/README.md": true },
+      alertas,
+      checkpoint1: e === 4 ? "vencido" : "cumplido",
+      checkpoint2: e <= 3 ? "cumplido" : "pendiente",
+      checkpoint2RequiereRevision: true,
+    };
+    const slug = NOMBRES_EQUIPO[e - 1]!.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    set(`repositories/${teamId}`, {
+      teamId,
+      url: `https://github.com/${EVENT.githubOrg}/edutech26-${track.toLowerCase()}-${slug}`,
+      owner: EVENT.githubOrg,
+      name: `edutech26-${track.toLowerCase()}-${slug}`,
+      fullName: `${EVENT.githubOrg}/edutech26-${track.toLowerCase()}-${slug}`,
+      createdAtGithub: ts("2026-11-06T15:45:00-05:00"),
+      defaultBranch: "main",
+      validado: true,
+      motivos: [],
+      chequeos: [],
+      ultimoSnapshot: snapshot,
+    });
+    set(`repo_snapshots/seed-${teamId}`, snapshot);
+    if (e <= 5) {
+      set(`submissions/${teamId}`, {
+        teamId,
+        demoUrl: e % 2 ? `https://demo-${e}.example.edu.ec` : "ejecucion-local",
+        pitchPath: `pitches/${teamId}.pdf`,
+        videoUrl: null,
+        declaraciones: { datosSinteticos: true, priorWork: true, aiUsage: true },
+        tagSha: `seed${String(e).repeat(36)}`,
+        tagCommitAt: ts("2026-11-07T11:40:00-05:00"),
+        enviadoAt: ts(`2026-11-07T11:${dd(40 + e)}:00-05:00`),
+        tagMovidoTrasFreeze: e === 2,
+      });
+      set(`admissibility/${teamId}`, { teamId, a1: true, a2: e !== 2, a3: e !== 5, a4: null, a5: true, motivos: [] });
+    }
+  }
+  set("conflicts/juez-1_equipo-04", { judgeId: "juez-1", teamId: "equipo-04", motivo: "Conflicto ficticio del seed", ronda: "semifinal" });
 
   set("stats/inscripciones", { personas: n, equipos: tamanos.length, listaEspera: 0 });
 

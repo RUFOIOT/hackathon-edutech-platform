@@ -10,8 +10,15 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const id = await requireSesion("/admin");
   const secciones = [
     { href: "/admin", nombre: "Dashboard" },
+    { href: "/admin/participantes", nombre: "Participantes" },
+    { href: "/admin/equipos", nombre: "Equipos" },
+    { href: "/admin/repositorios", nombre: "Repositorios" },
+    { href: "/admin/checkin", nombre: "Check-in" },
+    { href: "/admin/mentoria", nombre: "Mentoría" },
     { href: "/admin/jurado", nombre: "Jurado y salas" },
     { href: "/admin/resultados", nombre: "Resultados" },
+    { href: "/admin/comunicados", nombre: "Comunicados" },
+    { href: "/admin/auditoria", nombre: "Auditoría" },
   ].filter((s) => puedeEntrarAdmin(id, s.href));
   const actual = faseActual(ahora());
   return (

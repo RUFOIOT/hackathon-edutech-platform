@@ -8,6 +8,7 @@
 | GitHub Pages | https://rufoiot.github.io/hackathon-edutech-platform/ | Publicado (se reconstruye cada día) |
 | Netlify | sitio `edutech-hackathon-2026` → https://edutech-hackathon-2026.netlify.app | Desplegado |
 | Firebase | proyecto `edutech-hackathon-2026` (Firestore en `nam5`) | Reglas e índices publicados |
+| n8n | https://cyberdog87.app.n8n.cloud (WF-00…WF-09 y WF-99) | Activo |
 | App web de Firebase | `1:998617029548:web:703bb14bf221e3a2c2f809` | Configurada en Netlify |
 
 Variables ya cargadas en Netlify: `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`, `APP_BASE_URL`, `NEXT_PUBLIC_FIREBASE_*`,
@@ -27,7 +28,12 @@ Pendiente:
   `edutech-hackathon-2026.firebasestorage.app` no existe todavía); luego `firebase deploy --only storage`.
 - [ ] Rotar la clave de la cuenta de servicio (la primera pasó por la sesión de configuración).
 - [ ] Plan Blaze, Storage y `firebase deploy --only storage`.
-- [ ] GitHub App (`GITHUB_APP_*`, `GITHUB_WEBHOOK_SECRET`) y n8n (`N8N_WEBHOOK_BASE_URL`).
+- [x] n8n Cloud (`cyberdog87.app.n8n.cloud`): 11 workflows activos con `npm run n8n:desplegar`
+  (correo por la credencial Gmail de n8n; avisos al staff por correo hasta configurar Telegram).
+  `N8N_WEBHOOK_BASE_URL` cargada en Netlify. Prueba real: evento del outbox enviado por Netlify →
+  firma aceptada en n8n; firma falsa → 401.
+- [ ] Telegram para los avisos al staff (opcional): `TELEGRAM_BOT_TOKEN` y `TELEGRAM_CHAT_ID` en `.env.n8n`.
+- [ ] GitHub App (`GITHUB_APP_*`, `GITHUB_WEBHOOK_SECRET`).
 - [ ] Variable `URL_PLATAFORMA` del repositorio cuando el ingreso funcione, para enlazar Pages con Netlify.
 
 Ojo: las variables creadas con *scopes* personalizados o marcadas como secretas desde la API no

@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "demo-edutech",
+    "prod": "edutech-hackathon-2026"
+  }
+}

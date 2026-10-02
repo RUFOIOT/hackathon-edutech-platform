@@ -1,5 +1,31 @@
 # Despliegue
 
+## Estado actual
+
+| Recurso | Valor | Estado |
+| --- | --- | --- |
+| Repositorio | https://github.com/RUFOIOT/hackathon-edutech-platform | Listo |
+| GitHub Pages | https://rufoiot.github.io/hackathon-edutech-platform/ | Publicado (se reconstruye cada día) |
+| Netlify | sitio `edutech-hackathon-2026` → https://edutech-hackathon-2026.netlify.app | Desplegado |
+| Firebase | proyecto `edutech-hackathon-2026` (Firestore en `nam5`) | Reglas e índices publicados |
+| App web de Firebase | `1:998617029548:web:703bb14bf221e3a2c2f809` | Configurada en Netlify |
+
+Variables ya cargadas en Netlify: `APP_BASE_URL`, `NEXT_PUBLIC_FIREBASE_*`,
+`NEXT_PUBLIC_USE_FIREBASE_EMULATORS=false`, `FIREBASE_PROJECT_ID`, `GITHUB_ORG` y los secretos
+`CHECKIN_QR_SECRET`, `N8N_SHARED_SECRET` y `HASH_SALT` (generados al azar, solo en Netlify).
+
+Pendiente:
+
+- [ ] `FIREBASE_CLIENT_EMAIL` y `FIREBASE_PRIVATE_KEY` (cuenta de servicio) en Netlify.
+- [ ] Authentication → acceso por enlace de correo y dominio `edutech-hackathon-2026.netlify.app` autorizado.
+- [ ] Plan Blaze, Storage y `firebase deploy --only storage`.
+- [ ] GitHub App (`GITHUB_APP_*`, `GITHUB_WEBHOOK_SECRET`) y n8n (`N8N_WEBHOOK_BASE_URL`).
+- [ ] Variable `URL_PLATAFORMA` del repositorio cuando el ingreso funcione, para enlazar Pages con Netlify.
+
+Netlify no está conectado al repositorio todavía: los despliegues se suben desde un clon limpio
+(nunca desde la carpeta de trabajo, que tiene `.env.local` apuntando a los emuladores). Para
+desplegar en cada push, conecta el repositorio en *Site configuration → Build & deploy*.
+
 Dos piezas públicas:
 
 | Pieza | Dónde | Qué incluye |
@@ -23,7 +49,7 @@ los botones de inscripción e ingreso de Pages apunten a ella.
 5. Publica reglas e índices:
    ```bash
    npx firebase-tools@15 login
-   npx firebase-tools@15 use <id-del-proyecto>
+   npx firebase-tools@15 use prod   # edutech-hackathon-2026 (ver .firebaserc)
    npx firebase-tools@15 deploy --only firestore:rules,firestore:indexes,storage
    ```
 6. CORS del bucket (subida directa del pitch con URL firmada, D-25). Guarda como `cors.json`:

@@ -5,7 +5,15 @@ Plataforma del **Hackathon EduTech Eight Academy by n8n**: viernes 6 y sábado 7
 universitarios y profesionales construyen en vivo soluciones para la educación en tres tracks,
 más un premio transversal a la mejor automatización con n8n.
 
-**Sitio público:** https://rufoiot.github.io/hackathon-edutech-platform/
+| Entorno | URL |
+| --- | --- |
+| Web pública (GitHub Pages, estática) | https://rufoiot.github.io/hackathon-edutech-platform/ |
+| Plataforma completa (Netlify) | https://edutech-hackathon-2026.netlify.app |
+| Repositorio | https://github.com/RUFOIOT/hackathon-edutech-platform |
+
+La plataforma de Netlify usa el proyecto de Firebase `edutech-hackathon-2026`. Mientras falte la
+configuración pendiente de [docs/DEPLOY.md](docs/DEPLOY.md#estado-actual), el ingreso y las
+páginas que leen datos no funcionan en producción.
 
 | Módulo | Ruta | Para quién |
 | --- | --- | --- |

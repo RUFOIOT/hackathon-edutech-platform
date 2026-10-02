@@ -29,10 +29,11 @@ Pendiente:
 - [ ] Rotar la clave de la cuenta de servicio (la primera pasó por la sesión de configuración).
 - [ ] Plan Blaze, Storage y `firebase deploy --only storage`.
 - [x] n8n Cloud (`cyberdog87.app.n8n.cloud`): 11 workflows activos con `npm run n8n:desplegar`
-  (correo por la credencial Gmail de n8n; avisos al staff por correo hasta configurar Telegram).
+  (correo por la credencial Gmail de n8n; avisos al staff por Telegram).
   `N8N_WEBHOOK_BASE_URL` cargada en Netlify. Prueba real: evento del outbox enviado por Netlify →
   firma aceptada en n8n; firma falsa → 401.
-- [ ] Telegram para los avisos al staff (opcional): `TELEGRAM_BOT_TOKEN` y `TELEGRAM_CHAT_ID` en `.env.n8n`.
+- [x] Telegram para los avisos al staff: bot @Eigthlabsbot en el grupo «Staff Hackathon Edutech»
+  (credencial `Telegram EduTech` en n8n). Probado con un evento firmado → mensaje en el grupo.
 - [ ] GitHub App (`GITHUB_APP_*`, `GITHUB_WEBHOOK_SECRET`).
 - [ ] Variable `URL_PLATAFORMA` del repositorio cuando el ingreso funcione, para enlazar Pages con Netlify.
 

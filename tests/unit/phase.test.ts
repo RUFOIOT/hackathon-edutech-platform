@@ -37,3 +37,23 @@ describe("ventanas", () => {
     expect(dentroDeVentana(ec("2026-11-07T12:00:00"))).toBe(false);
   });
 });
+
+describe("apertura de prueba (INSCRIPCIONES_PRUEBA)", () => {
+  const antesDeAbrir = new Date("2026-10-02T10:00:00-05:00");
+  const despuesDelCierre = new Date("2026-10-31T10:00:00-05:00");
+
+  it("sin la variable, respeta la fecha de apertura", () => {
+    delete process.env.INSCRIPCIONES_PRUEBA;
+    expect(inscripcionesAbiertas(antesDeAbrir)).toBe(false);
+  });
+
+  it("con la variable abre antes de tiempo, pero nunca después del cierre", () => {
+    process.env.INSCRIPCIONES_PRUEBA = "abiertas";
+    try {
+      expect(inscripcionesAbiertas(antesDeAbrir)).toBe(true);
+      expect(inscripcionesAbiertas(despuesDelCierre)).toBe(false);
+    } finally {
+      delete process.env.INSCRIPCIONES_PRUEBA;
+    }
+  });
+});

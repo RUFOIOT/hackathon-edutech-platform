@@ -27,7 +27,10 @@ export function faseActual(ahora: Date = new Date()): Fase {
 /** Inscripciones abiertas: entre la apertura y el cierre configurados. */
 export function inscripcionesAbiertas(ahora: Date = new Date()): boolean {
   const t = ahora.getTime();
-  return t >= fecha("aperturaInscripciones").getTime() && t < fecha("cierreInscripciones").getTime();
+  // Apertura anticipada para probar en producción (D-46): INSCRIPCIONES_PRUEBA=abiertas en el
+  // servidor. Nunca extiende el cierre.
+  const apertura = process.env.INSCRIPCIONES_PRUEBA === "abiertas" ? Number.NEGATIVE_INFINITY : fecha("aperturaInscripciones").getTime();
+  return t >= apertura && t < fecha("cierreInscripciones").getTime();
 }
 
 /** Ventana oficial de hacking (guía §7.1). */

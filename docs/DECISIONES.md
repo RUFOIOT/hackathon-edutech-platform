@@ -382,6 +382,13 @@ runtime de funciones de Netlify eso falla al cargar (`ERR_REQUIRE_ESM`) y todas 
 dinámicas responden 500, aunque `next start` local funcione. La rama 13.x usa `jwks-rsa@3` con
 `jose@4` (CommonJS). Antes de subir a 14, probar con `netlify serve` o un deploy de vista previa.
 
+## D-46 · Apertura de prueba de las inscripciones
+
+Para probar el registro en producción antes de la fecha oficial, `INSCRIPCIONES_PRUEBA=abiertas`
+(variable de Netlify, solo servidor) adelanta la apertura sin tocar `config/event.ts`. El cierre
+no cambia. Se activa con la variable y un deploy, y se desactiva borrándola y desplegando de nuevo.
+Las inscripciones hechas durante la prueba quedan en Firestore: se limpian antes de la apertura real.
+
 ## Diferencias entre el prompt y las guías (gana la guía)
 
 1. **Sede:** "Unidad Educativa Particular Eight Academy, sede La Prensa". La dirección y el aforo

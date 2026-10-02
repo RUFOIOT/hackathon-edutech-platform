@@ -150,6 +150,13 @@ async function main() {
     console.log(`Credencial de Telegram creada (${c.id}). Guarda TELEGRAM_CREDENCIAL_ID=${c.id} en .env.n8n.`);
   }
   const gmail = { id: process.env.GMAIL_CREDENCIAL_ID ?? "", name: "Gmail EduTech" };
+  if (gmail.id) {
+    // Toma el nombre real de la credencial y comprueba que existe (un ID mal copiado deja los nodos sin credencial).
+    const lista = await api<{ data?: { id: string; name: string; type: string }[] }>("GET", "/credentials?limit=250").catch(() => ({ data: undefined }));
+    const encontrada = lista.data?.find((c) => c.id === gmail.id);
+    if (lista.data && !encontrada) throw new Error(`No existe la credencial ${gmail.id} en n8n. Revisa GMAIL_CREDENCIAL_ID (16 caracteres, desde la URL de la credencial).`);
+    if (encontrada) gmail.name = encontrada.name;
+  }
   if (!gmail.id) console.log("⚠️  Sin GMAIL_CREDENCIAL_ID: elige la credencial «Gmail EduTech» en los nodos de correo desde la interfaz.");
   if (!(telegram.id && TELEGRAM_CHAT_ID)) console.log("ℹ️  Sin Telegram: los avisos al staff irán por correo a EDUTECH_CORREO_MESA_TECNICA.");
 

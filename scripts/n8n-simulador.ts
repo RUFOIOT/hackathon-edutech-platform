@@ -168,6 +168,7 @@ export async function simular(
     switch (nodo.type) {
       case "n8n-nodes-base.webhook":
       case "n8n-nodes-base.scheduleTrigger":
+      case "n8n-nodes-base.errorTrigger":
       case "n8n-nodes-base.wait":
         break;
       case "n8n-nodes-base.code":
@@ -359,6 +360,12 @@ export const ESCENARIOS_PROGRAMADOS: { archivo: string; disparador: string; corr
   { archivo: "WF-05-recordatorio-checkpoints.json", disparador: "Sábado 11:30 (code freeze)", correos: 2, slack: 1, consulta: { consulta: "checkpoints-en-riesgo", hito: "freeze" } },
   { archivo: "WF-06-validacion-entregas.json", disparador: "Sábado 12:05", correos: 1, slack: 1, consulta: { consulta: "reporte-entregas" } },
 ];
+
+/** Ejecución fallida de ejemplo, con la forma que entrega el Error Trigger de n8n. */
+export const ERROR_EJEMPLO = {
+  execution: { id: "231", url: "https://n8n.ejemplo/execution/231", lastNodeExecuted: "Enviar correo (Resend)", error: { message: "401 Unauthorized" } },
+  workflow: { id: "7", name: "WF-01 · Confirmación de inscripción" },
+};
 
 /** Revisa una traza: cantidades esperadas, firmas aceptadas y HTML sin inyección. */
 export function revisarTraza(t: Traza, esperado: { correos: number; slack: number }): string[] {

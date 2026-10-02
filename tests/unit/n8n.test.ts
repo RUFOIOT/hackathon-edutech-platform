@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  ERROR_EJEMPLO,
   ESCENARIOS_PROGRAMADOS,
   EVENTOS_EJEMPLO,
   cargarWorkflows,
@@ -30,8 +31,8 @@ const evento = (tipo: string) => JSON.stringify({ id: `ev-${tipo}`, type: tipo, 
 describe("workflows de n8n", () => {
   const workflows = cargarWorkflows();
 
-  it("están los 9 del prompt más el de reintentos", () => {
-    expect(workflows.map((w) => w.archivo.slice(0, 5))).toEqual(["WF-00", "WF-01", "WF-02", "WF-03", "WF-04", "WF-05", "WF-06", "WF-07", "WF-08", "WF-09"]);
+  it("están los 9 del prompt más el de reintentos y el de reporte de errores", () => {
+    expect(workflows.map((w) => w.archivo.slice(0, 5))).toEqual(["WF-00", "WF-01", "WF-02", "WF-03", "WF-04", "WF-05", "WF-06", "WF-07", "WF-08", "WF-09", "WF-99"]);
   });
 
   it.each(workflows.map((w) => [w.archivo, w.wf] as const))("%s es válido: conexiones, credenciales por referencia, sin secretos", (_, wf) => {
@@ -108,5 +109,16 @@ describe("workflows programados", () => {
     const segunda = await simular(wf, "Cada 15 min en la ventana", [{ json: {} }], { mock: mockApp(), estatico });
     expect(primera.correos).toHaveLength(1);
     expect(segunda.correos).toHaveLength(0);
+  });
+});
+
+describe("reporte de errores (plantilla 2159)", () => {
+  it("WF-99 avisa al staff con el workflow, el nodo, el error y el enlace a la ejecución", async () => {
+    const wf = cargarWorkflows().find((w) => w.archivo.startsWith("WF-99"))!.wf;
+    const t = await simular(wf, "Error en un workflow", [{ json: ERROR_EJEMPLO }], { mock: mockApp() });
+    expect(t.slack).toHaveLength(1);
+    expect(t.slack[0]).toContain("WF-01 · Confirmación de inscripción");
+    expect(t.slack[0]).toContain("401 Unauthorized");
+    expect(t.slack[0]).toContain("https://n8n.ejemplo/execution/231");
   });
 });

@@ -336,7 +336,7 @@ export function construirWorkflows(): Flujo[] {
     const redactar = f.codigo(
       "Redactar alerta",
       jsRedactar(`${RESPUESTA}
-if (r.fallidos > 0) salida.push(slack(':warning: ' + r.fallidos + ' evento(s) hacia n8n fallaron 10 veces y quedaron "fallido" en event_outbox. Revisa docs/RUNBOOK.md (n8n no responde).'));`),
+if (r.fallidos > 0) salida.push(slack('⚠️ ' + r.fallidos + ' evento(s) hacia n8n fallaron 10 veces y quedaron "fallido" en event_outbox. Revisa docs/RUNBOOK.md (n8n no responde).'));`),
       [720, 300],
     );
     f.cadena(cron, firmar, app, redactar);
@@ -462,12 +462,12 @@ for (const x of r.resultados || []) {
 }
 const fallidos = (r.resultados || []).filter((x) => !x.ok).length;
 if (nuevas.length) {
-  salida.push(slack(':rotating_light: Alertas rojas en repositorios:\\n' + nuevas.map((n) => '• ' + n.teamId + ': ' + n.detalle).join('\\n')));
+  salida.push(slack('🚨 Alertas rojas en repositorios:\\n' + nuevas.map((n) => '• ' + n.teamId + ': ' + n.detalle).join('\\n')));
   salida.push(correo($env.EDUTECH_CORREO_MESA_TECNICA, 'Alertas rojas en repositorios (' + nuevas.length + ')', 'Alertas rojas en repositorios',
     ['<ul>' + nuevas.map((n) => '<li><strong>' + esc(n.teamId) + '</strong>: ' + esc(n.detalle) + '</li>').join('') + '</ul>'],
     { texto: 'Abrir repositorios', url: APP + '/admin/repositorios' }));
 }
-if (fallidos > 3) salida.push(slack(':warning: ' + fallidos + ' repositorios no se pudieron leer. Puede ser el límite de la API de GitHub: revisa docs/RUNBOOK.md.'));`),
+if (fallidos > 3) salida.push(slack('⚠️ ' + fallidos + ' repositorios no se pudieron leer. Puede ser el límite de la API de GitHub: revisa docs/RUNBOOK.md.'));`),
       [720, 300],
     );
     f.cadena(cron, firmar, app, redactar);
@@ -564,7 +564,7 @@ const TEMA = { producto: 'Producto', tecnica: 'Técnica', n8n: 'n8n', ia: 'IA', 
 salida.push(...correoACada(r.para, 'Mentoría pedida: ' + p.teamNombre + ' · ' + TEMA[p.tema], 'Un equipo pide mentoría',
   ['Equipo <strong>' + esc(p.teamNombre) + '</strong> · tema <strong>' + esc(TEMA[p.tema]) + '</strong>.', p.detalle ? '“' + esc(p.detalle) + '”' : 'Sin detalle.', 'Toma la solicitud en el panel para que el resto sepa que vas en camino.'],
   { texto: 'Abrir la cola de mentoría', url: r.enlace }));
-salida.push(slack('Mentoría pedida: ' + p.teamNombre + ' · ' + TEMA[p.tema] + (r.para.length ? '' : ' · :warning: no hay mentores con ese tema')));`),
+salida.push(slack('Mentoría pedida: ' + p.teamNombre + ' · ' + TEMA[p.tema] + (r.para.length ? '' : ' · ⚠️ no hay mentores con ese tema')));`),
       [1480, 100],
     );
     f.cadena(ok, firmarM, appM, avisar);
@@ -578,7 +578,7 @@ salida.push(slack('Mentoría pedida: ' + p.teamNombre + ' · ' + TEMA[p.tema] + 
       jsRedactar(`${RESPUESTA}
 if (!r.existe || r.estado !== 'abierta') return [];
 const p = $('Verificar firma').first().json.evento.payload;
-salida.push(slack(':alarm_clock: Mentoría sin atender hace ' + r.minutosEspera + ' min: ' + p.teamNombre + ' · ' + p.tema + '. ¿Quién puede ir?'));
+salida.push(slack('⏰ Mentoría sin atender hace ' + r.minutosEspera + ' min: ' + p.teamNombre + ' · ' + p.tema + '. ¿Quién puede ir?'));
 salida.push(correo($env.EDUTECH_CORREO_MESA_TECNICA, 'Mentoría sin atender (30 min): ' + p.teamNombre, 'Mentoría sin atender',
   ['El equipo <strong>' + esc(p.teamNombre) + '</strong> espera mentoría de ' + esc(p.tema) + ' hace ' + r.minutosEspera + ' minutos.'],
   { texto: 'Abrir la cola de mentoría', url: r.enlace }));`),
@@ -601,7 +601,7 @@ const a = p.alcance || {};
 const ALCANCE = a.tipo === 'track' ? 'track ' + a.track : a.tipo === 'equipo' ? 'equipo ' + a.teamId : 'todos';
 const parrafos = String(p.mensaje).split(/\\n{2,}/).map((x) => esc(x).replace(/\\n/g, '<br>'));
 salida.push(...correoACada(p.destinatarios, 'Comunicado · Hackathon EduTech', 'Comunicado de la organización', parrafos));
-salida.push(slack(':mega: Comunicado (' + ALCANCE + ', ' + (p.destinatarios || []).length + ' personas):\\n' + p.mensaje));`),
+salida.push(slack('📣 Comunicado (' + ALCANCE + ', ' + (p.destinatarios || []).length + ' personas):\\n' + p.mensaje));`),
       [1000, 200],
     );
     f.unir(ok, redactar);
@@ -660,6 +660,8 @@ for (let i = 0; i < items.length; i++) {
      'Adjuntamos tu certificado en PDF.'],
     { texto: 'Ver resultados', url: APP + '/resultados' });
   item.json.adjuntos = [{ filename: 'certificado-edutech-2026.pdf', content: pdf }];
+  // Además como binario, para proveedores de correo que adjuntan desde binarios (Gmail en n8n).
+  item.binary = { certificado: { data: pdf, mimeType: 'application/pdf', fileName: 'certificado-edutech-2026.pdf' } };
   salida.push(item);
 }
 salida.push(slack('Resultados publicados: ' + items.length + ' certificados enviados por correo.'));`),
@@ -667,6 +669,26 @@ salida.push(slack('Resultados publicados: ' + items.length + ' certificados envi
     );
     f.cadena(ok, equipos, firmarR, appR, preparar, firmarC, appC, redactar);
     f.envios(redactar, "", 2680, 200);
+    flujos.push(f);
+  }
+
+  // WF-99 · Reporte de errores (basado en la plantilla 2159 de n8n). Los demás workflows lo usan como
+  // "Error workflow" cuando se despliegan con scripts/n8n-desplegar.ts.
+  {
+    const f = new Flujo("WF-99-reporte-errores", "WF-99 · Reporte de errores");
+    const disparador = f.nodo({ name: "Error en un workflow", type: "n8n-nodes-base.errorTrigger", typeVersion: 1, position: [0, 300], parameters: {} });
+    const redactar = f.codigo(
+      "Redactar aviso de error",
+      jsRedactar(`const e = $input.first().json;
+const wf = (e.workflow && e.workflow.name) || 'workflow desconocido';
+const nodo = (e.execution && e.execution.lastNodeExecuted) || 'nodo desconocido';
+const error = String((e.execution && e.execution.error && e.execution.error.message) || 'sin detalle').slice(0, 300);
+const url = (e.execution && e.execution.url) || '';
+salida.push(slack('🚨 Falló ' + wf + ' en el nodo «' + nodo + '»: ' + error + (url ? '\\n' + url : '')));`),
+      [240, 300],
+    );
+    f.cadena(disparador, redactar);
+    f.envios(redactar, "", 480, 300);
     flujos.push(f);
   }
 

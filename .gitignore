@@ -21,3 +21,6 @@ test-results/
 # Sitio estático para GitHub Pages (npm run build:pages)
 .pages-build/
 out-pages/
+
+# Configuración local del despliegue de n8n (contiene la API key y el secreto HMAC)
+.env.n8n

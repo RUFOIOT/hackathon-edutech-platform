@@ -1,7 +1,7 @@
 # Workflows de n8n
 
-Diez workflows importables que conectan la plataforma con correo (Resend) y Slack. Los nueve del
-plan (WF-01 a WF-09) más WF-00, que reintenta los eventos que n8n no recibió.
+Once workflows importables que conectan la plataforma con correo (Resend) y Slack. Los nueve del
+plan (WF-01 a WF-09), WF-00 (reintenta los eventos que n8n no recibió) y WF-99 (reporte de errores).
 
 > Los JSON se **generan** con `npm run n8n:generar` desde `scripts/generar-workflows.ts`. No los
 > edites a mano: cambia el generador y vuelve a generarlos, así los diez comparten el mismo código
@@ -49,7 +49,33 @@ Endpoints de la app para n8n (todos `POST`, firmados):
 | `/api/n8n/certificado` | `{"nombre","equipo","tipo","premio"?}` → PDF | WF-09 |
 | `/api/eventos/reintentar` | `{}` | WF-00 |
 
-## Instalación
+## Despliegue en n8n Cloud (recomendado): `npm run n8n:desplegar`
+
+n8n Cloud no permite variables de entorno en los nodos. El script `scripts/n8n-desplegar.ts`
+inyecta la configuración al subir cada workflow (el repositorio sigue sin secretos), cambia los
+avisos al staff de Slack a **Telegram** y el correo de Resend a **Gmail**, crea o actualiza los 11
+workflows por nombre, enlaza **WF-99** como *Error workflow* de todos y los activa.
+
+1. En n8n: *Settings → n8n API → Create an API key*.
+2. En n8n: *Credentials → Add credential → Gmail OAuth2* → "Sign in with Google" con la cuenta que
+   enviará los correos. Nómbrala `Gmail EduTech` y copia su ID (aparece en la URL).
+3. En Telegram: crea un bot con @BotFather (token) y un grupo del staff con el bot dentro; el ID
+   del grupo lo da, por ejemplo, @RawDataBot (empieza con `-100…`).
+4. Completa `.env.n8n` en la raíz (está en `.gitignore`):
+   `N8N_API_URL`, `N8N_API_KEY`, `EDUTECH_APP_URL`, `EDUTECH_SHARED_SECRET` (= `N8N_SHARED_SECRET`
+   de la app), `EDUTECH_CORREO_COMITE`, `EDUTECH_CORREO_MESA_TECNICA`, `TELEGRAM_CHAT_ID`,
+   `TELEGRAM_BOT_TOKEN` (la primera vez; crea la credencial) y `GMAIL_CREDENCIAL_ID`.
+5. `npm run n8n:desplegar` y, en la app, `N8N_WEBHOOK_BASE_URL=https://<instancia>/webhook`.
+
+Volver a ejecutarlo actualiza los workflows existentes (no duplica).
+
+## WF-99 · Reporte de errores
+
+Basado en la plantilla 2159 de n8n (*Report n8n workflow errors to Telegram*): cuando cualquier
+workflow falla, avisa al grupo del staff con el workflow, el nodo, el error y el enlace a la
+ejecución.
+
+## Instalación manual (n8n autoalojado)
 
 Requiere n8n 1.x (self-hosted o Cloud con acceso a variables de entorno).
 

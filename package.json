@@ -24,7 +24,8 @@
     "n8n:test": "tsx --conditions=react-server scripts/n8n-test.ts",
     "dataset:colegio": "tsx scripts/generar-dataset-colegio.ts",
     "build:pages": "node scripts/build-pages.mjs",
-    "ensayo": "tsx scripts/ensayo-runbook.ts"
+    "ensayo": "tsx scripts/ensayo-runbook.ts",
+    "n8n:desplegar": "tsx scripts/n8n-desplegar.ts"
   },
   "dependencies": {
     "@octokit/auth-app": "^8.3.1",

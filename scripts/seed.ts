@@ -204,11 +204,11 @@ async function main() {
     { uid: "staff-comite", roles: ["comite"] },
     { uid: "staff-tecnica", roles: ["mesa_tecnica"] },
     { uid: "staff-checkin", roles: ["checkin"] },
-    { uid: "staff-mentor", roles: ["mentor"] },
+    { uid: "staff-mentor", roles: ["mentor"], temas: ["producto", "tecnica", "n8n", "ia", "pitch"] },
   ];
   for (const s of staff) {
     await crearUsuario(s.uid, `${s.uid}@edutech.test`, s.uid);
-    set(`staff/${s.uid}`, { nombre: s.uid, roles: s.roles });
+    set(`staff/${s.uid}`, { nombre: s.uid, roles: s.roles, ...("temas" in s ? { temas: s.temas } : {}) });
   }
 
   // Orden de semifinal y puntajes de ejemplo: sala-1 (T1, 4 equipos) se normaliza; sala-2 y

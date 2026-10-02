@@ -1,0 +1,506 @@
+{
+  "name": "WF-09 · Resultados y certificados",
+  "nodes": [
+    {
+      "id": "caa83f80-7d58-45dc-ab33-9f119681fabc",
+      "name": "Verificar firma",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        260,
+        300
+      ],
+      "parameters": {
+        "jsCode": "// Verifica la firma de la app (mismo algoritmo que lib/hmac.ts).\nconst crypto = require('crypto');\nconst secreto = $env.EDUTECH_SHARED_SECRET;\nconst item = $input.first();\nconst h = item.json.headers || {};\nlet crudo;\ntry {\n  // El webhook guarda el cuerpo crudo (opción Raw Body): se firma el texto exacto, no el JSON re-serializado.\n  crudo = (await this.helpers.getBinaryDataBuffer(0, 'data')).toString('utf8');\n} catch (e) {\n  crudo = JSON.stringify(item.json.body);\n}\nconst ts = String(h['x-timestamp'] || '');\nconst firma = String(h['x-signature'] || '');\nconst ahora = Math.floor(Date.now() / 1000);\nlet motivo = null;\nif (!secreto) motivo = 'sin-secreto';\nelse if (!ts || !firma) motivo = 'faltan-cabeceras';\nelse if (!/^\\d{9,11}$/.test(ts)) motivo = 'timestamp-invalido';\nelse if (Math.abs(ahora - Number(ts)) > 300) motivo = 'fuera-de-ventana';\nelse {\n  const esperada = Buffer.from('sha256=' + crypto.createHmac('sha256', secreto).update(ts + '.' + crudo).digest('hex'));\n  const recibida = Buffer.from(firma);\n  if (esperada.length !== recibida.length || !crypto.timingSafeEqual(esperada, recibida)) motivo = 'firma-invalida';\n}\nif (motivo) return [{ json: { firmaValida: false, motivo } }];\nreturn [{ json: { firmaValida: true, evento: JSON.parse(crudo) } }];"
+      },
+      "notes": "Rechaza con 401 si la firma o el timestamp no son válidos."
+    },
+    {
+      "id": "b59da4cf-360f-42eb-aeba-d7d5f19b2e99",
+      "name": "Webhook results.published",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "1e009086-72b3-48ef-ae4f-0f2dc38e39d3",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "results.published",
+        "responseMode": "responseNode",
+        "options": {
+          "rawBody": true
+        }
+      }
+    },
+    {
+      "id": "38151294-c491-4db4-ac38-631694e4275c",
+      "name": "¿Firma válida?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        500,
+        300
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "1025a7ae-db1e-4595-a16c-830a55a8e60f",
+              "leftValue": "={{ $json.firmaValida }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "13e42aed-b137-42af-aa00-61233419358e",
+      "name": "Responder 200",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        740,
+        200
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\"ok\":true}",
+        "options": {
+          "responseCode": 200
+        }
+      }
+    },
+    {
+      "id": "9dd12c17-0920-4c1f-ac93-71a7fc67d3f4",
+      "name": "Responder 401",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        740,
+        400
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\"ok\":false,\"error\":\"Firma inválida\"}",
+        "options": {
+          "responseCode": 401
+        }
+      }
+    },
+    {
+      "id": "cf6374cb-5994-4938-a66d-c201f1c8b9e5",
+      "name": "Un ítem por equipo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1000,
+        200
+      ],
+      "parameters": {
+        "jsCode": "return $('Verificar firma').first().json.evento.payload.equipos.map((t) => ({ json: { contexto: t, peticion: { consulta: 'retroalimentacion', teamId: t.teamId } } }));"
+      }
+    },
+    {
+      "id": "7c31d840-7426-4ff9-a0d3-7d1817bcbb7f",
+      "name": "Firmar consulta de retroalimentación",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1240,
+        200
+      ],
+      "parameters": {
+        "jsCode": "// Firma la petición hacia la app (X-Timestamp + X-Signature, lib/hmac.ts).\nconst crypto = require('crypto');\nconst secreto = $env.EDUTECH_SHARED_SECRET;\nreturn $input.all().map((item, i) => {\n  const peticion = item.json.peticion;\n  const cuerpo = JSON.stringify(peticion);\n  const ts = String(Math.floor(Date.now() / 1000));\n  const firma = 'sha256=' + crypto.createHmac('sha256', secreto).update(ts + '.' + cuerpo).digest('hex');\n  return { json: { contexto: item.json.contexto || null, cuerpo, ts, firma } };\n});"
+      }
+    },
+    {
+      "id": "57dfdd38-cd72-4757-afa6-87e3dd87a9ef",
+      "name": "Retroalimentación del jurado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1480,
+        200
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.EDUTECH_APP_URL }}/api/n8n/consulta",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Timestamp",
+              "value": "={{ $json.ts }}"
+            },
+            {
+              "name": "X-Signature",
+              "value": "={{ $json.firma }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.cuerpo }}",
+        "options": {
+          "timeout": 60000
+        }
+      }
+    },
+    {
+      "id": "973fbcf1-8a18-4676-a135-ffe8fe828dbd",
+      "name": "Un ítem por integrante",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1720,
+        200
+      ],
+      "parameters": {
+        "jsCode": "// Combina cada equipo con su retroalimentación (mismo orden que \"Firmar consulta de retroalimentación\").\nconst firmados = $('Firmar consulta de retroalimentación').all();\nconst salida = [];\n$input.all().forEach((item, i) => {\n  const t = firmados[i].json.contexto;\n  const fb = item.json.publicado ? item.json : { fortalezas: [], recomendaciones: [] };\n  const tipo = t.premios.length ? 'ganador' : t.finalista ? 'finalista' : 'participacion';\n  for (const m of t.integrantes) {\n    if (!m.email) continue;\n    salida.push({ json: {\n      contexto: { para: m.email, nombre: m.nombre, equipo: t.nombre, tipo, premios: t.premios, posicionFinal: t.posicionFinal, fortalezas: fb.fortalezas, recomendaciones: fb.recomendaciones },\n      peticion: { nombre: m.nombre, equipo: t.nombre, tipo, premio: t.premios.join(', ') || null },\n    } });\n  }\n});\nreturn salida;"
+      }
+    },
+    {
+      "id": "5d97a848-b074-436c-a2d3-33e03c134598",
+      "name": "Firmar certificado",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1960,
+        200
+      ],
+      "parameters": {
+        "jsCode": "// Firma la petición hacia la app (X-Timestamp + X-Signature, lib/hmac.ts).\nconst crypto = require('crypto');\nconst secreto = $env.EDUTECH_SHARED_SECRET;\nreturn $input.all().map((item, i) => {\n  const peticion = item.json.peticion;\n  const cuerpo = JSON.stringify(peticion);\n  const ts = String(Math.floor(Date.now() / 1000));\n  const firma = 'sha256=' + crypto.createHmac('sha256', secreto).update(ts + '.' + cuerpo).digest('hex');\n  return { json: { contexto: item.json.contexto || null, cuerpo, ts, firma } };\n});"
+      }
+    },
+    {
+      "id": "2a50c404-76a1-432a-adf6-2ea088e20a62",
+      "name": "Generar certificado PDF",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2200,
+        200
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.EDUTECH_APP_URL }}/api/n8n/certificado",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Timestamp",
+              "value": "={{ $json.ts }}"
+            },
+            {
+              "name": "X-Signature",
+              "value": "={{ $json.firma }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.cuerpo }}",
+        "options": {
+          "timeout": 60000,
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "d90595f7-2e17-4e4a-a04f-002c589e6c9e",
+      "name": "Redactar correo con certificado",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2440,
+        200
+      ],
+      "parameters": {
+        "jsCode": "const APP = $env.EDUTECH_APP_URL;\nconst esc = (s) => String(s == null ? '' : s).replace(/[&<>\"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;', \"'\": '&#39;' })[c]);\nconst plano = (s) => String(s).replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '\"').replace(/&#39;/g, \"'\").replace(/&amp;/g, '&');\nconst html = (titulo, parrafos, boton) =>\n  '<div style=\"font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;color:#0e1b3d\">' +\n  '<div style=\"height:6px;background:linear-gradient(90deg,#6aa3dc,#e8a0b0,#6fb38c,#f0b23a)\"></div>' +\n  '<h1 style=\"font-size:22px;margin:24px 0 12px\">' + esc(titulo) + '</h1>' +\n  parrafos.map((p) => '<p style=\"font-size:15px;line-height:1.55;margin:0 0 12px\">' + p + '</p>').join('') +\n  (boton ? '<p style=\"margin:20px 0\"><a href=\"' + esc(boton.url) + '\" style=\"display:inline-block;background:#c9a24a;color:#0e1b3d;padding:12px 22px;border-radius:999px;text-decoration:none;font-weight:bold\">' + esc(boton.texto) + '</a></p>' : '') +\n  '<p style=\"font-size:12px;color:#5b6478;margin-top:28px\">Hackathon EduTech Eight Academy by n8n · 6 y 7 de noviembre de 2026 · Quito</p></div>';\nconst correo = (para, asunto, titulo, parrafos, boton) => ({\n  json: {\n    canal: 'correo',\n    para: [].concat(para).filter(Boolean),\n    asunto,\n    html: html(titulo, parrafos, boton),\n    texto: [titulo].concat(parrafos.map(plano), boton ? [boton.texto + ': ' + boton.url] : []).join('\\n\\n'),\n  },\n});\n// Un correo por persona: nadie ve las direcciones de los demás.\nconst correoACada = (lista, asunto, titulo, parrafos, boton) => [].concat(lista).filter(Boolean).map((p) => correo(p, asunto, titulo, parrafos, boton));\nconst slack = (mensaje) => ({ json: { canal: 'slack', mensaje } });\nconst salida = [];\nconst firmados = $('Firmar certificado').all();\nconst items = $input.all();\nfor (let i = 0; i < items.length; i++) {\n  const c = firmados[i].json.contexto;\n  const pdf = (await this.helpers.getBinaryDataBuffer(i, 'data')).toString('base64');\n  const lista = (xs) => xs.length ? '<ul>' + xs.map((x) => '<li>' + esc(x) + '</li>').join('') + '</ul>' : '<p>—</p>';\n  const logro = c.tipo === 'ganador' ? '¡Felicitaciones! Tu equipo obtuvo: <strong>' + esc(c.premios.join(', ')) + '</strong>.'\n    : c.tipo === 'finalista' ? 'Tu equipo llegó a la final' + (c.posicionFinal ? ' (puesto ' + c.posicionFinal + ')' : '') + '.'\n    : 'Gracias por construir en vivo con nosotros.';\n  const item = correo(c.para, 'Resultados y certificado · Hackathon EduTech', 'Resultados del Hackathon EduTech',\n    ['Hola ' + esc(c.nombre) + ', ya están publicados los resultados. ' + logro,\n     '<strong>Fortalezas que vio el jurado en ' + esc(c.equipo) + ':</strong>' + lista(c.fortalezas),\n     '<strong>Recomendaciones para seguir:</strong>' + lista(c.recomendaciones),\n     'Adjuntamos tu certificado en PDF.'],\n    { texto: 'Ver resultados', url: APP + '/resultados' });\n  item.json.adjuntos = [{ filename: 'certificado-edutech-2026.pdf', content: pdf }];\n  salida.push(item);\n}\nsalida.push(slack('Resultados publicados: ' + items.length + ' certificados enviados por correo.'));\nreturn salida.filter((i) => i.json.canal !== 'correo' || i.json.para.length > 0);"
+      }
+    },
+    {
+      "id": "e96a034a-6dad-48a8-adab-066c1b496aa5",
+      "name": "¿Correo?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2680,
+        200
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "0d2f69c9-cfc9-43d7-ac9c-209c3f88dd15",
+              "leftValue": "={{ $json.canal }}",
+              "rightValue": "correo",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "041baf8a-f80d-440f-abda-75828ea57091",
+      "name": "Enviar correo (Resend)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2920,
+        100
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "REEMPLAZAR-resend",
+          "name": "Resend API"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.resend.com/emails",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ from: $env.EDUTECH_CORREO_REMITENTE, to: $json.para, subject: $json.asunto, html: $json.html, text: $json.texto, attachments: $json.adjuntos }) }}",
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 2,
+              "batchInterval": 1100
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "72f2947c-2b0c-4c5e-ac62-72b8e39e942c",
+      "name": "Avisar en Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        2920,
+        300
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "REEMPLAZAR-slack",
+          "name": "Slack EduTech"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "={{ $env.EDUTECH_SLACK_CANAL_STAFF }}",
+          "mode": "id"
+        },
+        "text": "={{ $json.mensaje }}",
+        "otherOptions": {}
+      }
+    }
+  ],
+  "connections": {
+    "Webhook results.published": {
+      "main": [
+        [
+          {
+            "node": "Verificar firma",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar firma": {
+      "main": [
+        [
+          {
+            "node": "¿Firma válida?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Firma válida?": {
+      "main": [
+        [
+          {
+            "node": "Responder 200",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder 401",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Responder 200": {
+      "main": [
+        [
+          {
+            "node": "Un ítem por equipo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Un ítem por equipo": {
+      "main": [
+        [
+          {
+            "node": "Firmar consulta de retroalimentación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Firmar consulta de retroalimentación": {
+      "main": [
+        [
+          {
+            "node": "Retroalimentación del jurado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retroalimentación del jurado": {
+      "main": [
+        [
+          {
+            "node": "Un ítem por integrante",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Un ítem por integrante": {
+      "main": [
+        [
+          {
+            "node": "Firmar certificado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Firmar certificado": {
+      "main": [
+        [
+          {
+            "node": "Generar certificado PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generar certificado PDF": {
+      "main": [
+        [
+          {
+            "node": "Redactar correo con certificado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redactar correo con certificado": {
+      "main": [
+        [
+          {
+            "node": "¿Correo?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Correo?": {
+      "main": [
+        [
+          {
+            "node": "Enviar correo (Resend)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Avisar en Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Guayaquil",
+    "saveDataSuccessExecution": "none",
+    "saveDataErrorExecution": "all",
+    "saveManualExecutions": false,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}

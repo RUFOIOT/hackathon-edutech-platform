@@ -320,4 +320,6 @@ export interface AuditLogDoc {
 export interface StaffDoc {
   nombre: string;
   roles: StaffRole[];
+  /** Solo mentores: temas que atiende (WF-07). Vacío o ausente = todos. */
+  temas?: string[];
 }

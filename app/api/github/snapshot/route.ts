@@ -2,8 +2,8 @@ import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { adminDb } from "@/lib/firebase/admin";
 import { tomarSnapshot } from "@/lib/github/servicio";
-import { verificarFirma } from "@/lib/hmac";
 import { log } from "@/lib/log";
+import { leerPeticionFirmada } from "@/lib/n8n";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -16,14 +16,9 @@ const cuerpoSchema = z.union([z.object({ teamId: z.string().regex(/^[a-z0-9-]{1,
  * Responde un resumen por equipo con las alertas rojas para que n8n avise a la mesa técnica.
  */
 export async function POST(req: NextRequest) {
-  const cuerpo = await req.text();
-  const firma = verificarFirma({
-    secreto: process.env.N8N_SHARED_SECRET ?? "",
-    cuerpo,
-    timestamp: req.headers.get("x-timestamp"),
-    firma: req.headers.get("x-signature"),
-  });
-  if (!firma.ok) return NextResponse.json({ error: "Firma inválida", motivo: firma.motivo }, { status: 401 });
+  const peticion = await leerPeticionFirmada(req);
+  if (!peticion.ok) return peticion.respuesta;
+  const cuerpo = peticion.cuerpo;
 
   let datos: z.infer<typeof cuerpoSchema>;
   try {

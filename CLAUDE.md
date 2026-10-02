@@ -29,6 +29,8 @@ npm run test:rules   # reglas de Firestore contra el emulador (proyecto "rules")
 npm run test:e2e     # Playwright: emuladores + simulado n8n/GitHub (:3999) + build en :3100
 npm run build
 npm run dataset:verificar  # KPIs del dashboard vs. docs/kpis.sql (con emuladores + seed)
+npm run n8n:generar  # regenera n8n/workflows/*.json desde scripts/generar-workflows.ts
+npm run n8n:test     # firma de ida y vuelta con los workflows reales (servidor de prueba)
 ```
 
 Los emuladores necesitan Java 21+. En este Mac: `export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"`.
@@ -94,6 +96,9 @@ El enlace mágico se imprime en la terminal de los emuladores.
 - **Dashboard:** el dataset plano (`lib/dashboard/dataset.ts`) es la única fuente de KPIs y
   exportaciones. Un KPI nuevo lleva su consulta en `docs/kpis.sql` (`-- kpi: ruta`). Contacto solo
   para admin; puntajes para admin y comité. Columnas documentadas en `docs/DATASET.md`.
+- **n8n:** los workflows se generan (`scripts/generar-workflows.ts`, D-40); nunca edites los JSON a
+  mano. n8n no lee Firestore: pide datos a la app por `/api/n8n/consulta` con firma (D-39). Un
+  evento nuevo necesita su webhook en algún workflow (el test de cobertura lo exige).
 - **Commits:** Conventional Commits. Al cerrar cada fase: lint, typecheck, tests, commit y resumen.
 - **Secretos:** solo en `.env.local` (git-ignored); documentar cada variable en `.env.example`.
 
@@ -105,5 +110,5 @@ El enlace mágico se imprime en la terminal de los emuladores.
 - [x] Fase 4 · GitHub y entregas
 - [x] Fase 5 · Jurado y resultados
 - [x] Fase 6 · Dashboard 360 y exportaciones
-- [ ] Fase 7 · n8n
+- [x] Fase 7 · n8n
 - [ ] Fase 8 · Endurecimiento y despliegue

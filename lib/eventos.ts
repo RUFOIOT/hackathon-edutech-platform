@@ -32,3 +32,35 @@ export async function despachar(eventos: Evento[]): Promise<void> {
     }),
   );
 }
+
+export const MAX_INTENTOS = 10;
+
+/**
+ * Reintenta los eventos pendientes del outbox (lo invoca WF-00 cada 5 minutos). Omite los creados
+ * hace menos de un minuto, que todavía están en su primer envío. Tras MAX_INTENTOS fallidos el
+ * evento queda "fallido" y aparece en el runbook para revisarlo a mano.
+ */
+export async function reintentarPendientes(ahora: Date = new Date(), limite = 100): Promise<{ enviados: number; pendientes: number; fallidos: number }> {
+  const snap = await adminDb().collection("event_outbox").where("estado", "==", "pendiente").limit(limite).get();
+  const listos = snap.docs.filter((d) => {
+    const creado = d.get("creadoAt")?.toDate?.() as Date | undefined;
+    return !creado || ahora.getTime() - creado.getTime() >= 60_000;
+  });
+  let enviados = 0;
+  let fallidos = 0;
+  for (const d of listos) {
+    const { id, type, occurredAt, payload } = d.data() as Evento;
+    const r = await emitEvent({ id, type, occurredAt, payload });
+    const intentos = Number(d.get("intentos") ?? 0) + 1;
+    if (r.ok) enviados++;
+    else if (intentos >= MAX_INTENTOS) fallidos++;
+    await d.ref
+      .update(
+        r.ok
+          ? { estado: "enviado", enviadoAt: FieldValue.serverTimestamp(), intentos }
+          : { estado: intentos >= MAX_INTENTOS ? "fallido" : "pendiente", ultimoError: r.error, intentos },
+      )
+      .catch(() => undefined);
+  }
+  return { enviados, pendientes: listos.length - enviados - fallidos, fallidos };
+}

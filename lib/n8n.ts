@@ -1,6 +1,7 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import { cabecerasFirmadas } from "@/lib/hmac";
+import { NextResponse } from "next/server";
+import { cabecerasFirmadas, verificarFirma } from "@/lib/hmac";
 import { log } from "@/lib/log";
 
 /** Eventos que la app emite hacia n8n (prompt §8.2). */
@@ -54,4 +55,22 @@ export async function emitEvent(evento: Evento): Promise<ResultadoEnvio> {
     log.warn("No se pudo enviar el evento a n8n", { tipo: evento.type, id: evento.id, error });
     return { ok: false, error };
   }
+}
+
+/**
+ * Lee el cuerpo de una petición de n8n hacia la app y verifica X-Signature + X-Timestamp.
+ * Devuelve el cuerpo crudo (el que se firmó) o la respuesta 401 lista para devolver.
+ */
+export async function leerPeticionFirmada(req: Request): Promise<{ ok: true; cuerpo: string } | { ok: false; respuesta: NextResponse }> {
+  const cuerpo = await req.text();
+  const firma = verificarFirma({
+    secreto: process.env.N8N_SHARED_SECRET ?? "",
+    cuerpo,
+    timestamp: req.headers.get("x-timestamp"),
+    firma: req.headers.get("x-signature"),
+  });
+  if (!process.env.N8N_SHARED_SECRET || !firma.ok) {
+    return { ok: false, respuesta: NextResponse.json({ error: "Firma inválida", motivo: firma.ok ? "sin-secreto" : firma.motivo }, { status: 401 }) };
+  }
+  return { ok: true, cuerpo };
 }

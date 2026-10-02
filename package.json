@@ -19,7 +19,9 @@
     "emulators": "npx -y firebase-tools@15 emulators:start --project demo-edutech --import=.firebase-data --export-on-exit=.firebase-data",
     "seed": "tsx scripts/seed.ts",
     "plantilla:autorizacion": "tsx scripts/generar-plantilla-autorizacion.ts",
-    "dataset:verificar": "tsx scripts/verificar-kpis.ts"
+    "dataset:verificar": "tsx scripts/verificar-kpis.ts",
+    "n8n:generar": "tsx scripts/generar-workflows.ts",
+    "n8n:test": "tsx --conditions=react-server scripts/n8n-test.ts"
   },
   "dependencies": {
     "@octokit/auth-app": "^8.3.1",

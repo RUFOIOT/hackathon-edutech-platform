@@ -318,6 +318,28 @@ nada y todo el contenido se ve de entrada (lo comprueba `tests/e2e/publico.spec.
 Las fotos y videos cortos se declaran en `config/medios.ts`; la galería y el video de fondo solo
 aparecen cuando hay material con autorización de uso de imagen.
 
+## D-39 · n8n consulta a la app en vez de leer la base de datos
+
+Los workflows programados (WF-03, 05, 06, 07, 09) no tienen credenciales de Firebase. Piden a la
+app, con una petición firmada, solo lo que necesitan para ese envío (`/api/n8n/consulta`): por
+ejemplo, los correos de los equipos en riesgo del checkpoint y el motivo. Así las reglas y fechas
+viven en un solo lugar (`config/event.ts`), n8n nunca ve datos que no va a usar (minimización,
+LOPDP) y no hay una cuenta de servicio adicional que proteger. Los certificados de WF-09 se
+generan en la app (`/api/n8n/certificado`, pdf-lib) y no se guardan.
+
+## D-40 · Workflows generados y probados con un simulador
+
+Los diez JSON se generan desde `scripts/generar-workflows.ts`: comparten el mismo código de
+verificación de firma, de firma de peticiones y de plantilla de correo, y un cambio no se olvida
+en uno de ellos. `scripts/n8n-simulador.ts` ejecuta el JavaScript real de los nodos Code en un
+sandbox y sigue las conexiones del JSON, de modo que `npm run n8n:test` y `npm test` prueban lo
+que se importa en n8n, no una copia.
+
+Además de los nueve del prompt hay un **WF-00** que reintenta el outbox cada 5 minutos (D-19). Los
+eventos sin workflow propio en la tabla del prompt se atienden en el más cercano:
+`guardian.validated` y `checkin.created` en WF-01, `team.completed` en WF-02 y
+`submission.created` (acuse de recibo) en WF-06. Así ningún evento queda reintentándose sin destino.
+
 ## Diferencias entre el prompt y las guías (gana la guía)
 
 1. **Sede:** "Unidad Educativa Particular Eight Academy, sede La Prensa". La dirección y el aforo

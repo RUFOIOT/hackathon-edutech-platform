@@ -11,7 +11,7 @@
  *
  * Configuración en .env.n8n (no se sube al repositorio, ver n8n/README.md):
  *   N8N_API_URL, N8N_API_KEY, EDUTECH_APP_URL, EDUTECH_SHARED_SECRET,
- *   EDUTECH_CORREO_COMITE, EDUTECH_CORREO_MESA_TECNICA, TELEGRAM_CHAT_ID,
+ *   EDUTECH_CORREO_COMITE, EDUTECH_CORREO_MESA_TECNICA, TELEGRAM_CHAT_ID (opcional),
  *   TELEGRAM_BOT_TOKEN (opcional: crea la credencial) o TELEGRAM_CREDENCIAL_ID,
  *   GMAIL_CREDENCIAL_ID (opcional: si falta, se elige en la interfaz)
  */
@@ -43,7 +43,7 @@ const CONFIG: Record<string, string> = {
   EDUTECH_CORREO_REMITENTE: process.env.EDUTECH_CORREO_REMITENTE ?? "Hackathon EduTech",
   EDUTECH_SLACK_CANAL_STAFF: "",
 };
-const TELEGRAM_CHAT_ID = requerida("TELEGRAM_CHAT_ID");
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID ?? "";
 
 async function api<T>(metodo: string, ruta: string, cuerpo?: unknown): Promise<T> {
   const r = await fetch(`${API}${ruta}`, {
@@ -75,6 +75,23 @@ function adaptar(wf: WorkflowJson, cred: { telegram: { id: string; name: string 
   const conCertificado = wf.nodes.some((n) => n.name === "Generar certificado PDF");
   const nodes = wf.nodes.map((n): Nodo => {
     const base = n as Nodo;
+    if (n.type === "n8n-nodes-base.slack" && !(cred.telegram.id && TELEGRAM_CHAT_ID)) {
+      // Sin Telegram: los avisos al staff llegan por correo a la mesa técnica.
+      return {
+        ...base,
+        name: n.name.replace("Avisar en Slack", "Avisar al staff por correo"),
+        type: "n8n-nodes-base.gmail",
+        typeVersion: 2.1,
+        parameters: {
+          sendTo: CONFIG.EDUTECH_CORREO_MESA_TECNICA,
+          subject: "[Staff Hackathon EduTech] Aviso",
+          emailType: "text",
+          message: "={{ $json.mensaje }}",
+          options: { appendAttribution: false, senderName: CONFIG.EDUTECH_CORREO_REMITENTE },
+        },
+        ...(cred.gmail.id ? { credentials: { gmailOAuth2: cred.gmail } } : { credentials: undefined }),
+      };
+    }
     if (n.type === "n8n-nodes-base.slack") {
       return {
         ...base,
@@ -82,7 +99,7 @@ function adaptar(wf: WorkflowJson, cred: { telegram: { id: string; name: string 
         type: "n8n-nodes-base.telegram",
         typeVersion: 1.2,
         parameters: { chatId: TELEGRAM_CHAT_ID, text: "={{ $json.mensaje }}", additionalFields: { appendAttribution: false } },
-        credentials: { telegramApi: cred.telegram },
+        ...(cred.telegram.id ? { credentials: { telegramApi: cred.telegram } } : { credentials: undefined }),
       };
     }
     if (n.type === "n8n-nodes-base.httpRequest" && String(n.parameters.url).includes("api.resend.com")) {
@@ -102,7 +119,7 @@ function adaptar(wf: WorkflowJson, cred: { telegram: { id: string; name: string 
             ...(conCertificado ? { attachmentsUi: { attachmentsBinary: [{ property: "certificado" }] } } : {}),
           },
         },
-        credentials: { gmailOAuth2: cred.gmail },
+        ...(cred.gmail.id ? { credentials: { gmailOAuth2: cred.gmail } } : { credentials: undefined }),
       };
     }
     return base;
@@ -134,7 +151,7 @@ async function main() {
   }
   const gmail = { id: process.env.GMAIL_CREDENCIAL_ID ?? "", name: "Gmail EduTech" };
   if (!gmail.id) console.log("⚠️  Sin GMAIL_CREDENCIAL_ID: elige la credencial «Gmail EduTech» en los nodos de correo desde la interfaz.");
-  if (!telegram.id) console.log("⚠️  Sin credencial de Telegram: elígela en los nodos «Avisar por Telegram» desde la interfaz.");
+  if (!(telegram.id && TELEGRAM_CHAT_ID)) console.log("ℹ️  Sin Telegram: los avisos al staff irán por correo a EDUTECH_CORREO_MESA_TECNICA.");
 
   const existentes = (await api<{ data: { id: string; name: string; active: boolean }[] }>("GET", "/workflows?limit=250")).data;
   const porNombre = new Map(existentes.map((w) => [w.name, w]));

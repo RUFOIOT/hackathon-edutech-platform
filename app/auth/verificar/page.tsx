@@ -3,11 +3,27 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { isSignInWithEmailLink, signInWithEmailLink, signOut } from "firebase/auth";
+import { isSignInWithEmailLink, sendSignInLinkToEmail, signInWithEmailLink, signOut } from "firebase/auth";
 import { clientAuth } from "@/lib/firebase/client";
 import { CORREO_PENDIENTE_KEY } from "@/lib/auth/constantes";
 
-type Estado = "verificando" | "pedir-correo" | "error";
+type Estado = "verificando" | "pedir-correo" | "error" | "reenviado";
+
+/** Traduce los errores de Firebase a qué pasó y qué hacer (no mostrar "auth/…" al usuario). */
+function explicar(err: unknown): { mensaje: string; otroCorreo: boolean } {
+  const codigo = (err as { code?: string } | null)?.code ?? "";
+  if (codigo === "auth/invalid-action-code" || codigo === "auth/expired-action-code") {
+    return {
+      mensaje: "Este enlace ya se usó, venció o no es el último que pediste: cada enlace sirve una sola vez y solo vale el más reciente.",
+      otroCorreo: true,
+    };
+  }
+  if (codigo === "auth/invalid-email") {
+    return { mensaje: "El correo no coincide con el del enlace. Escribe el correo al que llegó.", otroCorreo: true };
+  }
+  if (codigo === "auth/network-request-failed") return { mensaje: "Sin conexión. Revisa tu internet y vuelve a abrir el enlace.", otroCorreo: false };
+  return { mensaje: err instanceof Error && !err.message.startsWith("Firebase") ? err.message : "No pudimos iniciar tu sesión.", otroCorreo: false };
+}
 
 /**
  * Destino del enlace mágico: completa el inicio de sesión en Firebase, cambia el ID token por una
@@ -17,10 +33,27 @@ export default function Verificar() {
   const router = useRouter();
   const [estado, setEstado] = useState<Estado>("verificando");
   const [mensaje, setMensaje] = useState("");
+  const [correoUsado, setCorreoUsado] = useState<string | null>(null);
+  const [otroCorreo, setOtroCorreo] = useState(false);
   const iniciado = useRef(false);
+
+  async function reenviar() {
+    if (!correoUsado) return;
+    const url = new URL("/auth/verificar", window.location.origin);
+    const siguiente = new URL(window.location.href).searchParams.get("siguiente");
+    if (siguiente) url.searchParams.set("siguiente", siguiente);
+    try {
+      await sendSignInLinkToEmail(clientAuth(), correoUsado, { url: url.toString(), handleCodeInApp: true });
+      window.localStorage.setItem(CORREO_PENDIENTE_KEY, correoUsado);
+      setEstado("reenviado");
+    } catch {
+      setMensaje("No pudimos enviar el enlace nuevo. Inténtalo desde la página de ingreso.");
+    }
+  }
 
   async function completar(correo: string) {
     setEstado("verificando");
+    setCorreoUsado(correo);
     try {
       const href = window.location.href;
       const cred = await signInWithEmailLink(clientAuth(), correo, href);
@@ -38,7 +71,9 @@ export default function Verificar() {
       router.replace(data.destino);
       router.refresh();
     } catch (err) {
-      setMensaje(err instanceof Error ? err.message : "El enlace no es válido o ya fue usado.");
+      const e = explicar(err);
+      setMensaje(e.mensaje);
+      setOtroCorreo(e.otroCorreo);
       setEstado("error");
     }
   }
@@ -62,8 +97,30 @@ export default function Verificar() {
       <h1 className="text-2xl font-semibold">Verificando tu enlace</h1>
       {estado === "verificando" && <p role="status" className="mt-4 text-muted">Un momento, estamos iniciando tu sesión…</p>}
       {estado === "error" && (
-        <p role="alert" className="mt-4 text-danger">
-          {mensaje} <Link href="/ingresar" className="underline">Volver a ingresar</Link>
+        <div className="mt-4 grid gap-4">
+          <p role="alert" className="text-danger">
+            {mensaje}
+          </p>
+          <div className="flex flex-wrap gap-3">
+            {correoUsado && (
+              <button type="button" onClick={() => void reenviar()} className="rounded bg-accent px-5 py-3 font-medium text-on-accent">
+                Enviarme un enlace nuevo a {correoUsado}
+              </button>
+            )}
+            {otroCorreo && (
+              <button type="button" onClick={() => setEstado("pedir-correo")} className="rounded border border-border px-5 py-3 font-medium">
+                Pedí el enlace con otro correo
+              </button>
+            )}
+            <Link href="/ingresar" className="self-center underline">
+              Volver a ingresar
+            </Link>
+          </div>
+        </div>
+      )}
+      {estado === "reenviado" && (
+        <p role="status" className="mt-4 rounded border border-positive bg-surface p-4">
+          Te enviamos un enlace nuevo a <strong>{correoUsado}</strong>. Ábrelo en este mismo navegador; los anteriores ya no sirven.
         </p>
       )}
       {estado === "pedir-correo" && (

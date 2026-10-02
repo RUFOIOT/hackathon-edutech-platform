@@ -34,7 +34,8 @@ export function FormIngreso({ siguiente }: { siguiente: string | null }) {
   if (estado.tipo === "enviado") {
     return (
       <p role="status" className="mt-8 rounded border border-positive bg-surface p-4">
-        Enlace enviado a <strong>{estado.correo}</strong>. Revisa tu bandeja de entrada y la carpeta de spam.
+        Enlace enviado a <strong>{estado.correo}</strong>. Revisa tu bandeja de entrada y la carpeta de spam, y ábrelo en
+        este mismo navegador. Si pides otro, usa solo el más reciente.
       </p>
     );
   }

@@ -35,7 +35,8 @@ Pendiente:
 - [x] Telegram para los avisos al staff: bot @Eigthlabsbot en el grupo «Staff Hackathon Edutech»
   (credencial `Telegram EduTech` en n8n). Probado con un evento firmado → mensaje en el grupo.
 - [ ] GitHub App (`GITHUB_APP_*`, `GITHUB_WEBHOOK_SECRET`).
-- [ ] Variable `URL_PLATAFORMA` del repositorio cuando el ingreso funcione, para enlazar Pages con Netlify.
+- [x] Variable `URL_PLATAFORMA` del repositorio: Pages enlaza la inscripción y el ingreso con Netlify.
+- [x] Apertura de inscripciones (05-oct-2026): plataforma, Pages, n8n y Telegram activos; aviso de inicio enviado al grupo del staff.
 
 Ojo: las variables creadas con *scopes* personalizados o marcadas como secretas desde la API no
 llegaron a guardarse en este plan de Netlify; se cargaron con el alcance por defecto (todos).

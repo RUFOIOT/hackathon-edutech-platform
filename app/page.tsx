@@ -71,6 +71,7 @@ function EstadoInscripciones({ oscuro = false }: { oscuro?: boolean }) {
 export default function Inicio() {
   const dias = ["Viernes 6", "Sábado 7"] as const;
   const retos = TRACK_CODES.flatMap((t) => TRACKS[t].ejemplos);
+  const registro = enlacePlataforma("/registro");
 
   return (
     <>
@@ -291,6 +292,44 @@ export default function Inicio() {
           </p>
         </div>
       </section>
+
+      {/* ---------- Gancho: Luma ---------- */}
+      {faseActual(ahora()) === "Convocatoria" && (
+        <section aria-labelledby="luma" className="mx-auto max-w-6xl px-4 pt-20">
+          <Revelar>
+            <div className="borde-ocho relative isolate overflow-clip rounded-3xl px-6 py-12 text-center text-paper-50 sm:px-12">
+              {/* Foto de la portada del evento en Luma (Quito): la franja superior, sin texto. */}
+              <div aria-hidden="true" className="absolute inset-0 -z-10">
+                <Image src={asset("/media/luma-quito.jpg")} alt="" fill unoptimized sizes="(min-width: 1152px) 1120px, 100vw" className="object-cover object-[50%_35%]" />
+                <div className="absolute inset-0 bg-[linear-gradient(180deg,color-mix(in_srgb,var(--color-navy-900)_15%,transparent),color-mix(in_srgb,var(--color-navy-900)_65%,transparent))]" />
+              </div>
+              <p className="text-sm font-semibold opacity-85">Cupos limitados · 6 y 7 de noviembre</p>
+              <h2 id="luma" className="mx-auto mt-3 max-w-[20ch] text-3xl font-semibold sm:text-4xl">
+                ¿Te ves en el podio? Aparta tu lugar en Luma.
+              </h2>
+              <p className="mx-auto mt-4 max-w-prose opacity-90">
+                Únete al evento con un clic y recibe en tu calendario los recordatorios, el webinar previo y las novedades del hackathon. Comparte
+                el enlace con tu equipo: los mejores proyectos empiezan con la gente correcta.
+              </p>
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+                <a
+                  href={EVENT.luma}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full bg-accent px-7 py-3.5 font-semibold text-on-accent shadow-[0_0_0_4px_color-mix(in_srgb,var(--color-accent)_25%,transparent)] transition hover:brightness-105"
+                >
+                  Unirme en Luma<span className="sr-only"> (se abre en una pestaña nueva)</span>
+                </a>
+                {registro && (
+                  <a href={registro} className="font-medium underline underline-offset-4">
+                    ¿Ya tienes equipo? Inscríbelo en la plataforma
+                  </a>
+                )}
+              </div>
+            </div>
+          </Revelar>
+        </section>
+      )}
 
       {/* ---------- Aliados ---------- */}
       <section aria-labelledby="aliados" className="mx-auto max-w-6xl px-4 py-16">

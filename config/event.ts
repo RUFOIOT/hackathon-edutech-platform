@@ -44,6 +44,8 @@ export const EVENT = {
   /** Patrón del nombre de repo: edutech26-t{1|2|3}-{slug}. */
   repoPattern: /^edutech26-t([123])-([a-z0-9]+(?:-[a-z0-9]+)*)$/,
   tagEntrega: "entrega",
+  /** Página del evento en Luma (comunidad n8n): se promociona en la portada durante la convocatoria. */
+  luma: "https://luma.com/n8n-6i9c",
 
   fechas: {
     // Convocatoria (guía §13): todas entre corchetes en la guía.

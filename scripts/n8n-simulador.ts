@@ -265,7 +265,7 @@ export const EVENTOS_EJEMPLO: Record<string, { payload: Record<string, unknown>;
       track: "T1",
       repoUrl: "https://github.com/eight-academy-hackathon/edutech-2026-t1-los-nodos",
       tagSha: "abcdef1234567890",
-      tagCommitAt: "2026-11-07T16:40:00.000Z",
+      tagCommitAt: "2026-11-21T16:40:00.000Z",
       demoUrl: "https://demo.edutech.test",
       destinatarios: ["ana@edutech.test", "luis@edutech.test"],
       reenvio: false,
@@ -324,7 +324,7 @@ export function mockApp(opts: { certificado?: (cuerpo: Record<string, unknown>) 
       case "checkpoints-en-riesgo":
         return {
           hito: cuerpo.hito,
-          limite: "2026-11-07T15:30:00.000Z",
+          limite: "2026-11-21T15:30:00.000Z",
           enRiesgo: [{ teamNombre: "Los Nodos", motivo: "Aún no hay una demo funcional mínima ejecutable.", para: ["ana@edutech.test", "luis@edutech.test"], enlace: "https://app.edutech.test/mi-equipo/repositorio" }],
         };
       case "reporte-entregas":

@@ -44,7 +44,7 @@ async function main() {
   linea("BORRADOR · formato pendiente de aprobación del DECE y del área legal", { font: negrita, size: 9, color: rgb(0.76, 0.25, 0.18) });
   espacio(6);
   linea("Autorización del representante legal", { font: negrita, size: 18 });
-  linea(`${EVENT.nombre} · 6 y 7 de noviembre de 2026 · ${EVENT.sede.nombre}, ${EVENT.sede.ciudad}`, { size: 10 });
+  linea(`${EVENT.nombre} · 20 y 21 de noviembre de 2026 · ${EVENT.sede.nombre}, ${EVENT.sede.ciudad}`, { size: 10 });
   espacio(14);
   linea("Datos del representante legal", { font: negrita, size: 12 });
   campo("Nombres y apellidos");

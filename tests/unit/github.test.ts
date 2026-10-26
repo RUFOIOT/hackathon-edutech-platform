@@ -19,8 +19,8 @@ import { movimientoDeTag, verificarFirmaGithub } from "@/lib/github/webhook";
 
 // Fechas del evento (hora de Ecuador).
 const ec = (s: string) => new Date(`${s}-05:00`);
-const KICKOFF = ec("2026-11-06T15:30:00");
-const FREEZE = ec("2026-11-07T12:00:00");
+const KICKOFF = ec("2026-11-20T15:30:00");
+const FREEZE = ec("2026-11-21T12:00:00");
 
 const README_COMPLETO = `# Matrícula Express
 
@@ -91,10 +91,10 @@ const arbolCompleto: ArchivoArbol[] = [
 ];
 
 const commitsSanos: (CommitInfo & { paths?: string[] })[] = [
-  { sha: "c1", fecha: ec("2026-11-06T16:05:00"), autor: "ana", paths: ["README.md"] },
-  { sha: "c2", fecha: ec("2026-11-06T18:40:00"), autor: "luis", paths: ["README.md"] },
-  { sha: "c3", fecha: ec("2026-11-07T09:10:00"), autor: "ana", paths: ["src/index.ts"] },
-  { sha: "c4", fecha: ec("2026-11-07T11:30:00"), autor: "luis", paths: ["src/index.ts"] },
+  { sha: "c1", fecha: ec("2026-11-20T16:05:00"), autor: "ana", paths: ["README.md"] },
+  { sha: "c2", fecha: ec("2026-11-20T18:40:00"), autor: "luis", paths: ["README.md"] },
+  { sha: "c3", fecha: ec("2026-11-21T09:10:00"), autor: "ana", paths: ["src/index.ts"] },
+  { sha: "c4", fecha: ec("2026-11-21T11:30:00"), autor: "luis", paths: ["src/index.ts"] },
 ];
 
 const equipo = { slug: "matricula-express", track: "T3" as const };
@@ -102,19 +102,19 @@ const URL_OK = "https://github.com/eight-academy-hackathon/edutech26-t3-matricul
 
 describe("validateRepo", () => {
   it("acepta un repo válido de la organización, creado después del kick-off", async () => {
-    const r = await validateRepo(URL_OK, equipo, clienteSimulado({ creado: ec("2026-11-06T15:42:00") }), { kickoff: KICKOFF });
+    const r = await validateRepo(URL_OK, equipo, clienteSimulado({ creado: ec("2026-11-20T15:42:00") }), { kickoff: KICKOFF });
     expect(r.valido).toBe(true);
     expect(r.chequeos.map((c) => c.id)).toEqual(["url", "organizacion", "patron", "track", "equipo", "existe", "fecha"]);
   });
 
   it("rechaza un repo creado ANTES del kick-off y explica por qué", async () => {
-    const r = await validateRepo(URL_OK, equipo, clienteSimulado({ creado: ec("2026-11-05T20:00:00") }), { kickoff: KICKOFF });
+    const r = await validateRepo(URL_OK, equipo, clienteSimulado({ creado: ec("2026-11-19T20:00:00") }), { kickoff: KICKOFF });
     expect(r.valido).toBe(false);
     expect(r.chequeos.find((c) => c.id === "fecha")).toMatchObject({ ok: false, mensaje: expect.stringMatching(/antes del kick-off/) });
   });
 
   it("rechaza fuera de la organización, con patrón o track equivocados", async () => {
-    const c = clienteSimulado({ creado: ec("2026-11-06T16:00:00") });
+    const c = clienteSimulado({ creado: ec("2026-11-20T16:00:00") });
     const fuera = await validateRepo("https://github.com/ana/edutech26-t3-matricula-express", equipo, c, { kickoff: KICKOFF });
     expect(fuera.chequeos.find((x) => x.id === "organizacion")?.ok).toBe(false);
     const patron = await validateRepo("https://github.com/eight-academy-hackathon/mi-proyecto", equipo, c, { kickoff: KICKOFF });
@@ -131,16 +131,16 @@ describe("validateRepo", () => {
 });
 
 describe("snapshotRepo", () => {
-  const base = { owner: "eight-academy-hackathon", name: "edutech26-t3-matricula-express", createdAt: ec("2026-11-06T15:40:00") };
+  const base = { owner: "eight-academy-hackathon", name: "edutech26-t3-matricula-express", createdAt: ec("2026-11-20T15:40:00") };
   const opts = { kickoff: KICKOFF, freeze: FREEZE };
 
   it("repo sano: métricas, archivos obligatorios, checkpoints cumplidos y sin alertas", async () => {
     const c = clienteSimulado({ commits: commitsSanos, arbol: arbolCompleto, blobs: { readme: README_COMPLETO, index: "export const ok = true;" } });
-    const s = await snapshotRepo(base, c, { ...opts, ahora: ec("2026-11-07T11:45:00") });
+    const s = await snapshotRepo(base, c, { ...opts, ahora: ec("2026-11-21T11:45:00") });
     expect(s.commitsEnVentana).toBe(4);
     expect(s.autores).toEqual(["ana", "luis"]);
-    expect(s.ultimoCommitAt).toEqual(ec("2026-11-07T11:30:00"));
-    expect(s.commitsPorHora["2026-11-06T16"]).toBe(1);
+    expect(s.ultimoCommitAt).toEqual(ec("2026-11-21T11:30:00"));
+    expect(s.commitsPorHora["2026-11-20T16"]).toBe(1);
     expect(Object.values(s.archivosObligatorios).every(Boolean)).toBe(true);
     expect(s.checkpoint1).toBe("cumplido");
     expect(s.checkpoint2).toBe("cumplido");
@@ -159,7 +159,7 @@ describe("snapshotRepo", () => {
       cfg: `AWS_KEY=AKIAABCDEFGHIJKLMNOP\nSUPABASE_SERVICE_ROLE=${jwtServiceRole}`,
     };
     const arbol = [...arbolCompleto, { path: "src/config.ts", tipo: "blob" as const, sha: "cfg" }];
-    const s = await snapshotRepo(base, clienteSimulado({ commits: commitsSanos, arbol, blobs }), { ...opts, ahora: ec("2026-11-07T11:45:00") });
+    const s = await snapshotRepo(base, clienteSimulado({ commits: commitsSanos, arbol, blobs }), { ...opts, ahora: ec("2026-11-21T11:45:00") });
     const tipos = s.secretos.map((h) => h.tipo);
     expect(tipos).toEqual(
       expect.arrayContaining([expect.stringMatching(/sk-/), "Token de GitHub", "Clave de acceso de AWS", "Clave service_role de Supabase"]),
@@ -180,33 +180,33 @@ describe("snapshotRepo", () => {
       },
     };
     const datos = { commits: commitsSanos, arbol: arbolCompleto, blobs: { readme: README_COMPLETO } };
-    await snapshotRepo(base, clienteSimulado(datos), { ...opts, ahora: ec("2026-11-07T11:00:00"), cache });
+    await snapshotRepo(base, clienteSimulado(datos), { ...opts, ahora: ec("2026-11-21T11:00:00"), cache });
     const segundo = clienteSimulado(datos);
-    await snapshotRepo(base, segundo, { ...opts, ahora: ec("2026-11-07T11:15:00"), cache });
+    await snapshotRepo(base, segundo, { ...opts, ahora: ec("2026-11-21T11:15:00"), cache });
     expect(segundo.blobsLeidos).toEqual(["readme"]); // solo el README, que se lee para los checkpoints
   });
 
   it("alerta roja si el repo se creó antes del kick-off o hay commits previos", async () => {
     const commits = [{ sha: "viejo", fecha: ec("2026-11-01T10:00:00"), autor: "ana", paths: ["src/index.ts"] }, ...commitsSanos];
     const cliente = clienteSimulado({ commits, arbol: arbolCompleto, blobs: { readme: README_COMPLETO } });
-    const s = await snapshotRepo({ ...base, createdAt: ec("2026-11-01T09:00:00") }, cliente, { ...opts, ahora: ec("2026-11-07T11:45:00") });
+    const s = await snapshotRepo({ ...base, createdAt: ec("2026-11-01T09:00:00") }, cliente, { ...opts, ahora: ec("2026-11-21T11:45:00") });
     expect(s.alertas.map((a) => a.tipo)).toEqual(expect.arrayContaining(["repo-antes-kickoff", "commits-antes-kickoff"]));
   });
 
   it("checkpoint 1: pendiente antes de las 19:00 y vencido después si el README sigue siendo la plantilla", async () => {
     const plantilla = "# Proyecto\n\n## Problema\n<!-- COMPLETAR: qué problema resuelven -->\n\n## Usuario\n<!-- COMPLETAR -->\n";
     const datos = { commits: commitsSanos.slice(0, 1), arbol: arbolCompleto, blobs: { readme: plantilla } };
-    const antes = await snapshotRepo(base, clienteSimulado(datos), { ...opts, ahora: ec("2026-11-06T18:00:00") });
+    const antes = await snapshotRepo(base, clienteSimulado(datos), { ...opts, ahora: ec("2026-11-20T18:00:00") });
     expect(antes.checkpoint1).toBe("pendiente");
-    const despues = await snapshotRepo(base, clienteSimulado(datos), { ...opts, ahora: ec("2026-11-06T19:30:00") });
+    const despues = await snapshotRepo(base, clienteSimulado(datos), { ...opts, ahora: ec("2026-11-20T19:30:00") });
     expect(despues.checkpoint1).toBe("vencido");
     expect(despues.alertas.some((a) => a.tipo === "checkpoint-vencido")).toBe(true);
   });
 
   it("alertas ámbar: sin commits en 3 h durante la ventana y un solo autor", async () => {
-    const commits = [{ sha: "c1", fecha: ec("2026-11-06T16:00:00"), autor: "ana", paths: ["README.md"] }];
+    const commits = [{ sha: "c1", fecha: ec("2026-11-20T16:00:00"), autor: "ana", paths: ["README.md"] }];
     const cliente = clienteSimulado({ commits, arbol: arbolCompleto, blobs: { readme: README_COMPLETO } });
-    const s = await snapshotRepo(base, cliente, { ...opts, ahora: ec("2026-11-06T20:30:00") });
+    const s = await snapshotRepo(base, cliente, { ...opts, ahora: ec("2026-11-20T20:30:00") });
     expect(
       s.alertas
         .filter((a) => a.nivel === "ambar")
@@ -218,7 +218,7 @@ describe("snapshotRepo", () => {
   it("marca un .env versionado", async () => {
     const arbol = [...arbolCompleto, { path: ".env", tipo: "blob" as const, sha: "env" }];
     const cliente = clienteSimulado({ commits: commitsSanos, arbol, blobs: { readme: README_COMPLETO } });
-    const s = await snapshotRepo(base, cliente, { ...opts, ahora: ec("2026-11-07T10:00:00") });
+    const s = await snapshotRepo(base, cliente, { ...opts, ahora: ec("2026-11-21T10:00:00") });
     expect(s.alertas.some((a) => a.tipo === "env-versionado")).toBe(true);
   });
 });
@@ -227,12 +227,12 @@ describe("resolveDeliveryTag", () => {
   const repo = { owner: "eight-academy-hackathon", name: "edutech26-t3-matricula-express" };
 
   it("tag antes del freeze: SHA y fecha, sin marcas", async () => {
-    const t = await resolveDeliveryTag(repo, clienteSimulado({ tag: { sha: "abc123", fecha: ec("2026-11-07T11:55:00") } }), { freeze: FREEZE });
-    expect(t).toEqual({ existe: true, sha: "abc123", commitAt: ec("2026-11-07T11:55:00"), posteriorAlFreeze: false, movido: false });
+    const t = await resolveDeliveryTag(repo, clienteSimulado({ tag: { sha: "abc123", fecha: ec("2026-11-21T11:55:00") } }), { freeze: FREEZE });
+    expect(t).toEqual({ existe: true, sha: "abc123", commitAt: ec("2026-11-21T11:55:00"), posteriorAlFreeze: false, movido: false });
   });
 
   it("tag movido tras el freeze a un commit posterior: lo marca", async () => {
-    const t = await resolveDeliveryTag(repo, clienteSimulado({ tag: { sha: "def456", fecha: ec("2026-11-07T12:20:00") } }), {
+    const t = await resolveDeliveryTag(repo, clienteSimulado({ tag: { sha: "def456", fecha: ec("2026-11-21T12:20:00") } }), {
       freeze: FREEZE,
       shaRegistrado: "abc123",
     });
@@ -241,7 +241,7 @@ describe("resolveDeliveryTag", () => {
   });
 
   it("tag movido a otro commit anterior al freeze: lo detecta comparando con el SHA registrado", async () => {
-    const t = await resolveDeliveryTag(repo, clienteSimulado({ tag: { sha: "otro", fecha: ec("2026-11-07T10:00:00") } }), {
+    const t = await resolveDeliveryTag(repo, clienteSimulado({ tag: { sha: "otro", fecha: ec("2026-11-21T10:00:00") } }), {
       freeze: FREEZE,
       shaRegistrado: "abc123",
     });
@@ -261,7 +261,7 @@ describe("admisibilidad A1–A5", () => {
       { id: "fecha" as const, ok: true, mensaje: "" },
     ],
   };
-  const tagOk = { existe: true, sha: "abc", commitAt: ec("2026-11-07T11:50:00"), posteriorAlFreeze: false, movido: false };
+  const tagOk = { existe: true, sha: "abc", commitAt: ec("2026-11-21T11:50:00"), posteriorAlFreeze: false, movido: false };
   const archivos = { "README.md": true, "PRIOR_WORK.md": true, "AI_USAGE.md": true };
 
   it("pasa A1, A2, A3 y A5; A4 queda pendiente de la mesa técnica", () => {
@@ -310,7 +310,7 @@ describe("webhook de GitHub", () => {
 
 describe("utilidades", () => {
   it("hora de Ecuador como clave", () => {
-    expect(horaEcuador(new Date("2026-11-07T02:10:00Z"))).toBe("2026-11-06T21");
+    expect(horaEcuador(new Date("2026-11-21T02:10:00Z"))).toBe("2026-11-20T21");
   });
 
   it("el README real de template-repo/ no cumple los checkpoints hasta que el equipo lo completa", () => {

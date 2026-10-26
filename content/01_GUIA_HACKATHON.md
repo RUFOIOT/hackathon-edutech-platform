@@ -1,7 +1,7 @@
 # Hackathon EduTech Eight Academy · by n8n — Guía oficial
 
 **Versión:** v1.0 · borrador para aprobación institucional
-**Fechas:** viernes 6 y sábado 7 de noviembre de 2026
+**Fechas:** viernes 20 y sábado 21 de noviembre de 2026
 **Sede:** Unidad Educativa Particular Eight Academy, sede La Prensa (Quito) · [CONFIRMAR dirección exacta y aforo]
 **Organiza:** Dirección de Innovación y Tecnología · EIGHT LABS
 **Aliado tecnológico:** n8n · [CONFIRMAR acuerdo de uso de marca]
@@ -60,7 +60,7 @@ La regla de oro del evento: **se premia lo que funciona en vivo y está en el re
 | | 17:00 | Final: top 5 en plenaria |
 | | 18:30 | Deliberación, premiación y cierre |
 
-> **Alerta de calendario institucional.** El POA 2026-2027 asigna el sábado 7 de noviembre a la "1era Integración Padres" (SEM 009, responsables: Comité de padres, Directora de sección, docentes tutores) y el viernes 6 es día lectivo. Antes de publicar la convocatoria debe resolverse el uso compartido de la sede o reprogramar. Ver sección 12.
+> **Reprogramación.** El hackathon se movió al viernes 20 y sábado 21 de noviembre de 2026. En la fecha original (6 y 7 de noviembre) el POA 2026-2027 asignaba el sábado 7 a la "1era Integración Padres" (SEM 009). Debe verificarse que el 20 y 21 estén libres en el POA y confirmarse el uso compartido de la sede el viernes 20, que es día lectivo. Ver sección 12.
 
 ## 5. Capacidad del Show and Tell
 
@@ -141,8 +141,8 @@ El código y la propiedad intelectual pertenecen a cada equipo. Al participar, l
 
 | N° | Decisión | Por qué bloquea | Responsable |
 |---|---|---|---|
-| 1 | Resolver el cruce con la 1era Integración Padres del sábado 7 (POA, SEM 009) | El POA tiene precedencia sobre cualquier fecha | Dirección de sede |
-| 2 | Uso de la sede el viernes 6 en jornada lectiva | Define la hora real de inicio | Dirección de sede |
+| 1 | Verificar en el POA que el sábado 21 esté libre (la fecha original, sábado 7, chocaba con la 1era Integración Padres, SEM 009) | El POA tiene precedencia sobre cualquier fecha | Dirección de sede |
+| 2 | Uso de la sede el viernes 20 en jornada lectiva | Define la hora real de inicio | Dirección de sede |
 | 3 | Montos de premios y auspiciantes confirmados | No se publica un premio sin respaldo | Comité |
 | 4 | Acuerdo de marca con n8n | El nombre del evento lo incluye | Dirección de Innovación |
 | 5 | Aforo y conectividad de la sede | Define el cupo máximo | Coordinación operativa |
@@ -156,6 +156,6 @@ El código y la propiedad intelectual pertenecen a cada equipo. Al participar, l
 | [5 oct – 30 oct] | Inscripciones abiertas |
 | [28 oct] | Webinar de preparación: GitHub y n8n |
 | [30 oct, 23:59] | Cierre de inscripciones |
-| [4 – 5 nov] | Confirmación de equipos y envío de autorizaciones Junior (2 y 3 de noviembre son feriado) |
-| 6 – 7 nov | Hackathon |
-| [13 nov] | Publicación de resultados detallados y certificados |
+| [18 – 19 nov] | Confirmación de equipos y envío de autorizaciones Junior |
+| 20–21 nov | Hackathon |
+| [27 nov] | Publicación de resultados detallados y certificados |

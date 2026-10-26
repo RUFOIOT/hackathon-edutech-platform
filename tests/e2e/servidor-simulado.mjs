@@ -49,17 +49,17 @@ const ARBOL = [
   ["n8n/flujo.json", "blob", "flujo"], ["data", "tree", "data"], ["data/README.md", "blob", "datareadme"], ["src", "tree", "srcdir"], ["src/index.ts", "blob", "src"],
 ].map(([path, type, sha]) => ({ path, type, sha, size: 100 }));
 const COMMITS = [
-  ["c1", "2026-11-06T21:05:00Z", "ana-e2e", ["README.md"]],
-  ["c2", "2026-11-06T23:40:00Z", "luis-e2e", ["README.md"]],
-  ["c3", "2026-11-07T14:10:00Z", "ana-e2e", ["src/index.ts"]],
-  ["c4", "2026-11-07T15:20:00Z", "luis-e2e", ["src/index.ts"]],
+  ["c1", "2026-11-20T21:05:00Z", "ana-e2e", ["README.md"]],
+  ["c2", "2026-11-20T23:40:00Z", "luis-e2e", ["README.md"]],
+  ["c3", "2026-11-21T14:10:00Z", "ana-e2e", ["src/index.ts"]],
+  ["c4", "2026-11-21T15:20:00Z", "luis-e2e", ["src/index.ts"]],
 ];
 const SHA_ENTREGA = "e2e0c0ffee1234567890abcdef1234567890abcd";
 
 function responderRepo(owner, name, resto, url, json) {
   if (name.endsWith("-inexistente")) return json(404, { message: "Not Found" });
   if (resto === "") {
-    return json(200, { name, owner: { login: owner }, created_at: "2026-11-06T21:00:00Z", default_branch: "main", private: true });
+    return json(200, { name, owner: { login: owner }, created_at: "2026-11-20T21:00:00Z", default_branch: "main", private: true });
   }
   if (resto === "/commits") {
     const since = url.searchParams.get("since"), until = url.searchParams.get("until"), path = url.searchParams.get("path");
@@ -75,7 +75,7 @@ function responderRepo(owner, name, resto, url, json) {
   if (resto === "/git/ref/tags/entrega") {
     return name.endsWith("-sin-tag") ? json(404, { message: "Not Found" }) : json(200, { ref: "refs/tags/entrega", object: { sha: SHA_ENTREGA, type: "commit" } });
   }
-  if (resto.startsWith("/git/commits/")) return json(200, { sha: SHA_ENTREGA, committer: { date: "2026-11-07T16:50:00Z" } });
+  if (resto.startsWith("/git/commits/")) return json(200, { sha: SHA_ENTREGA, committer: { date: "2026-11-21T16:50:00Z" } });
   return json(404, { message: "Not Found" });
 }
 

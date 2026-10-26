@@ -43,7 +43,7 @@ export default defineConfig({
     { name: "entrega", testMatch: /entrega\.spec/, use: { ...devices["Pixel 7"], viewport: { width: 360, height: 780 } } },
     // El jurado evalúa desde el celular.
     { name: "jurado", testMatch: /jurado\.spec/, use: { ...devices["Pixel 7"], viewport: { width: 360, height: 780 } } },
-    // Check-in el día del evento: instancia con la hora del sábado 7.
+    // Check-in el día del evento: instancia con la hora del sábado 21.
     { name: "operacion", testMatch: /operacion\.spec/, use: { ...devices["Pixel 7"], viewport: { width: 360, height: 780 }, baseURL: "http://localhost:3101" } },
   ],
   webServer: [
@@ -73,7 +73,7 @@ export default defineConfig({
       command: "npx next start -p 3101",
       url: "http://localhost:3101",
       reuseExistingServer: !process.env.CI,
-      env: { ...ENV_APP, APP_FECHA_SIMULADA: "2026-11-07T11:00:00-05:00" },
+      env: { ...ENV_APP, APP_FECHA_SIMULADA: "2026-11-21T11:00:00-05:00" },
     },
   ],
 });

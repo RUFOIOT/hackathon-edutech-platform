@@ -164,7 +164,7 @@ export interface Snapshot {
   commitsEnVentana: number;
   autores: string[];
   ultimoCommitAt: Date | null;
-  commitsPorHora: Record<string, number>; // "2026-11-06T15" en hora de Ecuador
+  commitsPorHora: Record<string, number>; // "2026-11-20T15" en hora de Ecuador
   archivosObligatorios: Record<string, boolean>;
   secretos: Hallazgo[];
   alertas: Alerta[];

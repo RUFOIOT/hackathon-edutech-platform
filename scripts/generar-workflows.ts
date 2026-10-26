@@ -97,7 +97,7 @@ const html = (titulo, parrafos, boton) =>
   '<h1 style="font-size:22px;margin:24px 0 12px">' + esc(titulo) + '</h1>' +
   parrafos.map((p) => '<p style="font-size:15px;line-height:1.55;margin:0 0 12px">' + p + '</p>').join('') +
   (boton ? '<p style="margin:20px 0"><a href="' + esc(boton.url) + '" style="display:inline-block;background:#c9a24a;color:#0e1b3d;padding:12px 22px;border-radius:999px;text-decoration:none;font-weight:bold">' + esc(boton.texto) + '</a></p>' : '') +
-  '<p style="font-size:12px;color:#5b6478;margin-top:28px">Hackathon EduTech Eight Academy by n8n · 6 y 7 de noviembre de 2026 · Quito</p></div>';
+  '<p style="font-size:12px;color:#5b6478;margin-top:28px">Hackathon EduTech Eight Academy by n8n · 20 y 21 de noviembre de 2026 · Quito</p></div>';
 const correo = (para, asunto, titulo, parrafos, boton) => ({
   json: {
     canal: 'correo',
@@ -355,9 +355,9 @@ if (e.type === 'registration.created') {
   const parrafos = ['Hola ' + esc(p.nombres) + ', recibimos tu inscripción al Hackathon EduTech Eight Academy by n8n.'];
   if (p.listaEspera) parrafos.push('Por ahora estás en <strong>lista de espera</strong> porque el cupo está completo. Te escribiremos apenas se libere un lugar.');
   else if (p.teamNombre) parrafos.push('Equipo: <strong>' + esc(p.teamNombre) + '</strong>.' + (p.codigoInvitacion ? ' Comparte este código para que tu equipo se una: <strong>' + esc(p.codigoInvitacion) + '</strong>.' : ''));
-  else parrafos.push('Te inscribiste sin equipo: en el matchmaking del viernes 6 te ayudamos a formar uno.');
+  else parrafos.push('Te inscribiste sin equipo: en el matchmaking del viernes 20 te ayudamos a formar uno.');
   if (p.requiereAutorizacion) parrafos.push('<strong>Importante:</strong> como eres de la categoría Junior, tu representante legal debe firmar la autorización y subirla desde Mi equipo. Sin ella no puedes participar.');
-  parrafos.push('Próximos pasos: lee la Guía del hacker, ten lista tu cuenta de GitHub y prepárate para el kick-off del viernes 6 de noviembre a las 15:30 (hora de Ecuador).');
+  parrafos.push('Próximos pasos: lee la Guía del hacker, ten lista tu cuenta de GitHub y prepárate para el kick-off del viernes 20 de noviembre a las 15:30 (hora de Ecuador).');
   salida.push(correo(p.email, 'Inscripción recibida · Hackathon EduTech', 'Inscripción recibida', parrafos, { texto: 'Ir a Mi equipo', url: APP + '/mi-equipo' }));
   salida.push(slack('Nueva inscripción ' + (p.categoria === 'JUNIOR' ? 'Junior' : 'Open') + ' · ' + p.modo + (p.teamNombre ? ' · equipo ' + p.teamNombre : '') + (p.listaEspera ? ' · lista de espera' : '')));
 }
@@ -441,7 +441,7 @@ salida.push(slack('Recordatorios de convocatoria: ' + r.autorizacionesPendientes
   // WF-04 · Monitor de repositorios (cada 15 min durante la ventana de hacking).
   {
     const f = new Flujo("WF-04-monitor-repositorios", "WF-04 · Monitor de repositorios");
-    // Ventana: viernes 6 15:30 → sábado 7 12:00 (config/event.ts). Ajusta si cambian las fechas.
+    // Ventana: viernes 20 15:30 → sábado 21 12:00 (config/event.ts). Ajusta si cambian las fechas.
     const cron = f.programado("Cada 15 min en la ventana", ["*/15 15-23 6 11 *", "*/15 0-11 7 11 *", "0 12 7 11 *"], [0, 300]);
     const firmar = f.codigo("Firmar petición", jsFirmar("({ todos: true })"), [240, 300]);
     const app = f.llamarApp("Snapshot de todos los repos", "/api/github/snapshot", [480, 300]);

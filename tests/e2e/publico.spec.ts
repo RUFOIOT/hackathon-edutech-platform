@@ -11,7 +11,7 @@ test.describe("cuenta regresiva", () => {
     await page.clock.setFixedTime(new Date("2026-10-01T09:00:00-05:00"));
     await page.goto("/");
     const timer = page.getByRole("timer");
-    await expect(timer).toContainText("6 de noviembre, 15:30 (hora de Ecuador)");
+    await expect(timer).toContainText("20 de noviembre, 15:30 (hora de Ecuador)");
     await expect(timer).toContainText("36");
     await expect(timer).toContainText("06:30:00");
     await expect(timer).toContainText("Faltan 36 días, 6 horas y 30 minutos para el kick-off.");
@@ -19,7 +19,7 @@ test.describe("cuenta regresiva", () => {
   });
 
   test("después del kick-off indica que el hackathon está en marcha", async ({ page }) => {
-    await page.clock.setFixedTime(new Date("2026-11-06T16:00:00-05:00"));
+    await page.clock.setFixedTime(new Date("2026-11-20T16:00:00-05:00"));
     await page.goto("/");
     await expect(page.getByRole("timer")).toContainText("El hackathon está en marcha");
   });

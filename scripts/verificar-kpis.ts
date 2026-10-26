@@ -20,7 +20,7 @@ import { calcularKpis } from "../lib/dashboard/kpis";
 process.env.FIRESTORE_EMULATOR_HOST ??= "127.0.0.1:8080";
 if (!/^(127\.0\.0\.1|localhost)/.test(process.env.FIRESTORE_EMULATOR_HOST)) throw new Error("Solo contra emuladores locales.");
 
-const AHORA = new Date(process.env.APP_FECHA_SIMULADA ?? "2026-11-07T11:00:00-05:00");
+const AHORA = new Date(process.env.APP_FECHA_SIMULADA ?? "2026-11-21T11:00:00-05:00");
 
 function valorEn(obj: unknown, ruta: string): unknown {
   return ruta.split(".").reduce<unknown>((o, k) => (o && typeof o === "object" ? (o as Record<string, unknown>)[k] : undefined), obj);

@@ -1,6 +1,6 @@
 # Guía del Hacker · Hackathon EduTech Eight Academy by n8n
 
-Todo lo que tu equipo necesita para llegar, construir y entregar. Léela completa antes del 6 de noviembre.
+Todo lo que tu equipo necesita para llegar, construir y entregar. Léela completa antes del 20 de noviembre.
 
 ---
 

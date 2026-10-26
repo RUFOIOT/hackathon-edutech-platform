@@ -1,6 +1,6 @@
 # CLAUDE.md · Plataforma Hackathon EduTech Eight Academy by n8n
 
-Web pública, registro, portal de equipos, jurado y dashboard 360 del evento (6–7 nov 2026, Quito).
+Web pública, registro, portal de equipos, jurado y dashboard 360 del evento (20–21 nov 2026, Quito).
 Interfaz, comentarios clave y documentación en **español**.
 
 ## Fuente de verdad

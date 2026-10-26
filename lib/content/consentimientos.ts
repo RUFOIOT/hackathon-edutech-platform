@@ -40,7 +40,7 @@ export const CONSENTIMIENTOS: Record<TipoConsentimiento, TextoConsentimiento> = 
     tipo: "autorizacion_menor",
     titulo: "Autorización del representante legal",
     texto:
-      "Declaro que soy el representante legal de la persona inscrita, que autorizo su participación en el hackathon los días 6 y 7 de noviembre de 2026 y que el documento adjunto está firmado por mí. Mi cédula se usa solo para verificar esta autorización.",
+      "Declaro que soy el representante legal de la persona inscrita, que autorizo su participación en el hackathon los días 20 y 21 de noviembre de 2026 y que el documento adjunto está firmado por mí. Mi cédula se usa solo para verificar esta autorización.",
     obligatorio: true,
   },
 };

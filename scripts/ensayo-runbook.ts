@@ -5,7 +5,7 @@
  * Uso (con `npm run emulators`, `npm run seed` y la app en marcha):
  *   ENSAYO_APP_URL=http://localhost:3200 ENSAYO_N8N_SECRET=<N8N_SHARED_SECRET de esa app> npm run ensayo
  *
- * La instancia debe tener APP_FECHA_SIMULADA en la ventana de hacking (p. ej. 2026-11-07T11:00-05:00).
+ * La instancia debe tener APP_FECHA_SIMULADA en la ventana de hacking (p. ej. 2026-11-21T11:00-05:00).
  */
 import { execFileSync } from "node:child_process";
 import { getApps, initializeApp } from "firebase-admin/app";
@@ -154,7 +154,7 @@ async function main() {
 
   // 3. Cierre
   await paso("Cierre", "KPIs del dashboard coinciden con SQL", async () => {
-    const salida = execFileSync("npx", ["tsx", "scripts/verificar-kpis.ts"], { encoding: "utf8", env: { ...process.env, APP_FECHA_SIMULADA: "2026-11-07T11:00:00-05:00" } });
+    const salida = execFileSync("npx", ["tsx", "scripts/verificar-kpis.ts"], { encoding: "utf8", env: { ...process.env, APP_FECHA_SIMULADA: "2026-11-21T11:00:00-05:00" } });
     return salida.trim().split("\n").at(-1) ?? "";
   });
   if (SECRETO) {

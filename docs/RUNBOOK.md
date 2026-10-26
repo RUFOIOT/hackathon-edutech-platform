@@ -1,6 +1,6 @@
 # Runbook del evento
 
-Qué revisar y qué hacer el viernes 6 y el sábado 7 de noviembre de 2026. Las horas son de Ecuador.
+Qué revisar y qué hacer el viernes 20 y el sábado 21 de noviembre de 2026. Las horas son de Ecuador.
 Responsables por defecto: **mesa técnica** (plataforma, repositorios, n8n) y **comité** (decisiones).
 
 ## Checklist
@@ -15,7 +15,7 @@ Responsables por defecto: **mesa técnica** (plataforma, repositorios, n8n) y **
 - [ ] Cuota de la GitHub App revisada: `gh api rate_limit` con el token de instalación.
 - [ ] Rúbricas en papel impresas (respaldo del jurado) y cronómetro físico por sala.
 
-### Viernes 6, antes de las 13:30 (check-in)
+### Viernes 20, antes de las 13:30 (check-in)
 
 - [ ] `/admin` carga y la barra de fase muestra "Check-in" desde las 13:30.
 - [ ] Panel de check-in abierto en 2 celulares por puerta.
@@ -27,7 +27,7 @@ Responsables por defecto: **mesa técnica** (plataforma, repositorios, n8n) y **
 - [ ] 18:30 y 10:00: WF-05 avisa a los equipos en riesgo; confirmar en Slack.
 - [ ] Checkpoint 2: la mesa técnica confirma a mano los equipos marcados como "requiere revisión".
 
-### Sábado 7, code freeze (12:00)
+### Sábado 21, code freeze (12:00)
 
 - [ ] 12:05 llega a Slack y al comité el reporte de WF-06 (entregas y A1–A5).
 - [ ] Revisar tags movidos después del freeze en `/admin/repositorios` y decidir A4.
@@ -110,7 +110,7 @@ Si bloquea un uso legítimo, sube el valor en `lib/seguridad/limite.ts` y vuelve
 ## Registro del ensayo
 
 Ejecutado con `npm run ensayo` sobre los emuladores con el seed y la app en la ventana de hacking
-(`APP_FECHA_SIMULADA=2026-11-07T11:00:00-05:00`).
+(`APP_FECHA_SIMULADA=2026-11-21T11:00:00-05:00`).
 
 ### Ensayo 2026-10-02 · http://localhost:3200 (seed, emuladores)
 
@@ -128,7 +128,7 @@ Ejecutado con `npm run ensayo` sobre los emuladores con el seed y la app en la v
 | Si n8n no responde | El outbox guarda y el reintento responde | OK | 0 pendientes antes; respuesta {"enviados":0,"pendientes":0,"fallidos":0} |
 | Durante el evento | Consultas de los workflows con el seed | OK | 3 consultas con 200 |
 | Durante el evento | Límite de peticiones activo | OK | 429 en el intento 121 desde la misma IP |
-| Cierre | KPIs del dashboard coinciden con SQL | OK | 26/26 KPIs coinciden con su consulta SQL (corte: 2026-11-07T16:00:00.000Z). |
+| Cierre | KPIs del dashboard coinciden con SQL | OK | 26/26 KPIs coinciden con su consulta SQL (corte: 2026-11-21T16:00:00.000Z). |
 | Cierre | Firma de ida y vuelta con n8n (npm run n8n:test) | OK | Todo en orden. |
 | Después del evento | Privacidad: solicitudes y plazo de retención visibles | OK | plazo y conteo visibles |
 

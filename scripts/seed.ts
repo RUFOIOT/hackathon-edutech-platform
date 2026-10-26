@@ -244,7 +244,7 @@ async function main() {
           demoEnVivo: rnd() > 0.15,
           fortaleza: "Fortaleza ficticia del seed: problema bien acotado y demo clara.",
           recomendacion: "Recomendación ficticia del seed: medir el impacto con datos de un piloto.",
-          enviadoAt: ts("2026-11-07T14:00:00-05:00"),
+          enviadoAt: ts("2026-11-21T14:00:00-05:00"),
           bloqueado: false,
         });
       }
@@ -253,15 +253,15 @@ async function main() {
 
   // Operación del evento (para KPIs verificables del dashboard): check-in del viernes, mentorías,
   // repositorios con snapshot, entregas, admisibilidad y un conflicto de interés.
-  const ahoraSeed = new Date("2026-11-07T11:00:00-05:00");
+  const ahoraSeed = new Date("2026-11-21T11:00:00-05:00");
   for (let i = 1; i <= 34; i++) {
     if (i % 4 === 0) continue; // ~25 % ausentes
     const pid = `p-${String(i).padStart(3, "0")}`;
-    set(`checkins/${pid}_viernes`, { participantId: pid, dia: "viernes", timestamp: ts(`2026-11-06T13:${dd(30 + (i % 30))}:00-05:00`), staffId: "staff-checkin" });
+    set(`checkins/${pid}_viernes`, { participantId: pid, dia: "viernes", timestamp: ts(`2026-11-20T13:${dd(30 + (i % 30))}:00-05:00`), staffId: "staff-checkin" });
   }
   const temas = ["n8n", "tecnica", "pitch", "n8n", "producto", "ia"];
   temas.forEach((tema, i) => {
-    const abierta = new Date(`2026-11-06T${dd(17 + i)}:00:00-05:00`);
+    const abierta = new Date(`2026-11-20T${dd(17 + i)}:00:00-05:00`);
     const atendida = i < 4 ? new Date(abierta.getTime() + (8 + i * 6) * 60_000) : null;
     set(`mentor_requests/seed-${i + 1}`, {
       teamId: `equipo-${dd(i + 1)}`,
@@ -275,7 +275,7 @@ async function main() {
   for (let e = 1; e <= 7; e++) {
     const teamId = `equipo-${dd(e)}`;
     const track = TRACK_CODES[(e - 1) % 3] as TrackCode;
-    const commitsPorHora: Record<string, number> = { "2026-11-06T16": e, "2026-11-06T18": 2, "2026-11-07T09": e % 3 + 1 };
+    const commitsPorHora: Record<string, number> = { "2026-11-20T16": e, "2026-11-20T18": 2, "2026-11-21T09": e % 3 + 1 };
     const total = Object.values(commitsPorHora).reduce((a, b) => a + b, 0);
     const alertas =
       e === 6
@@ -289,7 +289,7 @@ async function main() {
       tomadoEn: Timestamp.fromDate(ahoraSeed),
       commitsEnVentana: total,
       autores: e === 7 ? ["demo-p-031"] : ["demo-a", "demo-b"],
-      ultimoCommitAt: ts("2026-11-07T09:40:00-05:00"),
+      ultimoCommitAt: ts("2026-11-21T09:40:00-05:00"),
       commitsPorHora,
       archivosObligatorios: { "README.md": true, "PRIOR_WORK.md": true, "AI_USAGE.md": e !== 5, ".env.example": true, "docs/": true, "n8n/*.json": e <= 3, LICENSE: true, "data/README.md": true },
       alertas,
@@ -304,7 +304,7 @@ async function main() {
       owner: EVENT.githubOrg,
       name: `edutech26-${track.toLowerCase()}-${slug}`,
       fullName: `${EVENT.githubOrg}/edutech26-${track.toLowerCase()}-${slug}`,
-      createdAtGithub: ts("2026-11-06T15:45:00-05:00"),
+      createdAtGithub: ts("2026-11-20T15:45:00-05:00"),
       defaultBranch: "main",
       validado: true,
       motivos: [],
@@ -320,8 +320,8 @@ async function main() {
         videoUrl: null,
         declaraciones: { datosSinteticos: true, priorWork: true, aiUsage: true },
         tagSha: `seed${String(e).repeat(36)}`,
-        tagCommitAt: ts("2026-11-07T11:40:00-05:00"),
-        enviadoAt: ts(`2026-11-07T11:${dd(40 + e)}:00-05:00`),
+        tagCommitAt: ts("2026-11-21T11:40:00-05:00"),
+        enviadoAt: ts(`2026-11-21T11:${dd(40 + e)}:00-05:00`),
         tagMovidoTrasFreeze: e === 2,
       });
       set(`admissibility/${teamId}`, { teamId, a1: true, a2: e !== 2, a3: e !== 5, a4: null, a5: true, motivos: [] });

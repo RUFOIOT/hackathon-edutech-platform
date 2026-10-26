@@ -393,8 +393,8 @@ Las inscripciones hechas durante la prueba quedan en Firestore: se limpian antes
 
 1. **Sede:** "Unidad Educativa Particular Eight Academy, sede La Prensa". La dirección y el aforo
    están por confirmar.
-2. **Cruce con el POA:** el sábado 7 está asignado a la "1era Integración Padres" y el viernes 6
-   es día lectivo. Bloquea la convocatoria (guía §12, decisiones 1 y 2).
+2. **Cruce con el POA:** la fecha original (sábado 7) estaba asignada a la "1era Integración Padres"; el
+   evento pasó al 20–21 nov y falta verificar el POA para esas fechas. El viernes 20 es día lectivo. Bloquea la convocatoria (guía §12, decisiones 1 y 2).
 3. **Desempate:** la guía añade un 4.º criterio, la votación del jurado de la final. Se registrará
    como una decisión manual del comité.
 4. **Junior:** además del representante, la guía exige un *mentor adulto asignado*.

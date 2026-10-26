@@ -12,7 +12,7 @@ const plexMono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400"], variable: 
 
 export const metadata: Metadata = {
   title: { default: EVENT.nombre, template: `%s · ${EVENT.nombre}` },
-  description: "Construye en vivo soluciones para la educación. 6 y 7 de noviembre de 2026, Quito.",
+  description: "Construye en vivo soluciones para la educación. 20 y 21 de noviembre de 2026, Quito.",
 };
 
 export const viewport: Viewport = {

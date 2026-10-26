@@ -40,7 +40,7 @@ test.describe("jurado", () => {
         track: "T1",
         ronda: "semifinal",
         orden: i + 1,
-        horaProgramada: new Date(`2026-11-07T${13 + i}:30:00-05:00`),
+        horaProgramada: new Date(`2026-11-21T${13 + i}:30:00-05:00`),
       });
     }
 

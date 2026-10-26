@@ -19,7 +19,7 @@ export default async function Resultados() {
     <section className="mx-auto max-w-3xl px-4 py-12">
       <h1 className="text-3xl font-semibold sm:text-4xl">Resultados</h1>
       {!datos?.publicado ? (
-        <p className="mt-4 text-muted">Los resultados se publicarán al cierre del evento, el sábado 7 de noviembre.</p>
+        <p className="mt-4 text-muted">Los resultados se publicarán al cierre del evento, el sábado 21 de noviembre.</p>
       ) : (
         <>
           <h2 className="mt-10 text-2xl font-semibold">Ranking de la final</h2>

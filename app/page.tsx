@@ -69,7 +69,7 @@ function EstadoInscripciones({ oscuro = false }: { oscuro?: boolean }) {
 }
 
 export default function Inicio() {
-  const dias = ["Viernes 6", "Sábado 7"] as const;
+  const dias = ["Viernes 20", "Sábado 21"] as const;
   const retos = TRACK_CODES.flatMap((t) => TRACKS[t].ejemplos);
   const registro = enlacePlataforma("/registro");
 
@@ -103,7 +103,7 @@ export default function Inicio() {
             Academy by n8n
           </h1>
           <p className="mx-auto mt-5 max-w-prose text-lg opacity-85">
-            Viernes 6 y sábado 7 de noviembre de 2026 · {EVENT.sede.nombre}, {EVENT.sede.ciudad}. Construye en vivo lo que la educación necesita.
+            Viernes 20 y sábado 21 de noviembre de 2026 · {EVENT.sede.nombre}, {EVENT.sede.ciudad}. Construye en vivo lo que la educación necesita.
           </p>
           <div className="mt-10">
             <HeroInfinito objetivoIso={EVENT.fechas.kickoff.iso} etiquetaObjetivo={fechaEnEcuador(fecha("kickoff"))} />
@@ -303,7 +303,7 @@ export default function Inicio() {
                 <Image src={asset("/media/luma-quito.jpg")} alt="" fill unoptimized sizes="(min-width: 1152px) 1120px, 100vw" className="object-cover object-[50%_35%]" />
                 <div className="absolute inset-0 bg-[linear-gradient(180deg,color-mix(in_srgb,var(--color-navy-900)_15%,transparent),color-mix(in_srgb,var(--color-navy-900)_65%,transparent))]" />
               </div>
-              <p className="text-sm font-semibold opacity-85">Cupos limitados · 6 y 7 de noviembre</p>
+              <p className="text-sm font-semibold opacity-85">Cupos limitados · 20 y 21 de noviembre</p>
               <h2 id="luma" className="mx-auto mt-3 max-w-[20ch] text-3xl font-semibold sm:text-4xl">
                 ¿Te ves en el podio? Aparta tu lugar en Luma.
               </h2>

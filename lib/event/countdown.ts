@@ -22,7 +22,7 @@ export function restante(objetivo: Date, ahora: Date): Restante {
   };
 }
 
-/** "viernes, 6 de noviembre, 15:30" en hora de Ecuador, sin importar la zona del navegador o servidor. */
+/** "viernes, 20 de noviembre, 15:30" en hora de Ecuador, sin importar la zona del navegador o servidor. */
 export function fechaEnEcuador(d: Date): string {
   const fecha = new Intl.DateTimeFormat("es-EC", { timeZone: TIMEZONE, weekday: "long", day: "numeric", month: "long" }).format(d);
   const hora = new Intl.DateTimeFormat("es-EC", { timeZone: TIMEZONE, hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(d);

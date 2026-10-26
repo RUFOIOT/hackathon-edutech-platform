@@ -1,6 +1,6 @@
 # Plataforma · Hackathon EduTech Eight Academy by n8n
 
-Plataforma del **Hackathon EduTech Eight Academy by n8n**: viernes 6 y sábado 7 de noviembre de
+Plataforma del **Hackathon EduTech Eight Academy by n8n**: viernes 20 y sábado 21 de noviembre de
 2026 en la Unidad Educativa Particular Eight Academy, sede La Prensa (Quito). Estudiantes,
 universitarios y profesionales construyen en vivo soluciones para la educación en tres tracks,
 más un premio transversal a la mejor automatización con n8n.
@@ -86,7 +86,7 @@ Ingresa en `/ingresar` con un correo del seed (`staff-admin@edutech.test`, `juez
 `p-001@edutech.test`…). El enlace mágico aparece en la terminal de los emuladores.
 
 Para ensayar otra fase del evento, define `APP_FECHA_SIMULADA` (solo funciona con emuladores), por
-ejemplo `2026-11-07T11:00:00-05:00` para estar en plena ventana de hacking.
+ejemplo `2026-11-21T11:00:00-05:00` para estar en plena ventana de hacking.
 
 ## Comandos
 

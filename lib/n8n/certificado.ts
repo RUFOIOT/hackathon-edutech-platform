@@ -58,6 +58,6 @@ export async function generarCertificado(d: DatosCertificado): Promise<Uint8Arra
         ? "por llegar a la final del Show and Tell"
         : "por construir en vivo una solución para la educación";
   centrado(motivo, height - 345, 14);
-  centrado(`Quito, 6 y 7 de noviembre de 2026 · ${EVENT.organiza}`, 70, 11);
+  centrado(`Quito, 20 y 21 de noviembre de 2026 · ${EVENT.organiza}`, 70, 11);
   return pdf.save();
 }

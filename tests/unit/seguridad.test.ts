@@ -43,12 +43,12 @@ describe("retención", () => {
 
   it("anonimiza 12 meses después de la premiación por defecto", () => {
     expect(mesesRetencion()).toBe(12);
-    expect(fechaRetencion().toISOString()).toBe("2027-11-07T23:30:00.000Z");
+    expect(fechaRetencion().toISOString()).toBe("2027-11-21T23:30:00.000Z");
   });
 
   it("el plazo es configurable con RETENCION_MESES", () => {
     process.env.RETENCION_MESES = "6";
-    expect(fechaRetencion().toISOString()).toBe("2027-05-07T23:30:00.000Z");
+    expect(fechaRetencion().toISOString()).toBe("2027-05-21T23:30:00.000Z");
     process.env.RETENCION_MESES = "no-es-numero";
     expect(mesesRetencion()).toBe(12);
   });

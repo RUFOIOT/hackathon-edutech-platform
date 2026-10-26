@@ -7,8 +7,8 @@ const ec = (s: string) => new Date(`${s}-05:00`);
 describe("faseActual", () => {
   it.each([
     ["2026-10-15T10:00:00", "Convocatoria"],
-    ["2026-10-30T23:58:59", "Convocatoria"],
-    ["2026-10-30T23:59:00", "Pre-evento"],
+    ["2026-11-20T11:59:59", "Convocatoria"],
+    ["2026-11-20T12:00:00", "Pre-evento"],
     ["2026-11-20T15:29:59", "Pre-evento"],
     ["2026-11-20T15:30:00", "Hacking"],
     ["2026-11-21T11:59:59", "Hacking"],
@@ -29,7 +29,8 @@ describe("ventanas", () => {
   it("inscripciones abiertas solo entre apertura y cierre", () => {
     expect(inscripcionesAbiertas(ec("2026-10-04T23:59:59"))).toBe(false);
     expect(inscripcionesAbiertas(ec("2026-10-05T00:00:00"))).toBe(true);
-    expect(inscripcionesAbiertas(ec("2026-10-30T23:59:00"))).toBe(false);
+    expect(inscripcionesAbiertas(ec("2026-11-20T11:59:59"))).toBe(true);
+    expect(inscripcionesAbiertas(ec("2026-11-20T12:00:00"))).toBe(false);
   });
 
   it("ventana de hacking: viernes 15:30 a sábado 12:00", () => {
@@ -40,7 +41,7 @@ describe("ventanas", () => {
 
 describe("apertura de prueba (INSCRIPCIONES_PRUEBA)", () => {
   const antesDeAbrir = new Date("2026-10-02T10:00:00-05:00");
-  const despuesDelCierre = new Date("2026-10-31T10:00:00-05:00");
+  const despuesDelCierre = new Date("2026-11-20T13:00:00-05:00");
 
   it("sin la variable, respeta la fecha de apertura", () => {
     delete process.env.INSCRIPCIONES_PRUEBA;

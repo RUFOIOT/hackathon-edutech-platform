@@ -52,7 +52,7 @@ export const EVENT = {
     publicacionWeb: { iso: "2026-10-05T00:00:00-05:00", confirmada: false },
     aperturaInscripciones: { iso: "2026-10-05T00:00:00-05:00", confirmada: false },
     webinar: { iso: "2026-10-28T18:00:00-05:00", confirmada: false },
-    cierreInscripciones: { iso: "2026-10-30T23:59:00-05:00", confirmada: false },
+    cierreInscripciones: { iso: "2026-11-20T12:00:00-05:00", confirmada: true },
     // Evento (guía §4). Confirmadas en la guía, sujetas a la alerta de calendario del POA (§12, decisión 1).
     checkin: { iso: "2026-11-20T13:30:00-05:00", confirmada: true },
     kickoff: { iso: "2026-11-20T15:30:00-05:00", confirmada: true },

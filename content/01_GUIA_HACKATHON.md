@@ -153,9 +153,9 @@ El código y la propiedad intelectual pertenecen a cada equipo. Al participar, l
 | Fecha | Hito |
 |---|---|
 | [lunes 5 oct] | Aprobación del comité y publicación de la web |
-| [5 oct – 30 oct] | Inscripciones abiertas |
+| [5 oct – 20 nov] | Inscripciones abiertas |
 | [28 oct] | Webinar de preparación: GitHub y n8n |
-| [30 oct, 23:59] | Cierre de inscripciones |
-| [18 – 19 nov] | Confirmación de equipos y envío de autorizaciones Junior |
+| [hasta el 20 nov, 12:00] | Confirmación de equipos y envío de autorizaciones Junior |
+| viernes 20 nov, 12:00 | Cierre de inscripciones |
 | 20–21 nov | Hackathon |
 | [27 nov] | Publicación de resultados detallados y certificados |

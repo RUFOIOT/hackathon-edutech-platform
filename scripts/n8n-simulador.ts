@@ -316,7 +316,7 @@ export function mockApp(opts: { certificado?: (cuerpo: Record<string, unknown>) 
       case "recordatorios-convocatoria":
         return {
           activo: true,
-          cierre: "2026-10-30T23:59:00-05:00",
+          cierre: "2026-11-20T12:00:00-05:00",
           autorizacionesPendientes: [{ nombres: "Ana", para: ["ana@edutech.test", "mama@edutech.test"], archivoSubido: false, enlace: "https://app.edutech.test/mi-equipo" }],
           equiposIncompletos: [{ teamNombre: "Los Nodos", miembros: 1, codigo: "ABC234", enlace: "https://app.edutech.test/registro?codigo=ABC234", para: ["ana@edutech.test"] }],
           webinar: { fecha: "2026-10-28T18:00:00-05:00", para: ["ana@edutech.test"] },

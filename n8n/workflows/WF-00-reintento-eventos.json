@@ -2,8 +2,8 @@
   "name": "WF-00 · Reintento de eventos pendientes",
   "nodes": [
     {
-      "id": "92f95e92-de9d-4f4a-a46a-bd4f2bf60b83",
-      "name": "Cada 5 minutos",
+      "id": "1628260e-8a9c-47d3-acc7-fbe51430d721",
+      "name": "Cada 30 minutos",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
@@ -15,7 +15,7 @@
           "interval": [
             {
               "field": "cronExpression",
-              "expression": "*/5 * * * *"
+              "expression": "*/30 * * * *"
             }
           ]
         }
@@ -182,7 +182,7 @@
     }
   ],
   "connections": {
-    "Cada 5 minutos": {
+    "Cada 30 minutos": {
       "main": [
         [
           {

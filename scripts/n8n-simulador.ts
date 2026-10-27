@@ -352,7 +352,7 @@ export function mockApp(opts: { certificado?: (cuerpo: Record<string, unknown>) 
 
 /** Escenarios de los workflows programados: archivo, nodo disparador y lo esperado. */
 export const ESCENARIOS_PROGRAMADOS: { archivo: string; disparador: string; correos: number; slack: number; consulta?: Record<string, unknown> }[] = [
-  { archivo: "WF-00-reintento-eventos.json", disparador: "Cada 5 minutos", correos: 0, slack: 1 },
+  { archivo: "WF-00-reintento-eventos.json", disparador: "Cada 30 minutos", correos: 0, slack: 1 },
   { archivo: "WF-03-recordatorios-convocatoria.json", disparador: "Cada día a las 09:00", correos: 4, slack: 1, consulta: { consulta: "recordatorios-convocatoria" } },
   { archivo: "WF-04-monitor-repositorios.json", disparador: "Cada 15 min en la ventana", correos: 1, slack: 1 },
   { archivo: "WF-05-recordatorio-checkpoints.json", disparador: "Viernes 18:30 (checkpoint 1)", correos: 2, slack: 1, consulta: { consulta: "checkpoints-en-riesgo", hito: "checkpoint1" } },

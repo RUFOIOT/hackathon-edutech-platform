@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 /**
- * POST /api/eventos/reintentar — WF-00 lo llama cada 5 minutos para reenviar los eventos del
+ * POST /api/eventos/reintentar — WF-00 lo llama cada 30 minutos para reenviar los eventos del
  * outbox que n8n no recibió (D-19). Cuerpo firmado: `{}`.
  */
 export async function POST(req: NextRequest) {

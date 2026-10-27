@@ -17,11 +17,13 @@ Nota de traspaso para retomar el trabajo desde otra máquina.
 
 ## Pendiente
 
-1. **n8n Cloud responde 500** («There was a problem executing the workflow») en todos los
-   webhooks, incluidos los de producción, y no registra ejecuciones. Revisar plan o límite de
-   ejecuciones en https://cyberdog87.app.n8n.cloud. Mientras tanto, los correos automáticos de la
-   plataforma y los avisos de Telegram al staff tampoco salen.
-2. Cuando n8n responda, enviar el correo a los inscritos:
+1. **n8n Cloud sin ejecuciones hasta el 1 de noviembre**: el plan superó su límite mensual y los
+   webhooks responden 500 («There was a problem executing the workflow»). Lo agotaba WF-00, que
+   corría cada 5 minutos (~8.600 ejecuciones/mes); ahora corre cada 30 (~1.400/mes). Mientras tanto
+   el registro funciona, pero los correos de la plataforma y los avisos al staff quedan en el outbox
+   y salen cuando WF-00 vuelva a correr. El 1 de noviembre, comprobar que los webhooks respondan.
+2. Correo a los inscritos de Luma: **en espera de confirmación** del organizador (enviarlo desde
+   Gmail personal ya, o por n8n después del 1 de noviembre). Para enviarlo por n8n:
    ```bash
    python3 -I scripts/campana-luma/enviar.py vista /tmp/vista.html          # vista previa
    python3 -I scripts/campana-luma/enviar.py prueba <tu-correo>             # 1 prueba

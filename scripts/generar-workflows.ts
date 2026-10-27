@@ -330,7 +330,7 @@ export function construirWorkflows(): Flujo[] {
   // WF-00 · Reintento del outbox (soporte de D-19; no está en la tabla del prompt).
   {
     const f = new Flujo("WF-00-reintento-eventos", "WF-00 · Reintento de eventos pendientes");
-    const cron = f.programado("Cada 5 minutos", ["*/5 * * * *"], [0, 300]);
+    const cron = f.programado("Cada 30 minutos", ["*/30 * * * *"], [0, 300]);
     const firmar = f.codigo("Firmar petición", jsFirmar("({})"), [240, 300]);
     const app = f.llamarApp("Reintentar en la app", "/api/eventos/reintentar", [480, 300]);
     const redactar = f.codigo(

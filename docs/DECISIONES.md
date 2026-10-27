@@ -335,7 +335,7 @@ en uno de ellos. `scripts/n8n-simulador.ts` ejecuta el JavaScript real de los no
 sandbox y sigue las conexiones del JSON, de modo que `npm run n8n:test` y `npm test` prueban lo
 que se importa en n8n, no una copia.
 
-Además de los nueve del prompt hay un **WF-00** que reintenta el outbox cada 5 minutos (D-19). Los
+Además de los nueve del prompt hay un **WF-00** que reintenta el outbox cada 30 minutos (D-19; antes cada 5, pero agotaba el límite de ejecuciones del plan de n8n Cloud). Los
 eventos sin workflow propio en la tabla del prompt se atienden en el más cercano:
 `guardian.validated` y `checkin.created` en WF-01, `team.completed` en WF-02 y
 `submission.created` (acuse de recibo) en WF-06. Así ningún evento queda reintentándose sin destino.

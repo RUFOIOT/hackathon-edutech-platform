@@ -83,7 +83,7 @@ Síntomas: no llegan correos ni avisos de Slack; en Firestore `event_outbox` cre
 1. **No se pierde nada:** cada evento queda en el outbox y la inscripción, la entrega o la
    publicación siguen funcionando.
 2. Revisa n8n (instancia arriba, workflows activos, credenciales de Resend y Slack válidas).
-3. Cuando vuelva, WF-00 reenvía los pendientes cada 5 minutos. Para forzarlo, ejecuta WF-00 a mano.
+3. Cuando vuelva, WF-00 reenvía los pendientes cada 30 minutos. Para forzarlo, ejecuta WF-00 a mano.
 4. Eventos con 10 intentos fallidos quedan `fallido` y WF-00 avisa en Slack: revisa `ultimoError`
    en `event_outbox`, corrige y cámbialos a `pendiente` desde la consola de Firebase.
 5. Mientras tanto: comunicados urgentes por megáfono y el grupo del staff; los acuses de entrega

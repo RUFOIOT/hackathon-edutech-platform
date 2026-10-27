@@ -123,6 +123,7 @@ docs/           decisiones, dataset, arquitectura, despliegue y runbook
 - [docs/ARQUITECTURA.md](docs/ARQUITECTURA.md): cómo se conectan la app, Firebase, GitHub y n8n.
 - [docs/DEPLOY.md](docs/DEPLOY.md): despliegue en Netlify + Firebase y publicación en Pages.
 - [docs/RUNBOOK.md](docs/RUNBOOK.md): qué hacer el día del evento si algo falla.
+- [docs/PROGRESO.md](docs/PROGRESO.md): estado actual y pendientes para retomar desde otra máquina.
 - [docs/DATASET.md](docs/DATASET.md): columnas de la exportación y KPIs en SQL.
 - [docs/DECISIONES.md](docs/DECISIONES.md): decisiones técnicas y diferencias con las guías.
 - [CLAUDE.md](CLAUDE.md): convenciones del código.

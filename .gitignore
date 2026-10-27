@@ -24,3 +24,6 @@ out-pages/
 
 # Configuración local del despliegue de n8n (contiene la API key y el secreto HMAC)
 .env.n8n
+
+# Exportaciones de Luma (datos personales)
+*.csv

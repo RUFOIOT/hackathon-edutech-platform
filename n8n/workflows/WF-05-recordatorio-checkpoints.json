@@ -28,7 +28,7 @@
           "interval": [
             {
               "field": "cronExpression",
-              "expression": "30 18 6 11 *"
+              "expression": "30 18 20 11 *"
             }
           ]
         }
@@ -61,7 +61,7 @@
           "interval": [
             {
               "field": "cronExpression",
-              "expression": "0 10 7 11 *"
+              "expression": "0 10 21 11 *"
             }
           ]
         }
@@ -94,7 +94,7 @@
           "interval": [
             {
               "field": "cronExpression",
-              "expression": "30 11 7 11 *"
+              "expression": "30 11 21 11 *"
             }
           ]
         }

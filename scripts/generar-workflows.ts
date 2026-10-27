@@ -442,7 +442,7 @@ salida.push(slack('Recordatorios de convocatoria: ' + r.autorizacionesPendientes
   {
     const f = new Flujo("WF-04-monitor-repositorios", "WF-04 · Monitor de repositorios");
     // Ventana: viernes 20 15:30 → sábado 21 12:00 (config/event.ts). Ajusta si cambian las fechas.
-    const cron = f.programado("Cada 15 min en la ventana", ["*/15 15-23 6 11 *", "*/15 0-11 7 11 *", "0 12 7 11 *"], [0, 300]);
+    const cron = f.programado("Cada 15 min en la ventana", ["*/15 15-23 20 11 *", "*/15 0-11 21 11 *", "0 12 21 11 *"], [0, 300]);
     const firmar = f.codigo("Firmar petición", jsFirmar("({ todos: true })"), [240, 300]);
     const app = f.llamarApp("Snapshot de todos los repos", "/api/github/snapshot", [480, 300]);
     const redactar = f.codigo(
@@ -479,9 +479,9 @@ if (fallidos > 3) salida.push(slack('⚠️ ' + fallidos + ' repositorios no se 
   {
     const f = new Flujo("WF-05-recordatorio-checkpoints", "WF-05 · Recordatorio de checkpoints");
     const hitos = [
-      { cron: "30 18 6 11 *", hito: "checkpoint1", nombre: "Viernes 18:30 (checkpoint 1)" },
-      { cron: "0 10 7 11 *", hito: "checkpoint2", nombre: "Sábado 10:00 (checkpoint 2)" },
-      { cron: "30 11 7 11 *", hito: "freeze", nombre: "Sábado 11:30 (code freeze)" },
+      { cron: "30 18 20 11 *", hito: "checkpoint1", nombre: "Viernes 18:30 (checkpoint 1)" },
+      { cron: "0 10 21 11 *", hito: "checkpoint2", nombre: "Sábado 10:00 (checkpoint 2)" },
+      { cron: "30 11 21 11 *", hito: "freeze", nombre: "Sábado 11:30 (code freeze)" },
     ];
     const firmar = f.codigo("Firmar consulta", jsFirmar("item.json.peticion"), [480, 300]);
     hitos.forEach((h, i) => {
@@ -512,7 +512,7 @@ salida.push(slack('Recordatorio de ' + NOMBRE[r.hito] + ': ' + r.enRiesgo.length
   // WF-06 · Validación de entregas (12:05 del sábado) + acuse de cada entrega.
   {
     const f = new Flujo("WF-06-validacion-entregas", "WF-06 · Validación de entregas");
-    const cron = f.programado("Sábado 12:05", ["5 12 7 11 *"], [0, 600]);
+    const cron = f.programado("Sábado 12:05", ["5 12 21 11 *"], [0, 600]);
     const firmarSnap = f.codigo("Firmar snapshot final", jsFirmar("({ todos: true })"), [240, 600]);
     const snap = f.llamarApp("Snapshot final", "/api/github/snapshot", [480, 600]);
     const firmarRep = f.codigo("Firmar reporte", jsFirmar("({ consulta: 'reporte-entregas' })"), [720, 600]);

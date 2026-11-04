@@ -11,7 +11,8 @@ Nota de traspaso para retomar el trabajo desde otra máquina.
 - Grupo de Telegram **«Inscritos · EduTech Hackathon 2026»** (supergrupo con temas; el bot
   @Eigthlabsbot es admin) con el tema **🔎 Buscando equipo**. El enlace de invitación está en
   `TELEGRAM_INVITE_INSCRITOS` de `.env.n8n`.
-- Correo con diseño para los inscritos de Luma: `scripts/campana-luma/enviar.py`.
+- Correo con diseño para los inscritos de Luma (`scripts/campana-luma/enviar.py`): **enviado el 4 nov**
+  a los 47 aprobados (0 fallidos), con la invitación al grupo de Telegram; avisado al staff.
   Destinatarios: los **47 aprobados** del CSV de Luma (26 sin equipo, 7 con equipo incompleto,
   11 con equipo completo, 3 sin respuesta). Los 328 «invitados» no reciben el correo.
 
@@ -22,16 +23,8 @@ Nota de traspaso para retomar el trabajo desde otra máquina.
    corría cada 5 minutos (~8.600 ejecuciones/mes); ahora corre cada 30 (~1.400/mes). Mientras tanto
    el registro funciona, pero los correos de la plataforma y los avisos al staff quedan en el outbox
    y salen cuando WF-00 vuelva a correr. El 1 de noviembre, comprobar que los webhooks respondan.
-2. Correo a los inscritos de Luma: **en espera de confirmación** del organizador (enviarlo desde
-   Gmail personal ya, o por n8n después del 1 de noviembre). Para enviarlo por n8n:
-   ```bash
-   python3 -I scripts/campana-luma/enviar.py vista /tmp/vista.html          # vista previa
-   python3 -I scripts/campana-luma/enviar.py prueba <tu-correo>             # 1 prueba
-   python3 -I scripts/campana-luma/enviar.py masivo "<csv de Luma>"         # cuenta destinatarios
-   python3 -I scripts/campana-luma/enviar.py masivo "<csv de Luma>" --si    # envío real
-   ```
-   El script crea un workflow temporal en n8n (Gmail, credencial «Gmail account»), envía y lo borra.
-   Después, avisar al grupo de staff con el resumen (enviados, fallidos, enlace del grupo).
+2. Inscritos de Luma que se sumen después del 27 oct: exportar un CSV nuevo y enviarles el correo
+   (`python3 -I scripts/campana-luma/enviar.py masivo "<csv>" --si`; hoy envía a todos los aprobados del CSV).
 3. Actualizar a mano la fecha del evento en Luma.
 4. Confirmar en el POA del colegio que el 27–28 de noviembre está libre.
 

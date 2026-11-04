@@ -18,11 +18,8 @@ Nota de traspaso para retomar el trabajo desde otra máquina.
 
 ## Pendiente
 
-1. **n8n Cloud sin ejecuciones hasta el 1 de noviembre**: el plan superó su límite mensual y los
-   webhooks responden 500 («There was a problem executing the workflow»). Lo agotaba WF-00, que
-   corría cada 5 minutos (~8.600 ejecuciones/mes); ahora corre cada 30 (~1.400/mes). Mientras tanto
-   el registro funciona, pero los correos de la plataforma y los avisos al staff quedan en el outbox
-   y salen cuando WF-00 vuelva a correr. El 1 de noviembre, comprobar que los webhooks respondan.
+1. n8n Cloud volvió a ejecutar (4 nov: webhooks responden 200). Vigilar el consumo mensual del plan;
+   WF-00 corre cada 30 minutos (~1.400 ejecuciones/mes).
 2. Inscritos de Luma que se sumen después del 27 oct: exportar un CSV nuevo y enviarles el correo
    (`python3 -I scripts/campana-luma/enviar.py masivo "<csv>" --si`; hoy envía a todos los aprobados del CSV).
 3. Actualizar a mano la fecha del evento en Luma.

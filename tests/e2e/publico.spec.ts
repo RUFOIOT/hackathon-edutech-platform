@@ -7,19 +7,19 @@ test.describe("cuenta regresiva", () => {
     // Navegador en Tokio: el resultado debe ser el mismo porque es una resta de instantes.
     const ctx = await browser.newContext({ timezoneId: "Asia/Tokyo", viewport: { width: 1280, height: 900 } });
     const page = await ctx.newPage();
-    // 1 oct 2026 09:00 en Ecuador → faltan 36 días y 06:30:00.
+    // 1 oct 2026 09:00 en Ecuador → faltan 57 días y 06:30:00.
     await page.clock.setFixedTime(new Date("2026-10-01T09:00:00-05:00"));
     await page.goto("/");
     const timer = page.getByRole("timer");
-    await expect(timer).toContainText("20 de noviembre, 15:30 (hora de Ecuador)");
-    await expect(timer).toContainText("36");
+    await expect(timer).toContainText("27 de noviembre, 15:30 (hora de Ecuador)");
+    await expect(timer).toContainText("57");
     await expect(timer).toContainText("06:30:00");
-    await expect(timer).toContainText("Faltan 36 días, 6 horas y 30 minutos para el kick-off.");
+    await expect(timer).toContainText("Faltan 57 días, 6 horas y 30 minutos para el kick-off.");
     await ctx.close();
   });
 
   test("después del kick-off indica que el hackathon está en marcha", async ({ page }) => {
-    await page.clock.setFixedTime(new Date("2026-11-20T16:00:00-05:00"));
+    await page.clock.setFixedTime(new Date("2026-11-27T16:00:00-05:00"));
     await page.goto("/");
     await expect(page.getByRole("timer")).toContainText("El hackathon está en marcha");
   });

@@ -265,7 +265,7 @@ export const EVENTOS_EJEMPLO: Record<string, { payload: Record<string, unknown>;
       track: "T1",
       repoUrl: "https://github.com/eight-academy-hackathon/edutech-2026-t1-los-nodos",
       tagSha: "abcdef1234567890",
-      tagCommitAt: "2026-11-21T16:40:00.000Z",
+      tagCommitAt: "2026-11-28T16:40:00.000Z",
       demoUrl: "https://demo.edutech.test",
       destinatarios: ["ana@edutech.test", "luis@edutech.test"],
       reenvio: false,
@@ -316,7 +316,7 @@ export function mockApp(opts: { certificado?: (cuerpo: Record<string, unknown>) 
       case "recordatorios-convocatoria":
         return {
           activo: true,
-          cierre: "2026-11-20T12:00:00-05:00",
+          cierre: "2026-11-27T12:00:00-05:00",
           autorizacionesPendientes: [{ nombres: "Ana", para: ["ana@edutech.test", "mama@edutech.test"], archivoSubido: false, enlace: "https://app.edutech.test/mi-equipo" }],
           equiposIncompletos: [{ teamNombre: "Los Nodos", miembros: 1, codigo: "ABC234", enlace: "https://app.edutech.test/registro?codigo=ABC234", para: ["ana@edutech.test"] }],
           webinar: { fecha: "2026-10-28T18:00:00-05:00", para: ["ana@edutech.test"] },
@@ -324,7 +324,7 @@ export function mockApp(opts: { certificado?: (cuerpo: Record<string, unknown>) 
       case "checkpoints-en-riesgo":
         return {
           hito: cuerpo.hito,
-          limite: "2026-11-21T15:30:00.000Z",
+          limite: "2026-11-28T15:30:00.000Z",
           enRiesgo: [{ teamNombre: "Los Nodos", motivo: "Aún no hay una demo funcional mínima ejecutable.", para: ["ana@edutech.test", "luis@edutech.test"], enlace: "https://app.edutech.test/mi-equipo/repositorio" }],
         };
       case "reporte-entregas":

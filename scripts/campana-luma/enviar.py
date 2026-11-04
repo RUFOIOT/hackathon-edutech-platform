@@ -15,7 +15,7 @@ ENV = {k.strip(): v.strip().strip("\"'") for k, v in ENV.items()}
 API = ENV["N8N_API_URL"].rstrip("/") + "/api/v1"
 WEB = "https://edutech-hackathon-2026.netlify.app"
 TELEGRAM = ENV["TELEGRAM_INVITE_INSCRITOS"]
-ASUNTO = "Ya estás dentro: registra tu equipo en la EduTech Hackathon (20–21 nov)"
+ASUNTO = "Ya estás dentro: registra tu equipo en la EduTech Hackathon (27–28 nov)"
 
 
 def boton(url, texto, fondo, color):
@@ -37,7 +37,7 @@ def correo_html(nombre):
         '<div style="background:#0e1b3d;padding:28px 28px 24px;color:#ffffff">'
         '<p style="margin:0 0 6px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#f0b23a">Eight Academy by n8n</p>'
         '<h1 style="margin:0 0 10px;font-size:26px;line-height:1.2;color:#ffffff">Hackathon EduTech 2026</h1>'
-        '<p style="margin:0;font-size:15px;color:#d6dcea">📅 Viernes 20 y sábado 21 de noviembre · 📍 Quito</p></div>'
+        '<p style="margin:0;font-size:15px;color:#d6dcea">📅 Viernes 27 y sábado 28 de noviembre · 📍 Quito</p></div>'
         '<div style="padding:28px">'
         + p(f"<b>{hola}</b>")
         + p("Gracias por inscribirte en Luma. El siguiente paso es <b>registrarte en la plataforma oficial del hackathon</b>: "
@@ -45,12 +45,12 @@ def correo_html(nombre):
         + '<table role="presentation" style="border-collapse:collapse;margin:18px 0 6px">'
         + paso(1, "Regístrate en la plataforma", "Elige cómo: crea tu equipo e invita a tus compañeros por correo, únete con el código de 6 caracteres de tu equipo, o inscríbete individual.")
         + paso(2, "¿Aún sin equipo? Únete al grupo de Telegram", "En el tema <b>🔎 Buscando equipo</b> te presentas y armamos equipos de 2 a 5 personas.")
-        + paso(3, "Prepárate", "Lee la Guía del hacker y ten lista tu cuenta de GitHub. El kick-off es el viernes 20 a las 15:30.")
+        + paso(3, "Prepárate", "Lee la Guía del hacker y ten lista tu cuenta de GitHub. El kick-off es el viernes 27 a las 15:30.")
         + '</table>'
         + '<p style="margin:8px 0 22px">' + boton(f"{WEB}/registro", "Registrar mi equipo", "#c9a24a", "#0e1b3d")
         + boton(TELEGRAM, "Unirme al grupo de Telegram", "#0e1b3d", "#ffffff") + '</p>'
         + '<div style="background:#fff6e0;border-left:4px solid #f0b23a;padding:12px 16px;border-radius:8px;margin:0 0 20px;font-size:14px;color:#0e1b3d">'
-          '⏰ <b>El registro cierra el viernes 20 de noviembre a las 12:00</b> (hora de Ecuador). Sin registro en la plataforma no hay check-in.</div>'
+          '⏰ <b>El registro cierra el viernes 27 de noviembre a las 12:00</b> (hora de Ecuador). Sin registro en la plataforma no hay check-in.</div>'
         + p(f'Más información: <a href="{WEB}" style="color:#1d5fa8">sitio del hackathon</a> · '
             f'<a href="{WEB}/guia-hacker" style="color:#1d5fa8">Guía del hacker</a> · '
             f'<a href="{WEB}/tracks" style="color:#1d5fa8">Tracks</a>')

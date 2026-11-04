@@ -1,12 +1,12 @@
-# Progreso y pendientes (actualizado 27 oct 2026)
+# Progreso y pendientes (actualizado 4 nov 2026)
 
 Nota de traspaso para retomar el trabajo desde otra máquina.
 
 ## Hecho
 
-- Hackathon reprogramado al **viernes 20 y sábado 21 de noviembre de 2026** (commit 93e97b6),
+- Hackathon reprogramado al **viernes 27 y sábado 28 de noviembre de 2026** (commits 93e97b6 y del 4 nov, que corrige el 20–21 nov),
   desplegado en https://edutech-hackathon-2026.netlify.app y anunciado al grupo de staff en Telegram.
-- Cierre de inscripciones: **viernes 20 de noviembre, 12:00** (hora de Ecuador), antes del kick-off
+- Cierre de inscripciones: **viernes 27 de noviembre, 12:00** (hora de Ecuador), antes del kick-off
   de las 15:30 (commit 1794697).
 - Grupo de Telegram **«Inscritos · EduTech Hackathon 2026»** (supergrupo con temas; el bot
   @Eigthlabsbot es admin) con el tema **🔎 Buscando equipo**. El enlace de invitación está en
@@ -33,7 +33,7 @@ Nota de traspaso para retomar el trabajo desde otra máquina.
    El script crea un workflow temporal en n8n (Gmail, credencial «Gmail account»), envía y lo borra.
    Después, avisar al grupo de staff con el resumen (enviados, fallidos, enlace del grupo).
 3. Actualizar a mano la fecha del evento en Luma.
-4. Confirmar en el POA del colegio que el 20–21 de noviembre está libre.
+4. Confirmar en el POA del colegio que el 27–28 de noviembre está libre.
 
 ## Para trabajar desde otra máquina
 

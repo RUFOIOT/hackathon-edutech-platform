@@ -1,7 +1,7 @@
 # Hackathon EduTech Eight Academy · by n8n — Guía oficial
 
 **Versión:** v1.0 · borrador para aprobación institucional
-**Fechas:** viernes 20 y sábado 21 de noviembre de 2026
+**Fechas:** viernes 27 y sábado 28 de noviembre de 2026
 **Sede:** Unidad Educativa Particular Eight Academy, sede La Prensa (Quito) · [CONFIRMAR dirección exacta y aforo]
 **Organiza:** Dirección de Innovación y Tecnología · EIGHT LABS
 **Aliado tecnológico:** n8n · [CONFIRMAR acuerdo de uso de marca]
@@ -60,7 +60,7 @@ La regla de oro del evento: **se premia lo que funciona en vivo y está en el re
 | | 17:00 | Final: top 5 en plenaria |
 | | 18:30 | Deliberación, premiación y cierre |
 
-> **Reprogramación.** El hackathon se movió al viernes 20 y sábado 21 de noviembre de 2026. En la fecha original (6 y 7 de noviembre) el POA 2026-2027 asignaba el sábado 7 a la "1era Integración Padres" (SEM 009). Debe verificarse que el 20 y 21 estén libres en el POA y confirmarse el uso compartido de la sede el viernes 20, que es día lectivo. Ver sección 12.
+> **Reprogramación.** El hackathon se movió al viernes 27 y sábado 28 de noviembre de 2026. En la fecha original (6 y 7 de noviembre) el POA 2026-2027 asignaba el sábado 7 a la "1era Integración Padres" (SEM 009). Debe verificarse que el 27 y 28 estén libres en el POA y confirmarse el uso compartido de la sede el viernes 27, que es día lectivo. Ver sección 12.
 
 ## 5. Capacidad del Show and Tell
 
@@ -141,8 +141,8 @@ El código y la propiedad intelectual pertenecen a cada equipo. Al participar, l
 
 | N° | Decisión | Por qué bloquea | Responsable |
 |---|---|---|---|
-| 1 | Verificar en el POA que el sábado 21 esté libre (la fecha original, sábado 7, chocaba con la 1era Integración Padres, SEM 009) | El POA tiene precedencia sobre cualquier fecha | Dirección de sede |
-| 2 | Uso de la sede el viernes 20 en jornada lectiva | Define la hora real de inicio | Dirección de sede |
+| 1 | Verificar en el POA que el sábado 28 esté libre (la fecha original, sábado 7, chocaba con la 1era Integración Padres, SEM 009) | El POA tiene precedencia sobre cualquier fecha | Dirección de sede |
+| 2 | Uso de la sede el viernes 27 en jornada lectiva | Define la hora real de inicio | Dirección de sede |
 | 3 | Montos de premios y auspiciantes confirmados | No se publica un premio sin respaldo | Comité |
 | 4 | Acuerdo de marca con n8n | El nombre del evento lo incluye | Dirección de Innovación |
 | 5 | Aforo y conectividad de la sede | Define el cupo máximo | Coordinación operativa |
@@ -153,9 +153,9 @@ El código y la propiedad intelectual pertenecen a cada equipo. Al participar, l
 | Fecha | Hito |
 |---|---|
 | [lunes 5 oct] | Aprobación del comité y publicación de la web |
-| [5 oct – 20 nov] | Inscripciones abiertas |
+| [5 oct – 27 nov] | Inscripciones abiertas |
 | [28 oct] | Webinar de preparación: GitHub y n8n |
-| [hasta el 20 nov, 12:00] | Confirmación de equipos y envío de autorizaciones Junior |
-| viernes 20 nov, 12:00 | Cierre de inscripciones |
-| 20–21 nov | Hackathon |
-| [27 nov] | Publicación de resultados detallados y certificados |
+| [hasta el 27 nov, 12:00] | Confirmación de equipos y envío de autorizaciones Junior |
+| viernes 27 nov, 12:00 | Cierre de inscripciones |
+| 27–28 nov | Hackathon |
+| [4 dic] | Publicación de resultados detallados y certificados |

@@ -1,0 +1,8 @@
+[
+  {
+    "origin": ["https://edutech-hackathon-2026.netlify.app"],
+    "method": ["PUT"],
+    "responseHeader": ["Content-Type", "x-goog-content-length-range"],
+    "maxAgeSeconds": 600
+  }
+]

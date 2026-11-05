@@ -24,10 +24,13 @@ Pendiente:
 - [x] Prueba de registro en producción (02-oct-2026, con `INSCRIPCIONES_PRUEBA`): inscripción de un
   equipo, QR y check-in. Inscripciones cerradas de nuevo y datos de la prueba borrados (solo queda
   la cuenta admin en `staff/`).
-- [ ] **Bloqueante para Junior y para la entrega:** activar el plan Blaze y crear Storage (el bucket
-  `edutech-hackathon-2026.firebasestorage.app` no existe todavía); luego `firebase deploy --only storage`.
+- [x] Plan Blaze (05-nov-2026; también levanta la cuota diaria de enlaces de ingreso, que en Spark
+  se agotó y bloqueaba el ingreso y el registro).
+- [x] Storage (05-nov-2026): bucket `edutech-hackathon-2026.firebasestorage.app` en `us-east1`, reglas
+  publicadas (todo cerrado al cliente), CORS de `cors.json` (solo `PUT` desde Netlify) y TTL de
+  `rate_limits.expiraAt` activado. Probado: preflight desde Netlify OK, otro origen sin permiso,
+  lectura pública 403, la cuenta de servicio tiene `roles/storage.admin`.
 - [ ] Rotar la clave de la cuenta de servicio (la primera pasó por la sesión de configuración).
-- [ ] Plan Blaze, Storage y `firebase deploy --only storage`.
 - [x] n8n Cloud (`cyberdog87.app.n8n.cloud`): 11 workflows activos con `npm run n8n:desplegar`
   (correo por la credencial Gmail de n8n; avisos al staff por Telegram).
   `N8N_WEBHOOK_BASE_URL` cargada en Netlify. Prueba real: evento del outbox enviado por Netlify →
@@ -75,7 +78,8 @@ los botones de inscripción e ingreso de Pages apunten a ella.
    ```json
    [{ "origin": ["https://<tu-dominio>"], "method": ["PUT"], "responseHeader": ["Content-Type", "x-goog-content-length-range"], "maxAgeSeconds": 600 }]
    ```
-   y aplica: `gcloud storage buckets update gs://<bucket> --cors-file=cors.json`.
+   y aplica: `gcloud storage buckets update gs://<bucket> --cors-file=cors.json` (en este repo ya está
+   `cors.json` para Netlify).
 7. TTL de los contadores del límite de peticiones:
    `gcloud firestore fields ttls update expiraAt --collection-group=rate_limits --enable-ttl`.
 8. Cuenta de servicio: *Configuración del proyecto → Cuentas de servicio → Generar nueva clave*.

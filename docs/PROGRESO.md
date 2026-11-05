@@ -9,8 +9,8 @@ Nota de traspaso para retomar el trabajo desde otra máquina.
 - Cierre de inscripciones: **viernes 27 de noviembre, 12:00** (hora de Ecuador), antes del kick-off
   de las 15:30 (commit 1794697).
 - Grupo de Telegram **«Inscritos · EduTech Hackathon 2026»** (supergrupo con temas; el bot
-  @Eigthlabsbot es admin) con el tema **🔎 Buscando equipo**. El enlace de invitación está en
-  `TELEGRAM_INVITE_INSCRITOS` de `.env.n8n`.
+  @Eigthlabsbot es admin) con el tema **🔎 Buscando equipo**. El chat_id (`TELEGRAM_CHAT_ID_INSCRITOS`; tema 📢 Anuncios = 2) y el enlace de invitación están en
+  `.env.n8n` (`TELEGRAM_INVITE_INSCRITOS`). Bienvenida publicada en Anuncios el 5 nov.
 - Correo con diseño para los inscritos de Luma (`scripts/campana-luma/enviar.py`): **enviado el 4 nov**
   a los 47 aprobados (0 fallidos), con la invitación al grupo de Telegram; avisado al staff.
   Destinatarios: los **47 aprobados** del CSV de Luma (26 sin equipo, 7 con equipo incompleto,

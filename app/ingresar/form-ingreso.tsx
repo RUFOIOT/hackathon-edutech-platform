@@ -4,7 +4,7 @@ import { useState } from "react";
 import { sendSignInLinkToEmail } from "firebase/auth";
 import { z } from "zod";
 import { clientAuth } from "@/lib/firebase/client";
-import { CORREO_PENDIENTE_KEY } from "@/lib/auth/constantes";
+import { CORREO_PENDIENTE_KEY, errorAlEnviarEnlace } from "@/lib/auth/constantes";
 
 const correoSchema = z.email("Escribe un correo válido, por ejemplo nombre@dominio.com.");
 
@@ -26,8 +26,8 @@ export function FormIngreso({ siguiente }: { siguiente: string | null }) {
       await sendSignInLinkToEmail(clientAuth(), parsed.data, { url: url.toString(), handleCodeInApp: true });
       window.localStorage.setItem(CORREO_PENDIENTE_KEY, parsed.data);
       setEstado({ tipo: "enviado", correo: parsed.data });
-    } catch {
-      setEstado({ tipo: "error", mensaje: "No pudimos enviar el enlace. Revisa tu conexión e inténtalo de nuevo." });
+    } catch (err) {
+      setEstado({ tipo: "error", mensaje: errorAlEnviarEnlace(err) });
     }
   }
 

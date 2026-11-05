@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { isSignInWithEmailLink, sendSignInLinkToEmail, signInWithEmailLink, signOut } from "firebase/auth";
 import { clientAuth } from "@/lib/firebase/client";
-import { CORREO_PENDIENTE_KEY } from "@/lib/auth/constantes";
+import { CORREO_PENDIENTE_KEY, errorAlEnviarEnlace } from "@/lib/auth/constantes";
 
 type Estado = "verificando" | "pedir-correo" | "error" | "reenviado";
 
@@ -46,8 +46,8 @@ export default function Verificar() {
       await sendSignInLinkToEmail(clientAuth(), correoUsado, { url: url.toString(), handleCodeInApp: true });
       window.localStorage.setItem(CORREO_PENDIENTE_KEY, correoUsado);
       setEstado("reenviado");
-    } catch {
-      setMensaje("No pudimos enviar el enlace nuevo. Inténtalo desde la página de ingreso.");
+    } catch (err) {
+      setMensaje(errorAlEnviarEnlace(err));
     }
   }
 

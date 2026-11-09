@@ -1,4 +1,4 @@
-# Progreso y pendientes (actualizado 4 nov 2026)
+# Progreso y pendientes (actualizado 9 nov 2026)
 
 Nota de traspaso para retomar el trabajo desde otra máquina.
 
@@ -15,13 +15,17 @@ Nota de traspaso para retomar el trabajo desde otra máquina.
   a los 47 aprobados (0 fallidos), con la invitación al grupo de Telegram; avisado al staff.
   Destinatarios: los **47 aprobados** del CSV de Luma (26 sin equipo, 7 con equipo incompleto,
   11 con equipo completo, 3 sin respuesta). Los 328 «invitados» no reciben el correo.
+- **9 nov:** recordatorio a los aprobados de Luma que aún no están en la plataforma (modo `recordatorio`
+  con `--excluir`, lista de correos ya registrados sacada de `participants`): **64 enviados, 0 fallidos**.
+  Al 9 nov: 73 aprobados en Luma (402 filas: 327 invitados, 2 rechazados), 25 registrados en la
+  plataforma (8 coinciden por correo con Luma), 7 equipos completos, 6 individuales sin equipo.
 
 ## Pendiente
 
 1. n8n Cloud volvió a ejecutar (4 nov: webhooks responden 200). Vigilar el consumo mensual del plan;
    WF-00 corre cada 30 minutos (~1.400 ejecuciones/mes).
-2. Inscritos de Luma que se sumen después del 27 oct: exportar un CSV nuevo y enviarles el correo
-   (`python3 -I scripts/campana-luma/enviar.py masivo "<csv>" --si`; hoy envía a todos los aprobados del CSV).
+2. Recordatorios a quienes siguen sin registrarse: exportar el CSV de Luma, armar la lista de correos ya
+   registrados y correr `python3 -I scripts/campana-luma/enviar.py recordatorio "<csv>" --excluir <correos.txt> --si`.
 3. Actualizar a mano la fecha del evento en Luma.
 4. Confirmar en el POA del colegio que el 27–28 de noviembre está libre.
 

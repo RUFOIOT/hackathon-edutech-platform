@@ -4,6 +4,8 @@ Uso:
   python3 -I enviar.py vista <archivo.html>   # guarda la vista previa
   python3 -I enviar.py prueba <correo>        # 1 correo de prueba
   python3 -I enviar.py masivo <csv_luma> --si # aprobados del CSV de Luma
+  python3 -I enviar.py recordatorio <csv_luma> --excluir <correos.txt> --si
+                                              # aprobados que aún no están en la plataforma
 La configuración sale del .env.n8n de la raíz del repo (N8N_API_URL, N8N_API_KEY, GMAIL_CREDENCIAL_ID,
 TELEGRAM_INVITE_INSCRITOS). El CSV de Luma tiene datos personales: no se sube al repo.
 """
@@ -16,6 +18,7 @@ API = ENV["N8N_API_URL"].rstrip("/") + "/api/v1"
 WEB = "https://edutech-hackathon-2026.netlify.app"
 TELEGRAM = ENV["TELEGRAM_INVITE_INSCRITOS"]
 ASUNTO = "Ya estás dentro: registra tu equipo en la EduTech Hackathon (27–28 nov)"
+ASUNTO_RECORDATORIO = "Te falta un paso: regístrate en la plataforma de la EduTech Hackathon"
 
 
 def boton(url, texto, fondo, color):
@@ -23,7 +26,7 @@ def boton(url, texto, fondo, color):
             f'border-radius:999px;text-decoration:none;font-weight:bold;font-size:15px;margin:4px 6px 4px 0">{texto}</a>')
 
 
-def correo_html(nombre):
+def correo_html(nombre, recordatorio=False):
     hola = f"¡Hola, {html.escape(nombre)}!" if nombre else "¡Hola!"
     p = lambda t: f'<p style="font-size:15px;line-height:1.6;margin:0 0 14px;color:#0e1b3d">{t}</p>'
     paso = lambda n, t, d: (
@@ -40,8 +43,11 @@ def correo_html(nombre):
         '<p style="margin:0;font-size:15px;color:#d6dcea">📅 Viernes 27 y sábado 28 de noviembre · 📍 Quito</p></div>'
         '<div style="padding:28px">'
         + p(f"<b>{hola}</b>")
-        + p("Gracias por inscribirte en Luma. El siguiente paso es <b>registrarte en la plataforma oficial del hackathon</b>: "
-            "ahí se forman los equipos, se entrega el proyecto y se hace el check-in con QR el día del evento.")
+        + (p("Te inscribiste en Luma, pero <b>todavía no te vemos en la plataforma oficial del hackathon</b>. "
+             "Los equipos ya se están formando: en la plataforma te unes a uno, entregas el proyecto y recibes tu QR "
+             "para el check-in del viernes 27 a las 15:30.") if recordatorio else
+           p("Gracias por inscribirte en Luma. El siguiente paso es <b>registrarte en la plataforma oficial del hackathon</b>: "
+             "ahí se forman los equipos, se entrega el proyecto y se hace el check-in con QR el día del evento."))
         + '<table role="presentation" style="border-collapse:collapse;margin:18px 0 6px">'
         + paso(1, "Regístrate en la plataforma", "Elige cómo: crea tu equipo e invita a tus compañeros por correo, únete con el código de 6 caracteres de tu equipo, o inscríbete individual.")
         + paso(2, "¿Aún sin equipo? Únete al grupo de Telegram", "En el tema <b>🔎 Buscando equipo</b> te presentas y armamos equipos de 2 a 5 personas.")
@@ -128,19 +134,25 @@ def enviar(correos):
 if __name__ == "__main__":
     modo = sys.argv[1]
     if modo == "vista":
-        open(sys.argv[2], "w").write(correo_html("Felipe"))
+        open(sys.argv[2], "w").write(correo_html("Felipe", "--recordatorio" in sys.argv))
         sys.exit()
     if modo == "prueba":
         correos = [{"para": sys.argv[2], "asunto": "[PRUEBA] " + ASUNTO, "html": correo_html("Felipe")}]
     else:
-        filas = list(csv.DictReader(open(sys.argv[2], encoding="utf-8-sig"), delimiter=";"))
-        vistos, correos = set(), []
+        texto = open(sys.argv[2], encoding="utf-8-sig").read()
+        filas = list(csv.DictReader(texto.splitlines(), delimiter=";" if ";" in texto.splitlines()[0] else ","))
+        recordatorio = modo == "recordatorio"
+        excluir = set()
+        if "--excluir" in sys.argv:
+            excluir = {l.strip().lower() for l in open(sys.argv[sys.argv.index("--excluir") + 1]) if l.strip()}
+        vistos, correos = set(excluir), []
         for f in filas:
             e = (f.get("email") or "").strip().lower()
             if f.get("approval_status") != "approved" or not re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", e) or e in vistos:
                 continue
             vistos.add(e)
-            correos.append({"para": e, "asunto": ASUNTO, "html": correo_html((f.get("first_name") or "").strip().title())})
+            correos.append({"para": e, "asunto": ASUNTO_RECORDATORIO if recordatorio else ASUNTO,
+                            "html": correo_html((f.get("first_name") or "").strip().title(), recordatorio)})
         print("destinatarios:", len(correos))
         if "--si" not in sys.argv:
             sys.exit("Falta --si para enviar.")

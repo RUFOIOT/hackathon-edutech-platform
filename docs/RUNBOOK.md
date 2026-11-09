@@ -15,16 +15,16 @@ Responsables por defecto: **mesa técnica** (plataforma, repositorios, n8n) y **
 - [ ] Cuota de la GitHub App revisada: `gh api rate_limit` con el token de instalación.
 - [ ] Rúbricas en papel impresas (respaldo del jurado) y cronómetro físico por sala.
 
-### Viernes 27, antes de las 13:30 (check-in)
+### Viernes 27, antes de las 15:30 (check-in)
 
-- [ ] `/admin` carga y la barra de fase muestra "Check-in" desde las 13:30.
+- [ ] `/admin` carga y la barra de fase muestra "Check-in" desde las 15:30.
 - [ ] Panel de check-in abierto en 2 celulares por puerta.
-- [ ] WF-04 (monitor de repositorios) activo: empieza a las 15:30.
+- [ ] WF-04 (monitor de repositorios) activo: empieza a las 17:00 (kick-off).
 
 ### Durante el hacking
 
 - [ ] Revisar `/admin` cada 30 min: semáforo rojo, mentorías esperando más de 30 min, alertas rojas.
-- [ ] 18:30 y 10:00: WF-05 avisa a los equipos en riesgo; confirmar en Slack.
+- [ ] 19:30 y 10:00: WF-05 avisa a los equipos en riesgo; confirmar en Slack.
 - [ ] Checkpoint 2: la mesa técnica confirma a mano los equipos marcados como "requiere revisión".
 
 ### Sábado 28, code freeze (12:00)

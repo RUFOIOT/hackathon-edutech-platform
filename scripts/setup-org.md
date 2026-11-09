@@ -28,7 +28,7 @@ Luego, en el repositorio: **Settings → General → Template repository** (acti
 Verificar que el Action **Checks de la hackathon** pase en verde en el primer push.
 
 > La plantilla debe crearse **antes** del kick-off. Los repositorios de los equipos se crean
-> **desde** ella después de las 15:30 del viernes: su fecha de creación es la que valida A1.
+> **desde** ella después de las 17:00 del viernes: su fecha de creación es la que valida A1.
 
 ## 3. GitHub App de la plataforma
 

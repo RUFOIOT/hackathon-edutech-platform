@@ -54,9 +54,9 @@ export const EVENT = {
     webinar: { iso: "2026-10-28T18:00:00-05:00", confirmada: false },
     cierreInscripciones: { iso: "2026-11-27T12:00:00-05:00", confirmada: true },
     // Evento (guía §4). Confirmadas en la guía, sujetas a la alerta de calendario del POA (§12, decisión 1).
-    checkin: { iso: "2026-11-27T13:30:00-05:00", confirmada: true },
-    kickoff: { iso: "2026-11-27T15:30:00-05:00", confirmada: true },
-    checkpoint1: { iso: "2026-11-27T19:00:00-05:00", confirmada: true },
+    checkin: { iso: "2026-11-27T15:30:00-05:00", confirmada: true },
+    kickoff: { iso: "2026-11-27T17:00:00-05:00", confirmada: true },
+    checkpoint1: { iso: "2026-11-27T20:00:00-05:00", confirmada: true },
     cierreSedeViernes: { iso: "2026-11-27T21:00:00-05:00", confirmada: true },
     checkpoint2: { iso: "2026-11-28T10:30:00-05:00", confirmada: true },
     codeFreeze: { iso: "2026-11-28T12:00:00-05:00", confirmada: true },
@@ -144,13 +144,13 @@ export const ALIADOS: { nombre: string; url: string }[] = [];
 
 /** Agenda oficial (guía §4). `hito` marca los bloques que la guía destaca en negrita. */
 export const AGENDA: { dia: "Viernes 27" | "Sábado 28"; hora: string; bloque: string; hito?: boolean }[] = [
-  { dia: "Viernes 27", hora: "13:30", bloque: "Check-in con QR, entrega de credenciales y kit" },
-  { dia: "Viernes 27", hora: "14:30", bloque: "Inauguración, presentación de tracks, aliados y jurado" },
-  { dia: "Viernes 27", hora: "15:15", bloque: "Matchmaking de inscritos individuales y confirmación de equipos" },
-  { dia: "Viernes 27", hora: "15:30", bloque: "Kick-off oficial: se habilita la creación de repositorios", hito: true },
-  { dia: "Viernes 27", hora: "16:00", bloque: "Taller express de n8n (30 min)" },
-  { dia: "Viernes 27", hora: "17:00", bloque: "Ronda de mentoría 1 · validación del problema" },
-  { dia: "Viernes 27", hora: "19:00", bloque: "Checkpoint 1: README con problema, usuario y arquitectura (commit obligatorio)" },
+  { dia: "Viernes 27", hora: "15:30", bloque: "Check-in de equipos con QR, entrega de credenciales y kit" },
+  { dia: "Viernes 27", hora: "16:15", bloque: "Inauguración, presentación de tracks, aliados y jurado" },
+  { dia: "Viernes 27", hora: "16:45", bloque: "Matchmaking de inscritos individuales y confirmación de equipos" },
+  { dia: "Viernes 27", hora: "17:00", bloque: "Kick-off oficial: se habilita la creación de repositorios", hito: true },
+  { dia: "Viernes 27", hora: "17:30", bloque: "Taller express de n8n (30 min)" },
+  { dia: "Viernes 27", hora: "18:30", bloque: "Ronda de mentoría 1 · validación del problema" },
+  { dia: "Viernes 27", hora: "20:00", bloque: "Checkpoint 1: README con problema, usuario y arquitectura (commit obligatorio)" },
   { dia: "Viernes 27", hora: "21:00", bloque: "Cierre de sede. El hacking remoto continúa; los commits fuera de sede son válidos" },
   { dia: "Sábado 28", hora: "08:00", bloque: "Apertura de sede, desayuno" },
   { dia: "Sábado 28", hora: "09:00", bloque: "Ronda de mentoría 2 · demo y pitch" },
@@ -174,7 +174,7 @@ export const FAQ: { pregunta: string; respuesta: string }[] = [
     respuesta:
       "No. Los equipos son de 2 a 5 personas, pero puedes inscribirte solo: la organización forma equipos el viernes en el bloque de matchmaking.",
   },
-  { pregunta: "¿Puedo cambiar de track durante el evento?", respuesta: "Sí, hasta el checkpoint 1 del viernes a las 19:00." },
+  { pregunta: "¿Puedo cambiar de track durante el evento?", respuesta: "Sí, hasta el checkpoint 1 del viernes a las 20:00." },
   {
     pregunta: "¿Puedo usar un proyecto que ya tenía?",
     respuesta:

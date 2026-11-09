@@ -141,7 +141,7 @@ export async function validateRepo(
       ok: despues,
       mensaje: despues
         ? "Se creó después del kick-off."
-        : "Se creó antes del kick-off (viernes 15:30). Un repositorio creado antes no se acepta: crea uno nuevo desde la plantilla.",
+        : "Se creó antes del kick-off (viernes 17:00). Un repositorio creado antes no se acepta: crea uno nuevo desde la plantilla.",
     });
   }
   return fin(info, owner, name);

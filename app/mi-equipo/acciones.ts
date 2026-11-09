@@ -62,7 +62,7 @@ export async function cambiarTrack(track: string): Promise<Respuesta> {
   return ejecutar(async () => {
     const r = z.enum(["T1", "T2", "T3"]).safeParse(track);
     if (!r.success) throw new ErrorRegistro("Elige un track de la lista.");
-    if (ahora() >= fecha("checkpoint1")) throw new ErrorRegistro("El track solo se puede cambiar hasta el checkpoint 1 (viernes 19:00).");
+    if (ahora() >= fecha("checkpoint1")) throw new ErrorRegistro("El track solo se puede cambiar hasta el checkpoint 1 (viernes 20:00).");
     const { uid, p } = await participante();
     const teamRef = adminDb().doc(`teams/${p.get("teamId")}`);
     const team = await teamRef.get();

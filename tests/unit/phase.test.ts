@@ -9,8 +9,8 @@ describe("faseActual", () => {
     ["2026-10-15T10:00:00", "Convocatoria"],
     ["2026-11-27T11:59:59", "Convocatoria"],
     ["2026-11-27T12:00:00", "Pre-evento"],
-    ["2026-11-27T15:29:59", "Pre-evento"],
-    ["2026-11-27T15:30:00", "Hacking"],
+    ["2026-11-27T16:59:59", "Pre-evento"],
+    ["2026-11-27T17:00:00", "Hacking"],
     ["2026-11-28T11:59:59", "Hacking"],
     ["2026-11-28T12:00:00", "Code freeze"],
     ["2026-11-28T13:30:00", "Show and Tell"],
@@ -19,9 +19,9 @@ describe("faseActual", () => {
     expect(faseActual(ec(hora))).toBe(fase);
   });
 
-  it("no depende de la zona horaria del servidor: 20:30 UTC del viernes es el kick-off", () => {
-    expect(faseActual(new Date("2026-11-27T20:30:00Z"))).toBe("Hacking");
-    expect(faseActual(new Date("2026-11-27T20:29:59Z"))).toBe("Pre-evento");
+  it("no depende de la zona horaria del servidor: 22:00 UTC del viernes es el kick-off", () => {
+    expect(faseActual(new Date("2026-11-27T22:00:00Z"))).toBe("Hacking");
+    expect(faseActual(new Date("2026-11-27T21:59:59Z"))).toBe("Pre-evento");
   });
 });
 
@@ -33,8 +33,9 @@ describe("ventanas", () => {
     expect(inscripcionesAbiertas(ec("2026-11-27T12:00:00"))).toBe(false);
   });
 
-  it("ventana de hacking: viernes 15:30 a sábado 12:00", () => {
-    expect(dentroDeVentana(ec("2026-11-27T15:30:00"))).toBe(true);
+  it("ventana de hacking: viernes 17:00 a sábado 12:00", () => {
+    expect(dentroDeVentana(ec("2026-11-27T16:59:59"))).toBe(false);
+    expect(dentroDeVentana(ec("2026-11-27T17:00:00"))).toBe(true);
     expect(dentroDeVentana(ec("2026-11-28T12:00:00"))).toBe(false);
   });
 });

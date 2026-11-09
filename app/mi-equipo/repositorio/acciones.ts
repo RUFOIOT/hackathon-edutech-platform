@@ -16,7 +16,7 @@ export type RespuestaRepo = { ok: true; valido: boolean; chequeos: Chequeo[] } |
 export async function registrar(url: string): Promise<RespuestaRepo> {
   try {
     const { uid, teamId } = await contextoEquipo();
-    if (ahora() < fecha("kickoff")) throw new ErrorRegistro("Los repositorios se crean y registran desde el kick-off (viernes 15:30).");
+    if (ahora() < fecha("kickoff")) throw new ErrorRegistro("Los repositorios se crean y registran desde el kick-off (viernes 17:00).");
     const r = z.string().trim().min(1, "Pega la URL de tu repositorio.").max(200).safeParse(url);
     if (!r.success) throw new ErrorRegistro(r.error.issues[0]!.message);
     const v = await registrarRepositorio(teamId, r.data, uid);

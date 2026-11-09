@@ -355,7 +355,7 @@ export const ESCENARIOS_PROGRAMADOS: { archivo: string; disparador: string; corr
   { archivo: "WF-00-reintento-eventos.json", disparador: "Cada 30 minutos", correos: 0, slack: 1 },
   { archivo: "WF-03-recordatorios-convocatoria.json", disparador: "Cada día a las 09:00", correos: 4, slack: 1, consulta: { consulta: "recordatorios-convocatoria" } },
   { archivo: "WF-04-monitor-repositorios.json", disparador: "Cada 15 min en la ventana", correos: 1, slack: 1 },
-  { archivo: "WF-05-recordatorio-checkpoints.json", disparador: "Viernes 18:30 (checkpoint 1)", correos: 2, slack: 1, consulta: { consulta: "checkpoints-en-riesgo", hito: "checkpoint1" } },
+  { archivo: "WF-05-recordatorio-checkpoints.json", disparador: "Viernes 19:30 (checkpoint 1)", correos: 2, slack: 1, consulta: { consulta: "checkpoints-en-riesgo", hito: "checkpoint1" } },
   { archivo: "WF-05-recordatorio-checkpoints.json", disparador: "Sábado 10:00 (checkpoint 2)", correos: 2, slack: 1, consulta: { consulta: "checkpoints-en-riesgo", hito: "checkpoint2" } },
   { archivo: "WF-05-recordatorio-checkpoints.json", disparador: "Sábado 11:30 (code freeze)", correos: 2, slack: 1, consulta: { consulta: "checkpoints-en-riesgo", hito: "freeze" } },
   { archivo: "WF-06-validacion-entregas.json", disparador: "Sábado 12:05", correos: 1, slack: 1, consulta: { consulta: "reporte-entregas" } },

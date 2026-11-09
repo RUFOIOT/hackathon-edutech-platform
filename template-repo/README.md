@@ -4,7 +4,7 @@
 
 Track: <!-- COMPLETAR: T1, T2 o T3 --> · Categoría: <!-- COMPLETAR: Junior u Open -->
 
-> La plataforma del evento lee este README. Para el **checkpoint 1 (viernes 19:00)** las secciones
+> La plataforma del evento lee este README. Para el **checkpoint 1 (viernes 20:00)** las secciones
 > Problema, Usuario, Evidencia de la entrevista y Arquitectura deben tener contenido propio: borra
 > los comentarios `COMPLETAR` y escribe en su lugar.
 

@@ -1,6 +1,6 @@
 # Trabajo previo
 
-Todo lo que **no** escribieron durante la ventana oficial (viernes 15:30 a sábado 12:00) debe
+Todo lo que **no** escribieron durante la ventana oficial (viernes 17:00 a sábado 12:00) debe
 estar aquí: librerías, plantillas de n8n, boilerplates, componentes o código propio anterior.
 Usarlo está permitido; ocultarlo es causal de descalificación (guía §7).
 

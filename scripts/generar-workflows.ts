@@ -357,7 +357,7 @@ if (e.type === 'registration.created') {
   else if (p.teamNombre) parrafos.push('Equipo: <strong>' + esc(p.teamNombre) + '</strong>.' + (p.codigoInvitacion ? ' Comparte este código para que tu equipo se una: <strong>' + esc(p.codigoInvitacion) + '</strong>.' : ''));
   else parrafos.push('Te inscribiste sin equipo: en el matchmaking del viernes 27 te ayudamos a formar uno.');
   if (p.requiereAutorizacion) parrafos.push('<strong>Importante:</strong> como eres de la categoría Junior, tu representante legal debe firmar la autorización y subirla desde Mi equipo. Sin ella no puedes participar.');
-  parrafos.push('Próximos pasos: lee la Guía del hacker, ten lista tu cuenta de GitHub y prepárate para el kick-off del viernes 27 de noviembre a las 15:30 (hora de Ecuador).');
+  parrafos.push('Próximos pasos: lee la Guía del hacker, ten lista tu cuenta de GitHub y prepárate para el kick-off del viernes 27 de noviembre a las 17:00 (hora de Ecuador).');
   salida.push(correo(p.email, 'Inscripción recibida · Hackathon EduTech', 'Inscripción recibida', parrafos, { texto: 'Ir a Mi equipo', url: APP + '/mi-equipo' }));
   salida.push(slack('Nueva inscripción ' + (p.categoria === 'JUNIOR' ? 'Junior' : 'Open') + ' · ' + p.modo + (p.teamNombre ? ' · equipo ' + p.teamNombre : '') + (p.listaEspera ? ' · lista de espera' : '')));
 }
@@ -441,8 +441,8 @@ salida.push(slack('Recordatorios de convocatoria: ' + r.autorizacionesPendientes
   // WF-04 · Monitor de repositorios (cada 15 min durante la ventana de hacking).
   {
     const f = new Flujo("WF-04-monitor-repositorios", "WF-04 · Monitor de repositorios");
-    // Ventana: viernes 27 15:30 → sábado 28 12:00 (config/event.ts). Ajusta si cambian las fechas.
-    const cron = f.programado("Cada 15 min en la ventana", ["*/15 15-23 27 11 *", "*/15 0-11 28 11 *", "0 12 28 11 *"], [0, 300]);
+    // Ventana: viernes 27 17:00 → sábado 28 12:00 (config/event.ts). Ajusta si cambian las fechas.
+    const cron = f.programado("Cada 15 min en la ventana", ["*/15 17-23 27 11 *", "*/15 0-11 28 11 *", "0 12 28 11 *"], [0, 300]);
     const firmar = f.codigo("Firmar petición", jsFirmar("({ todos: true })"), [240, 300]);
     const app = f.llamarApp("Snapshot de todos los repos", "/api/github/snapshot", [480, 300]);
     const redactar = f.codigo(
@@ -479,7 +479,7 @@ if (fallidos > 3) salida.push(slack('⚠️ ' + fallidos + ' repositorios no se 
   {
     const f = new Flujo("WF-05-recordatorio-checkpoints", "WF-05 · Recordatorio de checkpoints");
     const hitos = [
-      { cron: "30 18 27 11 *", hito: "checkpoint1", nombre: "Viernes 18:30 (checkpoint 1)" },
+      { cron: "30 19 27 11 *", hito: "checkpoint1", nombre: "Viernes 19:30 (checkpoint 1)" },
       { cron: "0 10 28 11 *", hito: "checkpoint2", nombre: "Sábado 10:00 (checkpoint 2)" },
       { cron: "30 11 28 11 *", hito: "freeze", nombre: "Sábado 11:30 (code freeze)" },
     ];

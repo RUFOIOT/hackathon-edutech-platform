@@ -49,8 +49,8 @@ const ARBOL = [
   ["n8n/flujo.json", "blob", "flujo"], ["data", "tree", "data"], ["data/README.md", "blob", "datareadme"], ["src", "tree", "srcdir"], ["src/index.ts", "blob", "src"],
 ].map(([path, type, sha]) => ({ path, type, sha, size: 100 }));
 const COMMITS = [
-  ["c1", "2026-11-27T21:05:00Z", "ana-e2e", ["README.md"]],
-  ["c2", "2026-11-27T23:40:00Z", "luis-e2e", ["README.md"]],
+  ["c1", "2026-11-27T22:35:00Z", "ana-e2e", ["README.md"]],
+  ["c2", "2026-11-28T01:10:00Z", "luis-e2e", ["README.md"]],
   ["c3", "2026-11-28T14:10:00Z", "ana-e2e", ["src/index.ts"]],
   ["c4", "2026-11-28T15:20:00Z", "luis-e2e", ["src/index.ts"]],
 ];
@@ -59,7 +59,7 @@ const SHA_ENTREGA = "e2e0c0ffee1234567890abcdef1234567890abcd";
 function responderRepo(owner, name, resto, url, json) {
   if (name.endsWith("-inexistente")) return json(404, { message: "Not Found" });
   if (resto === "") {
-    return json(200, { name, owner: { login: owner }, created_at: "2026-11-27T21:00:00Z", default_branch: "main", private: true });
+    return json(200, { name, owner: { login: owner }, created_at: "2026-11-27T22:30:00Z", default_branch: "main", private: true });
   }
   if (resto === "/commits") {
     const since = url.searchParams.get("since"), until = url.searchParams.get("until"), path = url.searchParams.get("path");

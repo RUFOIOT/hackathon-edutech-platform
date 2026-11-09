@@ -10,7 +10,7 @@ export default function Tracks() {
     <div className="mx-auto max-w-6xl px-4 py-12">
       <h1 className="text-3xl font-semibold sm:text-4xl">Tracks</h1>
       <p className="mt-3 max-w-prose text-muted">
-        Cada equipo compite en un solo track. Puedes cambiarlo hasta el checkpoint 1, el viernes a las 19:00. Los ejemplos
+        Cada equipo compite en un solo track. Puedes cambiarlo hasta el checkpoint 1, el viernes a las 20:00. Los ejemplos
         son puntos de partida, no una lista cerrada.
       </p>
 

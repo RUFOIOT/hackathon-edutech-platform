@@ -50,7 +50,7 @@ Los roles no son exclusivos, pero cada uno debe tener un dueño.
 
 ## 4. Repositorio: cómo se arma
 
-### 4.1 Crear el repositorio (solo desde las 15:30 del viernes)
+### 4.1 Crear el repositorio (solo desde las 17:00 del viernes)
 
 1. Entra a la organización `eight-academy-hackathon` con la invitación que recibirás por correo.
 2. Crea tu repositorio desde la plantilla `edutech-2026-template` con el botón *Use this template*.
@@ -89,7 +89,7 @@ edutech26-t1-alerta-temprana/
 
 | Hora | Checkpoint | Qué debe existir en el repositorio |
 |---|---|---|
-| Vie 19:00 | 1 · Problema | README con problema, usuario, evidencia de la entrevista y arquitectura propuesta |
+| Vie 20:00 | 1 · Problema | README con problema, usuario, evidencia de la entrevista y arquitectura propuesta |
 | Sáb 10:30 | 2 · Demo mínima | Algo ejecutable de punta a punta, aunque sea feo |
 | Sáb 12:00 | Code freeze | Tag `entrega` creado y formulario de entrega enviado |
 
@@ -146,7 +146,7 @@ Los mentores te ayudan a pensar, no escriben tu código. Pide mentoría desde la
 
 ## 10. Preguntas frecuentes
 
-**¿Puedo cambiar de track durante el evento?** Sí, hasta el checkpoint 1 del viernes a las 19:00.
+**¿Puedo cambiar de track durante el evento?** Sí, hasta el checkpoint 1 del viernes a las 20:00.
 
 **¿Puedo usar un proyecto que ya tenía?** No como proyecto. Puedes reutilizar librerías o componentes genéricos declarándolos en `PRIOR_WORK.md`.
 

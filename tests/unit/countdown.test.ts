@@ -5,9 +5,9 @@ import { fechaEnEcuador, restante, restanteEnPalabras } from "@/lib/event/countd
 describe("cuenta regresiva al kick-off (America/Guayaquil)", () => {
   const kickoff = fecha("kickoff");
 
-  it("el kick-off es el viernes 27 a las 15:30 de Ecuador = 20:30 UTC", () => {
-    expect(kickoff.toISOString()).toBe("2026-11-27T20:30:00.000Z");
-    expect(fechaEnEcuador(kickoff)).toMatch(/^viernes,? 27 de noviembre, 15:30$/);
+  it("el kick-off es el viernes 27 a las 17:00 de Ecuador = 22:00 UTC", () => {
+    expect(kickoff.toISOString()).toBe("2026-11-27T22:00:00.000Z");
+    expect(fechaEnEcuador(kickoff)).toMatch(/^viernes,? 27 de noviembre, 17:00$/);
   });
 
   it("muestra la hora de Ecuador aunque el instante caiga en otro día en UTC", () => {
@@ -16,15 +16,15 @@ describe("cuenta regresiva al kick-off (America/Guayaquil)", () => {
   });
 
   it("calcula días, horas, minutos y segundos exactos", () => {
-    // 1 oct 2026 09:00 en Ecuador → faltan 57 d 6 h 30 m 0 s.
+    // 1 oct 2026 09:00 en Ecuador → faltan 57 d 8 h 0 m 0 s.
     expect(restante(kickoff, new Date("2026-10-01T09:00:00-05:00"))).toEqual({
       dias: 57,
-      horas: 6,
-      minutos: 30,
+      horas: 8,
+      minutos: 0,
       segundos: 0,
       terminado: false,
     });
-    expect(restante(kickoff, new Date("2026-11-27T15:29:59-05:00"))).toMatchObject({ dias: 0, horas: 0, minutos: 0, segundos: 1 });
+    expect(restante(kickoff, new Date("2026-11-27T16:59:59-05:00"))).toMatchObject({ dias: 0, horas: 0, minutos: 0, segundos: 1 });
   });
 
   it("el mismo instante da el mismo resultado expresado en cualquier zona", () => {

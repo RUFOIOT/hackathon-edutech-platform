@@ -3,13 +3,13 @@ import { aCsv } from "@/lib/dashboard/dataset";
 import { calcularKpis, semaforo, type Dataset, type EntradaSemaforo } from "@/lib/dashboard/kpis";
 
 const ec = (s: string) => new Date(`${s}-05:00`);
-const fechas = { kickoff: ec("2026-11-27T15:30:00"), freeze: ec("2026-11-28T12:00:00") };
+const fechas = { kickoff: ec("2026-11-27T17:00:00"), freeze: ec("2026-11-28T12:00:00") };
 const sano: EntradaSemaforo = {
   repoRegistrado: true,
   checkpoint1: "cumplido",
   checkpoint2: "pendiente",
   admisibilidad: null,
-  ultimoCommitAt: ec("2026-11-27T22:00:00"),
+  ultimoCommitAt: ec("2026-11-27T23:30:00"),
   autores: 3,
   commitsVentana: 12,
   mentoriaMasAntiguaSinAtender: null,
@@ -17,25 +17,25 @@ const sano: EntradaSemaforo = {
 
 describe("semáforo de riesgo", () => {
   it("verde con motivo en texto cuando está al día", () => {
-    expect(semaforo(sano, ec("2026-11-27T23:00:00"), fechas)).toEqual({ color: "verde", motivos: ["Al día"] });
+    expect(semaforo(sano, ec("2026-11-28T00:30:00"), fechas)).toEqual({ color: "verde", motivos: ["Al día"] });
   });
 
   it("rojo sin repositorio 2 h después del kick-off (no antes)", () => {
     const sinRepo = { ...sano, repoRegistrado: false, commitsVentana: 0, autores: 0, ultimoCommitAt: null };
-    expect(semaforo(sinRepo, ec("2026-11-27T17:00:00"), fechas).color).toBe("verde");
-    expect(semaforo(sinRepo, ec("2026-11-27T17:31:00"), fechas)).toMatchObject({ color: "rojo", motivos: ["Sin repositorio 2 h después del kick-off"] });
+    expect(semaforo(sinRepo, ec("2026-11-27T18:30:00"), fechas).color).toBe("verde");
+    expect(semaforo(sinRepo, ec("2026-11-27T19:01:00"), fechas)).toMatchObject({ color: "rojo", motivos: ["Sin repositorio 2 h después del kick-off"] });
   });
 
   it("rojo por checkpoint vencido o falla de admisibilidad (incluida A4 decidida por la mesa técnica)", () => {
-    expect(semaforo({ ...sano, checkpoint1: "vencido" }, ec("2026-11-27T20:00:00"), fechas).motivos).toContain("Checkpoint 1 vencido");
+    expect(semaforo({ ...sano, checkpoint1: "vencido" }, ec("2026-11-27T21:30:00"), fechas).motivos).toContain("Checkpoint 1 vencido");
     const adm = { a1: true, a2: false, a3: true, a4: false, a5: true };
     expect(semaforo({ ...sano, admisibilidad: adm }, ec("2026-11-28T12:30:00"), fechas).motivos[0]).toBe("Falla de admisibilidad: A2, A4");
   });
 
   it("ámbar: sin commits en 3 h dentro de la ventana, un solo autor o mentoría esperando > 30 min", () => {
     const r = semaforo(
-      { ...sano, ultimoCommitAt: ec("2026-11-27T19:00:00"), autores: 1, mentoriaMasAntiguaSinAtender: ec("2026-11-27T22:20:00") },
-      ec("2026-11-27T23:00:00"),
+      { ...sano, ultimoCommitAt: ec("2026-11-27T20:30:00"), autores: 1, mentoriaMasAntiguaSinAtender: ec("2026-11-27T23:50:00") },
+      ec("2026-11-28T00:30:00"),
       fechas,
     );
     expect(r.color).toBe("ambar");

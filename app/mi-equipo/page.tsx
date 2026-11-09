@@ -140,7 +140,7 @@ export default async function MiEquipo({ searchParams }: { searchParams: Promise
             <h2 id="sin-equipo" className="text-xl font-semibold">
               Estás en el matchmaking
             </h2>
-            <p className="mt-2 text-sm">La organización forma los equipos el viernes a las 15:15. Si alguien te comparte un código, puedes unirte ahora.</p>
+            <p className="mt-2 text-sm">La organización forma los equipos el viernes a las 16:45. Si alguien te comparte un código, puedes unirte ahora.</p>
             <div className="mt-4">
               <FormUnirme />
             </div>
@@ -163,7 +163,7 @@ export default async function MiEquipo({ searchParams }: { searchParams: Promise
           <h2 id="qr" className="text-xl font-semibold">
             Tu QR de check-in
           </h2>
-          <p className="mt-2 text-sm">Muéstralo en la entrada el viernes desde las 13:30. Es personal: no lo compartas.</p>
+          <p className="mt-2 text-sm">Muéstralo en la entrada el viernes desde las 15:30. Es personal: no lo compartas.</p>
           {p.get("categoria") === "OPEN" && <p className="mt-1 text-sm text-muted">Lleva también tu documento de identidad.</p>}
         </div>
       </section>

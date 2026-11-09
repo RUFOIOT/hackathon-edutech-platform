@@ -45,7 +45,7 @@ def correo_html(nombre):
         + '<table role="presentation" style="border-collapse:collapse;margin:18px 0 6px">'
         + paso(1, "Regístrate en la plataforma", "Elige cómo: crea tu equipo e invita a tus compañeros por correo, únete con el código de 6 caracteres de tu equipo, o inscríbete individual.")
         + paso(2, "¿Aún sin equipo? Únete al grupo de Telegram", "En el tema <b>🔎 Buscando equipo</b> te presentas y armamos equipos de 2 a 5 personas.")
-        + paso(3, "Prepárate", "Lee la Guía del hacker y ten lista tu cuenta de GitHub. El kick-off es el viernes 27 a las 15:30.")
+        + paso(3, "Prepárate", "Lee la Guía del hacker y ten lista tu cuenta de GitHub. El kick-off es el viernes 27 a las 17:00.")
         + '</table>'
         + '<p style="margin:8px 0 22px">' + boton(f"{WEB}/registro", "Registrar mi equipo", "#c9a24a", "#0e1b3d")
         + boton(TELEGRAM, "Unirme al grupo de Telegram", "#0e1b3d", "#ffffff") + '</p>'

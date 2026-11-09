@@ -220,7 +220,7 @@ GitHub App) y en los tests unitarios un cliente simulado. En los e2e, Octokit ap
 
 ## D-27 · Checkpoints con heurísticas, confirmados por la mesa técnica
 
-- **Checkpoint 1:** debe haber un commit que toque `README.md` antes de las 19:00, y el README
+- **Checkpoint 1:** debe haber un commit que toque `README.md` antes de las 20:00, y el README
   actual debe tener las secciones Problema, Usuario, Evidencia y Arquitectura con al menos 40
   caracteres propios cada una. Los marcadores `<!-- COMPLETAR -->` de la plantilla no cuentan, así
   que el README sin tocar nunca lo cumple (hay un test que lo verifica).

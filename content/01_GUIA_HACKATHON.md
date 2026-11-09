@@ -43,15 +43,15 @@ La regla de oro del evento: **se premia lo que funciona en vivo y está en el re
 
 | Día | Hora | Bloque |
 |---|---|---|
-| Vie 6 | 13:30 | Check-in con QR, entrega de credenciales y kit |
-| | 14:30 | Inauguración, presentación de tracks, aliados y jurado |
-| | 15:15 | Matchmaking de inscritos individuales y confirmación de equipos |
-| | **15:30** | **Kick-off oficial: se habilita la creación de repositorios** |
-| | 16:00 | Taller express de n8n (30 min) |
-| | 17:00 | Ronda de mentoría 1 · validación del problema |
-| | 19:00 | Checkpoint 1: README con problema, usuario y arquitectura (commit obligatorio) |
+| Vie 27 | 15:30 | Check-in de equipos con QR, entrega de credenciales y kit |
+| | 16:15 | Inauguración, presentación de tracks, aliados y jurado |
+| | 16:45 | Matchmaking de inscritos individuales y confirmación de equipos |
+| | **17:00** | **Kick-off oficial: se habilita la creación de repositorios** |
+| | 17:30 | Taller express de n8n (30 min) |
+| | 18:30 | Ronda de mentoría 1 · validación del problema |
+| | 20:00 | Checkpoint 1: README con problema, usuario y arquitectura (commit obligatorio) |
 | | 21:00 | Cierre de sede. El hacking remoto continúa; los commits fuera de sede son válidos |
-| Sáb 7 | 08:00 | Apertura de sede, desayuno |
+| Sáb 28 | 08:00 | Apertura de sede, desayuno |
 | | 09:00 | Ronda de mentoría 2 · demo y pitch |
 | | 10:30 | Checkpoint 2: demo funcional mínima desplegada o ejecutable |
 | | **12:00** | **Code freeze: tag `entrega` y formulario de entrega cerrados** |
@@ -88,7 +88,7 @@ Todo el evento se gestiona sobre GitHub.
 
 ## 7. Reglas de juego
 
-1. Todo el código del proyecto se escribe dentro de la ventana oficial: viernes 15:30 a sábado 12:00 (hora de Ecuador, UTC-5).
+1. Todo el código del proyecto se escribe dentro de la ventana oficial: viernes 17:00 a sábado 12:00 (hora de Ecuador, UTC-5).
 2. Se permite usar librerías open source, APIs, plantillas de n8n y boilerplates públicos, siempre que se declaren en `PRIOR_WORK.md`.
 3. Se permite usar inteligencia artificial para construir. Su uso se declara en `AI_USAGE.md`. Ocultarlo es causal de descalificación; usarlo no resta puntos.
 4. Prohibido usar datos reales de estudiantes, familias o docentes. Se trabaja con datos sintéticos o anonimizados. Esto aplica la LOPDP.

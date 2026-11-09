@@ -7,7 +7,7 @@ Nota de traspaso para retomar el trabajo desde otra máquina.
 - Hackathon reprogramado al **viernes 27 y sábado 28 de noviembre de 2026** (commits 93e97b6 y del 4 nov, que corrige el 20–21 nov),
   desplegado en https://edutech-hackathon-2026.netlify.app y anunciado al grupo de staff en Telegram.
 - Cierre de inscripciones: **viernes 27 de noviembre, 12:00** (hora de Ecuador), antes del kick-off
-  de las 15:30 (commit 1794697).
+  de las 17:00 (commit 1794697; agenda del viernes compactada el 9 nov: check-in 15:30).
 - Grupo de Telegram **«Inscritos · EduTech Hackathon 2026»** (supergrupo con temas; el bot
   @Eigthlabsbot es admin) con el tema **🔎 Buscando equipo**. El chat_id (`TELEGRAM_CHAT_ID_INSCRITOS`; tema 📢 Anuncios = 2) y el enlace de invitación están en
   `.env.n8n` (`TELEGRAM_INVITE_INSCRITOS`). Bienvenida publicada en Anuncios el 5 nov.

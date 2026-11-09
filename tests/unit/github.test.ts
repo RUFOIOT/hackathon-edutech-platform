@@ -19,7 +19,7 @@ import { movimientoDeTag, verificarFirmaGithub } from "@/lib/github/webhook";
 
 // Fechas del evento (hora de Ecuador).
 const ec = (s: string) => new Date(`${s}-05:00`);
-const KICKOFF = ec("2026-11-27T15:30:00");
+const KICKOFF = ec("2026-11-27T17:00:00");
 const FREEZE = ec("2026-11-28T12:00:00");
 
 const README_COMPLETO = `# Matrícula Express
@@ -91,8 +91,8 @@ const arbolCompleto: ArchivoArbol[] = [
 ];
 
 const commitsSanos: (CommitInfo & { paths?: string[] })[] = [
-  { sha: "c1", fecha: ec("2026-11-27T16:05:00"), autor: "ana", paths: ["README.md"] },
-  { sha: "c2", fecha: ec("2026-11-27T18:40:00"), autor: "luis", paths: ["README.md"] },
+  { sha: "c1", fecha: ec("2026-11-27T17:35:00"), autor: "ana", paths: ["README.md"] },
+  { sha: "c2", fecha: ec("2026-11-27T20:10:00"), autor: "luis", paths: ["README.md"] },
   { sha: "c3", fecha: ec("2026-11-28T09:10:00"), autor: "ana", paths: ["src/index.ts"] },
   { sha: "c4", fecha: ec("2026-11-28T11:30:00"), autor: "luis", paths: ["src/index.ts"] },
 ];
@@ -102,7 +102,7 @@ const URL_OK = "https://github.com/eight-academy-hackathon/edutech26-t3-matricul
 
 describe("validateRepo", () => {
   it("acepta un repo válido de la organización, creado después del kick-off", async () => {
-    const r = await validateRepo(URL_OK, equipo, clienteSimulado({ creado: ec("2026-11-27T15:42:00") }), { kickoff: KICKOFF });
+    const r = await validateRepo(URL_OK, equipo, clienteSimulado({ creado: ec("2026-11-27T17:12:00") }), { kickoff: KICKOFF });
     expect(r.valido).toBe(true);
     expect(r.chequeos.map((c) => c.id)).toEqual(["url", "organizacion", "patron", "track", "equipo", "existe", "fecha"]);
   });
@@ -114,7 +114,7 @@ describe("validateRepo", () => {
   });
 
   it("rechaza fuera de la organización, con patrón o track equivocados", async () => {
-    const c = clienteSimulado({ creado: ec("2026-11-27T16:00:00") });
+    const c = clienteSimulado({ creado: ec("2026-11-27T17:30:00") });
     const fuera = await validateRepo("https://github.com/ana/edutech26-t3-matricula-express", equipo, c, { kickoff: KICKOFF });
     expect(fuera.chequeos.find((x) => x.id === "organizacion")?.ok).toBe(false);
     const patron = await validateRepo("https://github.com/eight-academy-hackathon/mi-proyecto", equipo, c, { kickoff: KICKOFF });
@@ -131,7 +131,7 @@ describe("validateRepo", () => {
 });
 
 describe("snapshotRepo", () => {
-  const base = { owner: "eight-academy-hackathon", name: "edutech26-t3-matricula-express", createdAt: ec("2026-11-27T15:40:00") };
+  const base = { owner: "eight-academy-hackathon", name: "edutech26-t3-matricula-express", createdAt: ec("2026-11-27T17:10:00") };
   const opts = { kickoff: KICKOFF, freeze: FREEZE };
 
   it("repo sano: métricas, archivos obligatorios, checkpoints cumplidos y sin alertas", async () => {
@@ -140,7 +140,7 @@ describe("snapshotRepo", () => {
     expect(s.commitsEnVentana).toBe(4);
     expect(s.autores).toEqual(["ana", "luis"]);
     expect(s.ultimoCommitAt).toEqual(ec("2026-11-28T11:30:00"));
-    expect(s.commitsPorHora["2026-11-27T16"]).toBe(1);
+    expect(s.commitsPorHora["2026-11-27T17"]).toBe(1);
     expect(Object.values(s.archivosObligatorios).every(Boolean)).toBe(true);
     expect(s.checkpoint1).toBe("cumplido");
     expect(s.checkpoint2).toBe("cumplido");
@@ -196,17 +196,17 @@ describe("snapshotRepo", () => {
   it("checkpoint 1: pendiente antes de las 19:00 y vencido después si el README sigue siendo la plantilla", async () => {
     const plantilla = "# Proyecto\n\n## Problema\n<!-- COMPLETAR: qué problema resuelven -->\n\n## Usuario\n<!-- COMPLETAR -->\n";
     const datos = { commits: commitsSanos.slice(0, 1), arbol: arbolCompleto, blobs: { readme: plantilla } };
-    const antes = await snapshotRepo(base, clienteSimulado(datos), { ...opts, ahora: ec("2026-11-27T18:00:00") });
+    const antes = await snapshotRepo(base, clienteSimulado(datos), { ...opts, ahora: ec("2026-11-27T19:30:00") });
     expect(antes.checkpoint1).toBe("pendiente");
-    const despues = await snapshotRepo(base, clienteSimulado(datos), { ...opts, ahora: ec("2026-11-27T19:30:00") });
+    const despues = await snapshotRepo(base, clienteSimulado(datos), { ...opts, ahora: ec("2026-11-27T21:00:00") });
     expect(despues.checkpoint1).toBe("vencido");
     expect(despues.alertas.some((a) => a.tipo === "checkpoint-vencido")).toBe(true);
   });
 
   it("alertas ámbar: sin commits en 3 h durante la ventana y un solo autor", async () => {
-    const commits = [{ sha: "c1", fecha: ec("2026-11-27T16:00:00"), autor: "ana", paths: ["README.md"] }];
+    const commits = [{ sha: "c1", fecha: ec("2026-11-27T17:30:00"), autor: "ana", paths: ["README.md"] }];
     const cliente = clienteSimulado({ commits, arbol: arbolCompleto, blobs: { readme: README_COMPLETO } });
-    const s = await snapshotRepo(base, cliente, { ...opts, ahora: ec("2026-11-27T20:30:00") });
+    const s = await snapshotRepo(base, cliente, { ...opts, ahora: ec("2026-11-27T22:00:00") });
     expect(
       s.alertas
         .filter((a) => a.nivel === "ambar")

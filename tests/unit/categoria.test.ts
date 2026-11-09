@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { calcularCategoria, categoriaEquipo, edadEn } from "@/lib/models/categoria";
 
 describe("edadEn", () => {
-  const kickoff = new Date("2026-11-27T15:30:00-05:00");
+  const kickoff = new Date("2026-11-27T17:00:00-05:00");
 
   it("cuenta el cumpleaños del mismo día", () => {
     expect(edadEn("2008-11-27", kickoff)).toBe(18);

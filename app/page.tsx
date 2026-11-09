@@ -146,7 +146,7 @@ export default function Inicio() {
           </Revelar>
           <dl className="grid grid-cols-2 gap-4">
             {[
-              { n: "20,5 h", t: "de hacking", d: "Viernes 15:30 a sábado 12:00", c: "var(--color-ocho-azul)" },
+              { n: "19 h", t: "de hacking", d: "Viernes 17:00 a sábado 12:00", c: "var(--color-ocho-azul)" },
               { n: "3", t: "tracks", d: "Más el premio n8n transversal", c: "var(--color-ocho-rosa)" },
               { n: "2–5", t: "personas por equipo", d: "O inscríbete solo: te asignamos equipo", c: "var(--color-ocho-verde)" },
               { n: "12 min", t: "de Show and Tell", d: "8 de demo en vivo, 4 de preguntas", c: "var(--color-ocho-ambar)" },

@@ -15,8 +15,8 @@
       }
     },
     {
-      "id": "10cb185a-cf88-4d13-a478-f068573cb741",
-      "name": "Viernes 18:30 (checkpoint 1)",
+      "id": "9f96f710-fc9b-4ec6-a24b-28980a2651bb",
+      "name": "Viernes 19:30 (checkpoint 1)",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
@@ -28,7 +28,7 @@
           "interval": [
             {
               "field": "cronExpression",
-              "expression": "30 18 27 11 *"
+              "expression": "30 19 27 11 *"
             }
           ]
         }
@@ -261,7 +261,7 @@
     }
   ],
   "connections": {
-    "Viernes 18:30 (checkpoint 1)": {
+    "Viernes 19:30 (checkpoint 1)": {
       "main": [
         [
           {

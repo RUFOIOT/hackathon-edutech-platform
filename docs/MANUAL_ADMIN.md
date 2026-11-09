@@ -123,7 +123,7 @@ Registro de cada acción sensible (quién, qué, cuándo). Filtra por entidad, a
   inscripciones**: los QR ya emitidos dejarían de servir (habría que usar la búsqueda manual).
 
 **Qué decirles a los participantes** (por ejemplo, en el comunicado previo):
-> El viernes desde las 13:30, abre https://edutech-hackathon-2026.netlify.app/mi-equipo en tu
+> El viernes desde las 15:30, abre https://edutech-hackathon-2026.netlify.app/mi-equipo en tu
 > celular y muestra tu QR en la entrada. Categoría Open: trae tu documento de identidad.
 
 ### Cómo se usa en la puerta
@@ -158,8 +158,8 @@ búsqueda manual (ver `docs/RUNBOOK.md`).
 | Antes de abrir inscripciones | Admin | Organización: dar acceso al staff. Revisar datos "Por anunciar" |
 | Convocatoria (desde el 5 oct) | Comité | Validar autorizaciones Junior a diario; admitir de lista de espera; revisar el dashboard |
 | Semana previa | Admin | Exportar XLSX de respaldo; registrar salas y jueces; probar el escáner con un QR real |
-| Viernes 13:30 | Check-in | Escanear QR en la puerta |
-| Viernes 14:30 | Comité | Equipos: matchmaking de inscritos individuales |
+| Viernes 15:30 | Check-in | Escanear QR en la puerta |
+| Viernes 16:45 | Comité | Equipos: matchmaking de inscritos individuales |
 | Hacking | Mesa técnica | Semáforo cada 30 min; mentoría; repositorios y alertas |
 | Sábado 12:00 | Mesa técnica | Revisar entregas, tags movidos y decidir A4 |
 | Show and Tell | Comité | Jurado y salas: orden, pantalla, cronómetro, cerrar salas |

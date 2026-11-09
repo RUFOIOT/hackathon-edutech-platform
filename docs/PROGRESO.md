@@ -19,6 +19,8 @@ Nota de traspaso para retomar el trabajo desde otra máquina.
   con `--excluir`, lista de correos ya registrados sacada de `participants`): **64 enviados, 0 fallidos**.
   Al 9 nov: 73 aprobados en Luma (402 filas: 327 invitados, 2 rechazados), 25 registrados en la
   plataforma (8 coinciden por correo con Luma), 7 equipos completos, 6 individuales sin equipo.
+- **9 nov:** aviso a los 7 registros a medias (`registration_drafts` sin `participants`; correos sacados de
+  Firebase Auth con `accounts:lookup`) con el modo `incompleto`: **7 enviados, 0 fallidos**. Resumen al staff en Telegram.
 
 ## Pendiente
 

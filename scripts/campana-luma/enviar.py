@@ -1,11 +1,12 @@
 """Correo a los inscritos de Luma: arma los correos y los envía por un workflow temporal de n8n.
 
 Uso:
-  python3 -I enviar.py vista <archivo.html>   # guarda la vista previa
+  python3 -I enviar.py vista <archivo.html> [variante]  # guarda la vista previa
   python3 -I enviar.py prueba <correo>        # 1 correo de prueba
   python3 -I enviar.py masivo <csv_luma> --si # aprobados del CSV de Luma
   python3 -I enviar.py recordatorio <csv_luma> --excluir <correos.txt> --si
                                               # aprobados que aún no están en la plataforma
+  python3 -I enviar.py incompleto <csv> --si  # registros a medias (CSV email,first_name,approval_status=approved)
 La configuración sale del .env.n8n de la raíz del repo (N8N_API_URL, N8N_API_KEY, GMAIL_CREDENCIAL_ID,
 TELEGRAM_INVITE_INSCRITOS). El CSV de Luma tiene datos personales: no se sube al repo.
 """
@@ -19,6 +20,7 @@ WEB = "https://edutech-hackathon-2026.netlify.app"
 TELEGRAM = ENV["TELEGRAM_INVITE_INSCRITOS"]
 ASUNTO = "Ya estás dentro: registra tu equipo en la EduTech Hackathon (27–28 nov)"
 ASUNTO_RECORDATORIO = "Te falta un paso: regístrate en la plataforma de la EduTech Hackathon"
+ASUNTO_INCOMPLETO = "Tu registro en la EduTech Hackathon quedó a medias: termínalo aquí"
 
 
 def boton(url, texto, fondo, color):
@@ -26,7 +28,7 @@ def boton(url, texto, fondo, color):
             f'border-radius:999px;text-decoration:none;font-weight:bold;font-size:15px;margin:4px 6px 4px 0">{texto}</a>')
 
 
-def correo_html(nombre, recordatorio=False):
+def correo_html(nombre, variante=None):
     hola = f"¡Hola, {html.escape(nombre)}!" if nombre else "¡Hola!"
     p = lambda t: f'<p style="font-size:15px;line-height:1.6;margin:0 0 14px;color:#0e1b3d">{t}</p>'
     paso = lambda n, t, d: (
@@ -43,17 +45,21 @@ def correo_html(nombre, recordatorio=False):
         '<p style="margin:0;font-size:15px;color:#d6dcea">📅 Viernes 27 y sábado 28 de noviembre · 📍 Quito</p></div>'
         '<div style="padding:28px">'
         + p(f"<b>{hola}</b>")
-        + (p("Te inscribiste en Luma, pero <b>todavía no te vemos en la plataforma oficial del hackathon</b>. "
+        + (p("Empezaste tu registro en la plataforma del hackathon, pero <b>quedó a medias</b>. "
+             "Ingresa con el mismo correo y retomas en el paso donde te quedaste: lo que ya llenaste está guardado. "
+             "Solo al terminar quedas inscrito y recibes tu QR para el check-in del viernes 27 a las 15:30.") if variante == "incompleto" else
+           p("Te inscribiste en Luma, pero <b>todavía no te vemos en la plataforma oficial del hackathon</b>. "
              "Los equipos ya se están formando: en la plataforma te unes a uno, entregas el proyecto y recibes tu QR "
-             "para el check-in del viernes 27 a las 15:30.") if recordatorio else
+             "para el check-in del viernes 27 a las 15:30.") if variante == "recordatorio" else
            p("Gracias por inscribirte en Luma. El siguiente paso es <b>registrarte en la plataforma oficial del hackathon</b>: "
              "ahí se forman los equipos, se entrega el proyecto y se hace el check-in con QR el día del evento."))
         + '<table role="presentation" style="border-collapse:collapse;margin:18px 0 6px">'
-        + paso(1, "Regístrate en la plataforma", "Elige cómo: crea tu equipo e invita a tus compañeros por correo, únete con el código de 6 caracteres de tu equipo, o inscríbete individual.")
+        + (paso(1, "Termina tu registro", "Entra a la plataforma con el mismo correo; te enviamos un enlace para ingresar y sigues donde quedaste.")
+           if variante == "incompleto" else paso(1, "Regístrate en la plataforma", "Elige cómo: crea tu equipo e invita a tus compañeros por correo, únete con el código de 6 caracteres de tu equipo, o inscríbete individual."))
         + paso(2, "¿Aún sin equipo? Únete al grupo de Telegram", "En el tema <b>🔎 Buscando equipo</b> te presentas y armamos equipos de 2 a 5 personas.")
         + paso(3, "Prepárate", "Lee la Guía del hacker y ten lista tu cuenta de GitHub. El kick-off es el viernes 27 a las 17:00.")
         + '</table>'
-        + '<p style="margin:8px 0 22px">' + boton(f"{WEB}/registro", "Registrar mi equipo", "#c9a24a", "#0e1b3d")
+        + '<p style="margin:8px 0 22px">' + boton(f"{WEB}/registro", "Terminar mi registro" if variante == "incompleto" else "Registrar mi equipo", "#c9a24a", "#0e1b3d")
         + boton(TELEGRAM, "Unirme al grupo de Telegram", "#0e1b3d", "#ffffff") + '</p>'
         + '<div style="background:#fff6e0;border-left:4px solid #f0b23a;padding:12px 16px;border-radius:8px;margin:0 0 20px;font-size:14px;color:#0e1b3d">'
           '⏰ <b>El registro cierra el viernes 27 de noviembre a las 12:00</b> (hora de Ecuador). Sin registro en la plataforma no hay check-in.</div>'
@@ -62,7 +68,8 @@ def correo_html(nombre, recordatorio=False):
             f'<a href="{WEB}/tracks" style="color:#1d5fa8">Tracks</a>')
         + p("¡Nos vemos en Quito!<br><b>Equipo organizador · Hackathon EduTech</b>")
         + '</div><div style="padding:16px 28px;background:#f8f8fa;font-size:12px;color:#5b6478;line-height:1.5">'
-          'Recibes este correo porque te inscribiste en el evento de Luma «n8n Hackathon Quito — Build with AI: EduTech». '
+          + ('Recibes este correo porque empezaste tu registro en la plataforma de la Hackathon EduTech. ' if variante == "incompleto" else
+             'Recibes este correo porque te inscribiste en el evento de Luma «n8n Hackathon Quito — Build with AI: EduTech». ') +
           'Si ya no quieres participar, responde a este correo y te quitamos de la lista.</div></div></div>')
 
 
@@ -134,14 +141,15 @@ def enviar(correos):
 if __name__ == "__main__":
     modo = sys.argv[1]
     if modo == "vista":
-        open(sys.argv[2], "w").write(correo_html("Felipe", "--recordatorio" in sys.argv))
+        open(sys.argv[2], "w").write(correo_html("Felipe", sys.argv[3] if len(sys.argv) > 3 else None))
         sys.exit()
     if modo == "prueba":
         correos = [{"para": sys.argv[2], "asunto": "[PRUEBA] " + ASUNTO, "html": correo_html("Felipe")}]
     else:
         texto = open(sys.argv[2], encoding="utf-8-sig").read()
         filas = list(csv.DictReader(texto.splitlines(), delimiter=";" if ";" in texto.splitlines()[0] else ","))
-        recordatorio = modo == "recordatorio"
+        variante = modo if modo in ("recordatorio", "incompleto") else None
+        asunto = {"recordatorio": ASUNTO_RECORDATORIO, "incompleto": ASUNTO_INCOMPLETO}.get(variante, ASUNTO)
         excluir = set()
         if "--excluir" in sys.argv:
             excluir = {l.strip().lower() for l in open(sys.argv[sys.argv.index("--excluir") + 1]) if l.strip()}
@@ -151,8 +159,7 @@ if __name__ == "__main__":
             if f.get("approval_status") != "approved" or not re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", e) or e in vistos:
                 continue
             vistos.add(e)
-            correos.append({"para": e, "asunto": ASUNTO_RECORDATORIO if recordatorio else ASUNTO,
-                            "html": correo_html((f.get("first_name") or "").strip().title(), recordatorio)})
+            correos.append({"para": e, "asunto": asunto, "html": correo_html((f.get("first_name") or "").strip().title(), variante)})
         print("destinatarios:", len(correos))
         if "--si" not in sys.argv:
             sys.exit("Falta --si para enviar.")

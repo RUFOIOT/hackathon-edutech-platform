@@ -14,13 +14,16 @@ Nota de traspaso para retomar el trabajo desde otra máquina.
 - Correo con diseño para los inscritos de Luma (`scripts/campana-luma/enviar.py`): **enviado el 4 nov**
   a los 47 aprobados (0 fallidos), con la invitación al grupo de Telegram; avisado al staff.
   Destinatarios: los **47 aprobados** del CSV de Luma (26 sin equipo, 7 con equipo incompleto,
-  11 con equipo completo, 3 sin respuesta). Los 328 «invitados» no reciben el correo.
+  11 con equipo completo, 3 sin respuesta). Los «invitados» recibieron la invitación el 9 nov (ver abajo).
 - **9 nov:** recordatorio a los aprobados de Luma que aún no están en la plataforma (modo `recordatorio`
   con `--excluir`, lista de correos ya registrados sacada de `participants`): **64 enviados, 0 fallidos**.
   Al 9 nov: 73 aprobados en Luma (402 filas: 327 invitados, 2 rechazados), 25 registrados en la
   plataforma (8 coinciden por correo con Luma), 7 equipos completos, 6 individuales sin equipo.
 - **9 nov:** aviso a los 7 registros a medias (`registration_drafts` sin `participants`; correos sacados de
   Firebase Auth con `accounts:lookup`) con el modo `incompleto`: **7 enviados, 0 fallidos**. Resumen al staff en Telegram.
+- **9 nov:** invitación al evento a los «invited» de Luma (cargados el 28 sep, nunca se inscribieron) con el modo
+  `invitacion`, en 4 lotes de hasta 90: **324 enviados, 0 fallidos** (3 ya estaban en la plataforma). Ese día salieron
+  395 correos desde la cuenta de Gmail de n8n; no repetir envíos grandes el mismo día por el límite diario de Gmail.
 
 ## Pendiente
 

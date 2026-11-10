@@ -49,6 +49,8 @@ Responsables por defecto: **mesa técnica** (plataforma, repositorios, n8n) y **
 
 ### Cae la red de la sede
 
+Redes, pruebas previas, recursos y mensajes para participantes: [CONECTIVIDAD.md](CONECTIVIDAD.md).
+
 1. La plataforma está en Netlify y Firebase: el problema es la conexión local, no el servidor.
    Comparte un hotspot 4G para el staff (check-in y jurado funcionan desde el celular).
 2. **Check-in sin conexión:** marca la asistencia en la lista impresa y regístrala en

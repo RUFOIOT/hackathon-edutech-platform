@@ -9,6 +9,7 @@ Uso:
   python3 -I enviar.py invitacion <csv_luma> --excluir <correos.txt> --si
                                               # «invited» de Luma que nunca se inscribieron
   python3 -I enviar.py incompleto <csv> --si  # registros a medias (CSV email,first_name,approval_status=approved)
+Las direcciones de scripts/campana-luma/no-enviar.txt (rebotes y bajas, git-ignorado) se excluyen siempre.
 La configuración sale del .env.n8n de la raíz del repo (N8N_API_URL, N8N_API_KEY, GMAIL_CREDENCIAL_ID,
 TELEGRAM_INVITE_INSCRITOS). El CSV de Luma tiene datos personales: no se sube al repo.
 """
@@ -165,6 +166,10 @@ if __name__ == "__main__":
         excluir = set()
         if "--excluir" in sys.argv:
             excluir = {l.strip().lower() for l in open(sys.argv[sys.argv.index("--excluir") + 1]) if l.strip()}
+        # Rebotes y bajas: nunca se les vuelve a escribir (archivo git-ignorado, una dirección por línea).
+        no_enviar = os.path.join(os.path.dirname(os.path.abspath(__file__)), "no-enviar.txt")
+        if os.path.exists(no_enviar):
+            excluir |= {l.strip().lower() for l in open(no_enviar) if l.strip() and not l.startswith("#")}
         vistos, correos = set(excluir), []
         for f in filas:
             e = (f.get("email") or "").strip().lower()

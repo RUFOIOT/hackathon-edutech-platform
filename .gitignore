@@ -27,3 +27,4 @@ out-pages/
 
 # Exportaciones de Luma (datos personales)
 *.csv
+scripts/campana-luma/no-enviar.txt

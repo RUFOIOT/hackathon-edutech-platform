@@ -24,6 +24,10 @@ Nota de traspaso para retomar el trabajo desde otra máquina.
 - **9 nov:** invitación al evento a los «invited» de Luma (cargados el 28 sep, nunca se inscribieron) con el modo
   `invitacion`, en 4 lotes de hasta 90: **324 enviados, 0 fallidos** (3 ya estaban en la plataforma). Ese día salieron
   395 correos desde la cuenta de Gmail de n8n; no repetir envíos grandes el mismo día por el límite diario de Gmail.
+  4 rebotaron (direcciones inexistentes) y ninguna respuesta pidió la baja. Rebotes y bajas van en
+  `scripts/campana-luma/no-enviar.txt` (git-ignorado; copiarlo a mano entre máquinas), que el script excluye siempre.
+- **9 nov:** carta de invitación (inglés y portugués) para una participante de Brasil que pide apoyo a su universidad;
+  enviada por correo desde la cuenta del organizador. La carta no queda en el repo (datos personales).
 
 ## Pendiente
 
@@ -38,5 +42,5 @@ Nota de traspaso para retomar el trabajo desde otra máquina.
 
 - `git clone https://github.com/RUFOIOT/hackathon-edutech-platform.git && npm install`
 - Copiar a mano (no están en el repo): `.env.n8n` (claves de n8n, Telegram y Gmail),
-  `.env.local` y el CSV exportado de Luma. El repo es **público**: nunca subir esos archivos.
+  `.env.local`, `scripts/campana-luma/no-enviar.txt` y el CSV exportado de Luma. El repo es **público**: nunca subir esos archivos.
 - Deploy a Netlify: ver `docs/DEPLOY.md` (siempre desde una copia limpia con `git archive`).

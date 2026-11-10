@@ -1,6 +1,7 @@
 # Instructivo de internet, recursos de sede y comunicación del wifi
 
-Para coordinación operativa, mesa técnica (EIGHT LABS) y TI del colegio. Complementa el
+Responsables de la red wifi: **Andrés Arias (TI), Pablo Marín y Daniel Robles**. Para coordinación
+operativa, mesa técnica (EIGHT LABS) y TI del colegio. Complementa el
 [RUNBOOK](RUNBOOK.md) (qué hacer si cae la red) y la guía §6 (conectividad `[CONFIRMAR]`).
 
 > **Este repo es público.** Los nombres de red reales, las claves y la configuración de los equipos
@@ -137,8 +138,9 @@ ese caso se reparten tarjetas nuevas en la puerta el sábado a las 08:00.
 
 | Tema | Responsable |
 |---|---|
-| Red, puntos de acceso, firewall y proveedor | TI del colegio · `[CONFIRMAR nombre]` |
-| Pruebas, kit, soporte en sala y respaldo 4G | Mesa técnica · EIGHT LABS |
+| **Red wifi: responsables** | **Andrés Arias (TI), Pablo Marín y Daniel Robles** |
+| Red, puntos de acceso, firewall y proveedor | Andrés Arias · TI del colegio |
+| Pruebas, kit, soporte en sala y respaldo 4G | Pablo Marín y Daniel Robles, con la mesa técnica (EIGHT LABS) |
 | Mensajes a participantes (A y C) | Comité, desde `/admin/comunicados` |
 | Tarjetas y carteles | Check-in, se entregan con el kit |
 | Decidir si se extiende el freeze | Comité |

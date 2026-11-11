@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { AGENDA, ALIADOS, EVENT, FAQ, PREMIOS, PREMIO_TRANSVERSAL, TRACKS, TRACK_CODES, fecha, mostrar, type TrackCode } from "@/config/event";
+import { AGENDA, ALIADOS, EVENT, FAQ, PREMIOS, TRACKS, TRACK_CODES, fecha, mostrar, type TrackCode } from "@/config/event";
 import { MEDIOS } from "@/config/medios";
 import { HeroInfinito } from "@/components/hero-infinito";
 import { Revelar } from "@/components/revelar";
@@ -146,10 +146,10 @@ export default function Inicio() {
           </Revelar>
           <dl className="grid grid-cols-2 gap-4">
             {[
-              { n: "19 h", t: "de hacking", d: "Viernes 17:00 a sábado 12:00", c: "var(--color-ocho-azul)" },
-              { n: "3", t: "tracks", d: "Más el premio n8n transversal", c: "var(--color-ocho-rosa)" },
+              { n: "21 h", t: "de hacking", d: "Viernes 17:00 a sábado 14:00", c: "var(--color-ocho-azul)" },
+              { n: "3", t: "tracks", d: "Con n8n como herramienta de automatización", c: "var(--color-ocho-rosa)" },
               { n: "2–5", t: "personas por equipo", d: "O inscríbete solo: te asignamos equipo", c: "var(--color-ocho-verde)" },
-              { n: "12 min", t: "de Show and Tell", d: "8 de demo en vivo, 4 de preguntas", c: "var(--color-ocho-ambar)" },
+              { n: "10 min", t: "de Show and Tell", d: "3 de demo en vivo, 7 de preguntas del jurado", c: "var(--color-ocho-ambar)" },
             ].map((x, i) => (
               <Revelar key={x.t} retraso={i * 90}>
                 <div className="h-full rounded-2xl border border-border bg-surface p-5" style={{ boxShadow: `inset 0 4px 0 ${x.c}` }}>
@@ -198,9 +198,9 @@ export default function Inicio() {
             <div className="flex flex-col items-start gap-5 rounded-2xl bg-navy-900 p-6 text-paper-50 sm:flex-row sm:items-center">
               <Image src={asset("/brand/n8n_pink+white_logo.svg")} alt="n8n" width={110} height={36} unoptimized className="h-8 w-auto" />
               <div>
-                <p className="font-display text-xl font-semibold">{PREMIO_TRANSVERSAL}</p>
+                <p className="font-display text-xl font-semibold">Automatiza con n8n</p>
                 <p className="mt-1 text-sm opacity-85">
-                  La mejor automatización construida con n8n, en cualquier track. Exporta tus workflows a <code className="font-mono">/n8n</code>.
+                  Construye tus automatizaciones con n8n en cualquier track y exporta tus workflows a <code className="font-mono">/n8n</code>.
                 </p>
               </div>
               <span
@@ -277,7 +277,7 @@ export default function Inicio() {
               <li key={p.premio}>
                 <Revelar retraso={(i % 4) * 80} className="h-full">
                   <div className={`h-full rounded-2xl p-5 ${i < 3 ? "borde-ocho" : "border border-border bg-bg"}`}>
-                    {i < 3 && <p className="font-display text-3xl font-semibold">{i + 1}.º</p>}
+                    {i < 2 && <p className="font-display text-3xl font-semibold">{i + 1}.º</p>}
                     <p className="mt-1 font-semibold">{p.premio}</p>
                     <p className="text-sm text-muted">{p.alcance}</p>
                     <p className="mt-3 text-sm font-medium">{mostrar(p.beneficio)}</p>
@@ -287,8 +287,8 @@ export default function Inicio() {
             ))}
           </ul>
           <p className="mt-5 max-w-prose text-sm text-muted">
-            Un equipo puede recibir como máximo un premio general y un premio especial. Los premios económicos de la categoría Junior se entregan
-            al representante legal.
+            Los equipos son de una sola categoría: los equipos Open compiten por el 1.er y 2.º lugar, y los equipos Junior por el premio al mejor
+            equipo Junior. Los premios económicos de la categoría Junior se entregan al representante legal.
           </p>
         </div>
       </section>

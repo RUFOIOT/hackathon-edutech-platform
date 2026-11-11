@@ -23,7 +23,7 @@ export async function iniciarSubidaPitch(): Promise<
 > {
   try {
     const { teamId } = await contextoEquipo();
-    if (!entregaAbierta()) return fallo("El formulario de entrega cerró a las 12:00 del sábado (code freeze).");
+    if (!entregaAbierta()) return fallo("El formulario de entrega cerró a las 14:00 del sábado (code freeze).");
     return { ok: true, ...(await prepararSubidaPitch(teamId)) };
   } catch (err) {
     return manejar(err);

@@ -77,7 +77,7 @@ describe("eventos firmados por la app", () => {
     const t = await simular(wf, nodo, [itemWebhook(cuerpo, firmarComoApp(cuerpo))], { mock: mockApp() });
     const certificados = t.llamadasApp.filter((l) => l.ruta === "/api/n8n/certificado").map((l) => l.cuerpo);
     expect(certificados).toEqual([
-      { nombre: "Ana Pérez", equipo: "Los Nodos", tipo: "ganador", premio: "1er lugar general" },
+      { nombre: "Ana Pérez", equipo: "Los Nodos", tipo: "ganador", premio: "1.er lugar Open" },
       { nombre: "Luis", equipo: "Otro", tipo: "participacion", premio: null },
     ]);
     for (const c of t.correos) expect((c.adjuntos as { content: string }[])[0]!.content).toBe(Buffer.from("%PDF-1.7 simulado").toString("base64"));

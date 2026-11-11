@@ -441,8 +441,8 @@ salida.push(slack('Recordatorios de convocatoria: ' + r.autorizacionesPendientes
   // WF-04 · Monitor de repositorios (cada 15 min durante la ventana de hacking).
   {
     const f = new Flujo("WF-04-monitor-repositorios", "WF-04 · Monitor de repositorios");
-    // Ventana: viernes 27 17:00 → sábado 28 12:00 (config/event.ts). Ajusta si cambian las fechas.
-    const cron = f.programado("Cada 15 min en la ventana", ["*/15 17-23 27 11 *", "*/15 0-11 28 11 *", "0 12 28 11 *"], [0, 300]);
+    // Ventana: viernes 27 17:00 → sábado 28 14:00 (config/event.ts). Ajusta si cambian las fechas.
+    const cron = f.programado("Cada 15 min en la ventana", ["*/15 17-23 27 11 *", "*/15 0-13 28 11 *", "0 14 28 11 *"], [0, 300]);
     const firmar = f.codigo("Firmar petición", jsFirmar("({ todos: true })"), [240, 300]);
     const app = f.llamarApp("Snapshot de todos los repos", "/api/github/snapshot", [480, 300]);
     const redactar = f.codigo(
@@ -479,9 +479,9 @@ if (fallidos > 3) salida.push(slack('⚠️ ' + fallidos + ' repositorios no se 
   {
     const f = new Flujo("WF-05-recordatorio-checkpoints", "WF-05 · Recordatorio de checkpoints");
     const hitos = [
-      { cron: "30 19 27 11 *", hito: "checkpoint1", nombre: "Viernes 19:30 (checkpoint 1)" },
-      { cron: "0 10 28 11 *", hito: "checkpoint2", nombre: "Sábado 10:00 (checkpoint 2)" },
-      { cron: "30 11 28 11 *", hito: "freeze", nombre: "Sábado 11:30 (code freeze)" },
+      { cron: "30 18 27 11 *", hito: "checkpoint1", nombre: "Viernes 18:30 (checkpoint 1)" },
+      { cron: "0 12 28 11 *", hito: "checkpoint2", nombre: "Sábado 12:00 (checkpoint 2)" },
+      { cron: "30 13 28 11 *", hito: "freeze", nombre: "Sábado 13:30 (code freeze)" },
     ];
     const firmar = f.codigo("Firmar consulta", jsFirmar("item.json.peticion"), [480, 300]);
     hitos.forEach((h, i) => {
@@ -509,10 +509,10 @@ salida.push(slack('Recordatorio de ' + NOMBRE[r.hito] + ': ' + r.enRiesgo.length
     flujos.push(f);
   }
 
-  // WF-06 · Validación de entregas (12:05 del sábado) + acuse de cada entrega.
+  // WF-06 · Validación de entregas (14:05 del sábado) + acuse de cada entrega.
   {
     const f = new Flujo("WF-06-validacion-entregas", "WF-06 · Validación de entregas");
-    const cron = f.programado("Sábado 12:05", ["5 12 28 11 *"], [0, 600]);
+    const cron = f.programado("Sábado 14:05", ["5 14 28 11 *"], [0, 600]);
     const firmarSnap = f.codigo("Firmar snapshot final", jsFirmar("({ todos: true })"), [240, 600]);
     const snap = f.llamarApp("Snapshot final", "/api/github/snapshot", [480, 600]);
     const firmarRep = f.codigo("Firmar reporte", jsFirmar("({ consulta: 'reporte-entregas' })"), [720, 600]);
@@ -522,7 +522,7 @@ salida.push(slack('Recordatorio de ' + NOMBRE[r.hito] + ': ' + r.enRiesgo.length
       jsRedactar(`${RESPUESTA}
 const filas = r.equipos.map((t) => '<tr><td>' + esc(t.teamNombre) + '</td><td>' + esc(t.track) + '</td><td>' + (t.entregado ? 'Sí' : 'No') + '</td><td>' +
   (esc([].concat(t.fallas, t.tagMovidoTrasFreeze ? ['tag movido'] : [], t.a4Pendiente ? ['A4 por revisar'] : []).join(', ')) || '—') + '</td></tr>').join('');
-salida.push(correo($env.EDUTECH_CORREO_COMITE, 'Reporte de entregas y admisibilidad', 'Reporte de entregas (12:05)',
+salida.push(correo($env.EDUTECH_CORREO_COMITE, 'Reporte de entregas y admisibilidad', 'Reporte de entregas (14:05)',
   [r.entregados + ' de ' + r.total + ' equipos entregaron; ' + r.admisibles + ' cumplen A1–A5 por ahora (A4 lo confirma la mesa técnica).',
    '<table style="border-collapse:collapse;font-size:13px" border="1" cellpadding="6"><tr><th>Equipo</th><th>Track</th><th>Entregó</th><th>Observaciones</th></tr>' + filas + '</table>'],
   { texto: 'Revisar en el panel', url: r.enlace }));
@@ -540,7 +540,7 @@ const hora = new Date(p.tagCommitAt).toLocaleString('es-EC', { timeZone: 'Americ
 salida.push(...correoACada(p.destinatarios, (p.reenvio ? 'Entrega actualizada' : 'Entrega recibida') + ' · ' + p.teamNombre, p.reenvio ? 'Entrega actualizada' : 'Entrega recibida',
   ['Recibimos la entrega del equipo <strong>' + esc(p.teamNombre) + '</strong>.',
    'Tag entrega: <code>' + esc(String(p.tagSha).slice(0, 7)) + '</code> (commit del ' + esc(hora) + '). Demo: ' + (p.demoUrl === 'ejecucion-local' ? 'ejecución local' : esc(p.demoUrl)) + '.',
-   'Puedes volver a enviar hasta el code freeze (sábado 12:00); se evalúa la última entrega.'],
+   'Puedes volver a enviar hasta el code freeze (sábado 14:00); se evalúa la última entrega.'],
   { texto: 'Ver mi entrega', url: APP + '/mi-equipo/entrega' }));
 salida.push(slack((p.reenvio ? 'Entrega actualizada: ' : 'Entrega recibida: ') + p.teamNombre + ' (' + p.track + ').'));`),
       [1000, 100],
@@ -628,11 +628,11 @@ const salida = [];
 $input.all().forEach((item, i) => {
   const t = firmados[i].json.contexto;
   const fb = item.json.publicado ? item.json : { fortalezas: [], recomendaciones: [] };
-  const tipo = t.premios.length ? 'ganador' : t.finalista ? 'finalista' : 'participacion';
+  const tipo = t.premios.length ? 'ganador' : 'participacion';
   for (const m of t.integrantes) {
     if (!m.email) continue;
     salida.push({ json: {
-      contexto: { para: m.email, nombre: m.nombre, equipo: t.nombre, tipo, premios: t.premios, posicionFinal: t.posicionFinal, fortalezas: fb.fortalezas, recomendaciones: fb.recomendaciones },
+      contexto: { para: m.email, nombre: m.nombre, equipo: t.nombre, tipo, premios: t.premios, fortalezas: fb.fortalezas, recomendaciones: fb.recomendaciones },
       peticion: { nombre: m.nombre, equipo: t.nombre, tipo, premio: t.premios.join(', ') || null },
     } });
   }
@@ -651,7 +651,6 @@ for (let i = 0; i < items.length; i++) {
   const pdf = (await this.helpers.getBinaryDataBuffer(i, 'data')).toString('base64');
   const lista = (xs) => xs.length ? '<ul>' + xs.map((x) => '<li>' + esc(x) + '</li>').join('') + '</ul>' : '<p>—</p>';
   const logro = c.tipo === 'ganador' ? '¡Felicitaciones! Tu equipo obtuvo: <strong>' + esc(c.premios.join(', ')) + '</strong>.'
-    : c.tipo === 'finalista' ? 'Tu equipo llegó a la final' + (c.posicionFinal ? ' (puesto ' + c.posicionFinal + ')' : '') + '.'
     : 'Gracias por construir en vivo con nosotros.';
   const item = correo(c.para, 'Resultados y certificado · Hackathon EduTech', 'Resultados del Hackathon EduTech',
     ['Hola ' + esc(c.nombre) + ', ya están publicados los resultados. ' + logro,

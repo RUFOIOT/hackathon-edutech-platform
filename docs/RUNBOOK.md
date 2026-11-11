@@ -24,19 +24,20 @@ Responsables por defecto: **mesa técnica** (plataforma, repositorios, n8n) y **
 ### Durante el hacking
 
 - [ ] Revisar `/admin` cada 30 min: semáforo rojo, mentorías esperando más de 30 min, alertas rojas.
-- [ ] 19:30 y 10:00: WF-05 avisa a los equipos en riesgo; confirmar en Slack.
+- [ ] Viernes 18:30 y sábado 12:00: WF-05 avisa a los equipos en riesgo; confirmar en Slack.
 - [ ] Checkpoint 2: la mesa técnica confirma a mano los equipos marcados como "requiere revisión".
 
-### Sábado 28, code freeze (12:00)
+### Sábado 28, code freeze (14:00)
 
-- [ ] 12:05 llega a Slack y al comité el reporte de WF-06 (entregas y A1–A5).
+- [ ] 14:05 llega a Slack y al comité el reporte de WF-06 (entregas y A1–A5).
 - [ ] Revisar tags movidos después del freeze en `/admin/repositorios` y decidir A4.
 - [ ] Cargar el orden de presentación por sala en `/admin/jurado`.
 
-### Show and Tell, final y premiación
+### Show and Tell (15:00) y premiación (16:45)
 
 - [ ] `/pantalla?sala=…` abierta en el proyector de cada sala.
-- [ ] Cerrar cada sala al terminar (bloquea los puntajes) antes de calcular finalistas.
+- [ ] Cerrar cada sala al terminar (bloquea los puntajes) antes de revisar los resultados.
+- [ ] Confirmar los premios en `/admin/resultados` antes de las 16:30.
 - [ ] Publicar resultados desde `/admin/resultados`; WF-09 envía certificados (revisar Slack).
 
 ### Después del evento

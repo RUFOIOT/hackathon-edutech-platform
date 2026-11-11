@@ -86,10 +86,11 @@ El enlace mágico se imprime en la terminal de los emuladores.
 - **Plantilla de equipos:** `template-repo/` (se publica con `scripts/setup-org.md`). Si cambian las
   secciones del README, actualizar `SECCIONES_CHECKPOINT1/2` en `lib/github.ts`.
 - **Puntajes:** toda la aritmética vive en `lib/scoring.ts` (`scoreTotal`, `roomNormalization`,
-  `tiebreak`, `seleccionarFinalistas`, `rankingFinal`, `calcularPremios`). La hoja del juez usa la
-  misma función para el total en vivo. No dupliques fórmulas en otros archivos.
+  `tiebreak`, `rankingGeneral`, `proponerPremios`, `validarPremios`). La hoja del juez usa la
+  misma función para el total en vivo. No dupliques fórmulas en otros archivos. Una sola ronda de
+  Show and Tell en 2 salas, sin final (D-47).
 - **Jurado:** las escrituras pasan por `lib/jurado/servicio.ts`, que repite en código las reglas de
-  acceso por sala/final de `firestore.rules`. Firestore no admite arrays anidados: aplánalos antes
+  acceso por sala de `firestore.rules`. Firestore no admite arrays anidados: aplánalos antes
   de guardarlos (pasó con la auditoría de empates).
 - **Copys:** voz activa y desde el usuario ("Inscribir a mi equipo" → "Equipo inscrito"). Errores
   que dicen qué pasó y cómo corregirlo. Sin etiquetas en mayúsculas ni numeraciones decorativas.

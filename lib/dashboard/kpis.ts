@@ -180,11 +180,11 @@ export function calcularKpis(d: Dataset, opts: { cupoPersonas: number }) {
     evaluacionesRegistradas: contar(d.puntajes, (p) => p.ronda === "semifinal"),
     evaluacionesPorSala: salas.map((s) => {
       const turnos = contar(d.presentaciones, (p) => p.room_id === s);
-      const juecesSala = d.jueces.filter((j) => (s === "final" ? v(j.final) : j.room_id === s));
+      const juecesSala = d.jueces.filter((j) => j.room_id === s);
       return {
         room_id: s,
         registradas: contar(d.puntajes, (p) => p.room_id === s),
-        esperadas: juecesSala.reduce((n, j) => n + turnos - (s === "final" ? 0 : Number(j.conflictos_en_sala ?? 0)), 0),
+        esperadas: juecesSala.reduce((n, j) => n + turnos - Number(j.conflictos_en_sala ?? 0), 0),
       };
     }),
     juecesConConflicto: contar(d.jueces, (j) => Number(j.conflictos) > 0),

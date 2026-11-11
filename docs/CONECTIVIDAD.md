@@ -77,7 +77,7 @@ la velocidad con 30 dispositivos conectados, no con uno solo.
   - Una toma por persona y una regleta de 6 tomas por mesa de equipo.
   - Las salas se reparten entre circuitos distintos, que TI marca en el plano.
   - Los participantes traen su extensión, como pide la checklist de la Guía del hacker.
-- **Salas de presentación** (Show and Tell del sábado 13:30, salas en paralelo): cada una con
+- **Salas de presentación** (Show and Tell del sábado 15:00, dos salas en paralelo): cada una con
   proyector o pantalla, cable HDMI, adaptador USB-C a HDMI, audio y `/pantalla?sala=…` abierta.
   En las salas de presentación, la demo va por cable de red si se puede.
 - **Kit de la mesa técnica:**
@@ -97,9 +97,9 @@ envió a más de 400 personas y la web es pública.
 | Cuándo | Canal | Qué se dice |
 |---|---|---|
 | **Lun 23 nov** | `/admin/comunicados` (todos) y Telegram 📢 Anuncios | Que habrá wifi, qué traer y qué dejar listo en casa (mensaje A). Sin la clave |
-| **Vie 27, check-in (15:30)** | Tarjeta en el kit y en la credencial | Nombre de la red, clave y código QR para conectarse (mensaje B) |
+| **Vie 27, check-in (15:30)** | Tarjeta que se entrega con el name tag | Nombre de la red, clave y código QR para conectarse (mensaje B) |
 | **En sede** | Carteles A4 en cada sala y en la mesa técnica | El mismo QR; no se lee desde afuera |
-| **Inauguración (16:15)** | Micrófono | Red, dónde está la mesa técnica y qué hacer si hay fallas |
+| **Inauguración (16:00)** | Micrófono | Red, dónde está la mesa técnica y qué hacer si hay fallas |
 | **Si cae la red** | Megáfono primero; `/admin/comunicados` y Telegram al volver | Mensaje C y, si hace falta, cambio del freeze (decide el comité) |
 
 **El QR del wifi** es texto con este formato, convertido en código QR:
@@ -142,5 +142,5 @@ ese caso se reparten tarjetas nuevas en la puerta el sábado a las 08:00.
 | Red, puntos de acceso, firewall y proveedor | Andrés Arias · TI del colegio |
 | Pruebas, kit, soporte en sala y respaldo 4G | Pablo Marín y Daniel Robles, con la mesa técnica (EIGHT LABS) |
 | Mensajes a participantes (A y C) | Comité, desde `/admin/comunicados` |
-| Tarjetas y carteles | Check-in, se entregan con el kit |
+| Tarjetas y carteles | Check-in, se entregan con el name tag |
 | Decidir si se extiende el freeze | Comité |

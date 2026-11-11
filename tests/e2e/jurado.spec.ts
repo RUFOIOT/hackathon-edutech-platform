@@ -27,9 +27,8 @@ test.describe("jurado", () => {
     const email = `juez-e2e-${sufijo}@edutech.test`;
     const juez = await auth.createUser({ email, displayName: "Juez E2E" });
 
-    await db.doc("events/edutech-2026").set({ rondaActiva: "semifinal" }, { merge: true });
     await db.doc(`rooms/${sala}`).set({ nombre: `Sala E2E ${sufijo}`, tracks: ["T1"], cerrada: false });
-    await db.doc(`judges/${juez.uid}`).set({ nombre: "Juez E2E", perfil: "tecnico", roomId: sala, final: false });
+    await db.doc(`judges/${juez.uid}`).set({ nombre: "Juez E2E", perfil: "tecnico", roomId: sala });
     for (const [i, teamId] of [equipoA, equipoB].entries()) {
       const nombre = `Equipo ${i ? "B" : "A"} ${sufijo}`;
       await db.doc(`teams/${teamId}`).set({ nombre, track: "T1", roomId: sala, estado: "completo" });
@@ -104,7 +103,7 @@ test.describe("jurado", () => {
     const email = `juez-otra-${sufijo}@edutech.test`;
     const juez = await auth.createUser({ email });
     await db.doc(`rooms/sala-x-${sufijo}`).set({ nombre: "Sala X", tracks: ["T2"], cerrada: false });
-    await db.doc(`judges/${juez.uid}`).set({ nombre: "Juez X", perfil: "negocio", roomId: `sala-x-${sufijo}`, final: false });
+    await db.doc(`judges/${juez.uid}`).set({ nombre: "Juez X", perfil: "negocio", roomId: `sala-x-${sufijo}` });
     await db.doc(`teams/ajeno-${sufijo}`).set({ nombre: "Equipo ajeno", track: "T1", roomId: "otra-sala", estado: "completo" });
     await ingresarComo(page, email, "/jurado");
     await page.goto(`/jurado/ajeno-${sufijo}`);

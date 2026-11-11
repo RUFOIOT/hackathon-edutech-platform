@@ -14,8 +14,6 @@ export interface EventDoc {
   nombre: string;
   resultadosPublicados: boolean;
   resultadosPublicadosAt: Fecha | null;
-  /** Ronda que evalúa el jurado: la cambia el comité al confirmar finalistas. */
-  rondaActiva: "semifinal" | "final";
 }
 
 /** tracks/{T1|T2|T3} */
@@ -96,7 +94,6 @@ export interface TeamDoc {
   capitanId: string;
   /** Tiene integrantes Junior: la organización debe asignar un mentor adulto (guía §3). */
   requiereAdulto: boolean;
-  finalista?: boolean;
   problemaCandidato: string;
   roomId: string | null; // denormalizado desde presentation_slots para las reglas del jurado
   adultoResponsableId: string | null;
@@ -239,23 +236,21 @@ export interface MentorRequestDoc {
 export interface JudgeDoc {
   nombre: string;
   perfil: "tecnico" | "educativo" | "negocio";
-  roomId: string | null; // sala de semifinal
-  final: boolean; // integra el jurado de la final (evalúa a los finalistas)
+  roomId: string | null; // sala del Show and Tell (2 salas, 3 jurados por sala)
 }
 
-/** rooms/{roomId} */
+/** rooms/{roomId}: recibe equipos de cualquier track. */
 export interface RoomDoc {
   nombre: string;
-  tracks: TrackCode[];
   cerrada: boolean; // al cerrar la sala se bloquean los puntajes
 }
 
-/** presentation_slots/{roomId}_{orden} */
+/** presentation_slots/semifinal_{roomId}_{teamId} ("semifinal" es el id histórico de la única ronda). */
 export interface PresentationSlotDoc {
   roomId: string;
   teamId: string;
   orden: number;
-  ronda: "semifinal" | "final";
+  ronda: "semifinal";
   horaProgramada: Fecha;
   inicioReal: Fecha | null;
   finReal: Fecha | null;
@@ -276,12 +271,12 @@ export interface RubricCriterionDoc {
   descriptores: Record<string, string>;
 }
 
-/** scores/{ronda}_{judgeId}_{teamId} */
+/** scores/semifinal_{judgeId}_{teamId} */
 export interface ScoreDoc {
   judgeId: string;
   teamId: string;
   roomId: string;
-  ronda: "semifinal" | "final";
+  ronda: "semifinal";
   c1: number;
   c2: number;
   c3: number;

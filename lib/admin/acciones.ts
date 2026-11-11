@@ -175,7 +175,7 @@ export async function cambiarTrackAdmin(teamId: string, fd: FormData) {
   return ejecutar("/admin/equipos", async (uid) => {
     const track = z.enum(["T1", "T2", "T3"]).safeParse(fd.get("track"));
     if (!track.success) throw new ErrorRegistro("Elige un track.");
-    if (ahora() >= fecha("checkpoint1")) throw new ErrorRegistro("El track solo se puede cambiar hasta el checkpoint 1 (viernes 20:00).");
+    if (ahora() >= fecha("checkpoint1")) throw new ErrorRegistro("El track solo se puede cambiar hasta el checkpoint 1 (viernes 19:00).");
     const ref = db().doc(`teams/${teamId}`);
     const antes = (await ref.get()).get("track");
     const batch = db().batch();

@@ -83,8 +83,10 @@ Ver la sección 5 (QR).
 - En rojo: más de 30 minutos esperando (también se avisa por Slack si n8n está conectado).
 
 ### Jurado y salas
-1. **Guardar sala** (identificador, nombre, tracks) y **Registrar juez** en su sala.
-2. **Generar orden de semifinal** (reemplaza el orden actual; puedes mover equipos).
+1. **Guardar sala** (identificador y nombre; son 2 salas y aceptan cualquier track) y **Registrar
+   juez** en su sala (3 por sala).
+2. **Generar orden del Show and Tell** (reparte a los equipos completos entre las salas al azar y
+   reemplaza el orden actual; puedes mover equipos).
 3. Durante el Show and Tell, por sala: **Poner en pantalla** al equipo de turno y usa el
    cronómetro (**Iniciar**, **Pausar**, **Reiniciar**, **Terminar**). **Abrir pantalla de la sala**
    abre `/pantalla?sala=…` para el proyector.
@@ -92,10 +94,12 @@ Ver la sección 5 (QR).
 5. Al terminar una sala: **Cerrar sala** bloquea sus puntajes. Para corregir: **Reabrir** con motivo.
 
 ### Resultados
-1. Con las salas cerradas, revisa la normalización por sala y los empates.
-2. **Confirmar finalistas y abrir la final**.
-3. Tras la final, ordena y **Publicar resultados**: se publican en `/resultados`, cada equipo ve
-   su retroalimentación y n8n envía los certificados.
+1. Con las salas cerradas, revisa la normalización por sala, el ranking Open, el ranking Junior y
+   los empates. No hay final.
+2. Los premios (1.er y 2.º lugar Open, mejor equipo Junior) vienen elegidos según el ranking; el
+   comité puede cambiarlos tras la deliberación del jurado. Hora límite: 16:30.
+3. **Publicar resultados**: los ganadores se publican en `/resultados`, cada equipo ve su
+   retroalimentación y n8n envía los certificados.
 
 ### Comunicados
 Elige el alcance (todos, un track o un equipo), escribe el mensaje y **Enviar comunicado**. Se
@@ -159,11 +163,11 @@ búsqueda manual (ver `docs/RUNBOOK.md`).
 | Convocatoria (desde el 5 oct) | Comité | Validar autorizaciones Junior a diario; admitir de lista de espera; revisar el dashboard |
 | Semana previa | Admin | Exportar XLSX de respaldo; registrar salas y jueces; probar el escáner con un QR real |
 | Viernes 15:30 | Check-in | Escanear QR en la puerta |
-| Viernes 16:45 | Comité | Equipos: matchmaking de inscritos individuales |
+| Viernes 16:50 | Comité | Equipos: matchmaking de inscritos individuales |
 | Hacking | Mesa técnica | Semáforo cada 30 min; mentoría; repositorios y alertas |
-| Sábado 12:00 | Mesa técnica | Revisar entregas, tags movidos y decidir A4 |
-| Show and Tell | Comité | Jurado y salas: orden, pantalla, cronómetro, cerrar salas |
-| Final y premiación | Comité | Resultados: finalistas, final, publicar |
+| Sábado 14:00 | Mesa técnica | Revisar entregas, tags movidos y decidir A4 |
+| Show and Tell (15:00–16:30) | Comité | Jurado y salas: orden, pantalla, cronómetro, cerrar salas |
+| 16:30, antes de la premiación | Comité | Resultados: revisar el ranking, confirmar premios y publicar |
 | Después | Admin | Privacidad: solicitudes de eliminación |
 
 ## 7. Problemas frecuentes

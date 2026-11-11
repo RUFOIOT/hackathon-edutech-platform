@@ -111,13 +111,13 @@ export default async function Repositorio() {
             <tbody>
               <tr className="border-b border-border">
                 <th scope="row" className="py-2 pr-4 font-normal">
-                  Checkpoint 1 · README con problema, usuario, evidencia y arquitectura (vie 20:00)
+                  Checkpoint 1 · README con problema, usuario, evidencia y arquitectura (vie 19:00)
                 </th>
                 <td className={`py-2 font-semibold ${ESTADO[s.checkpoint1].clase}`}>{ESTADO[s.checkpoint1].texto}</td>
               </tr>
               <tr className="border-b border-border">
                 <th scope="row" className="py-2 pr-4 font-normal">
-                  Checkpoint 2 · demo mínima ejecutable (sáb 10:30)
+                  Checkpoint 2 · demo mínima ejecutable (sáb 12:30)
                 </th>
                 <td className={`py-2 font-semibold ${ESTADO[s.checkpoint2].clase}`}>
                   {ESTADO[s.checkpoint2].texto}

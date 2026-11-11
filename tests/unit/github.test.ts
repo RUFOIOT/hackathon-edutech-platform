@@ -196,7 +196,7 @@ describe("snapshotRepo", () => {
   it("checkpoint 1: pendiente antes de las 19:00 y vencido después si el README sigue siendo la plantilla", async () => {
     const plantilla = "# Proyecto\n\n## Problema\n<!-- COMPLETAR: qué problema resuelven -->\n\n## Usuario\n<!-- COMPLETAR -->\n";
     const datos = { commits: commitsSanos.slice(0, 1), arbol: arbolCompleto, blobs: { readme: plantilla } };
-    const antes = await snapshotRepo(base, clienteSimulado(datos), { ...opts, ahora: ec("2026-11-27T19:30:00") });
+    const antes = await snapshotRepo(base, clienteSimulado(datos), { ...opts, ahora: ec("2026-11-27T18:30:00") });
     expect(antes.checkpoint1).toBe("pendiente");
     const despues = await snapshotRepo(base, clienteSimulado(datos), { ...opts, ahora: ec("2026-11-27T21:00:00") });
     expect(despues.checkpoint1).toBe("vencido");

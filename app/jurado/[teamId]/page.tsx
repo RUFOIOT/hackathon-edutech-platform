@@ -48,7 +48,7 @@ export default async function Evaluacion({ params }: { params: Promise<{ teamId:
       </Link>
       <h1 className="mt-3 text-2xl font-semibold">{ctx.team.get("nombre")}</h1>
       <p className="text-muted">
-        {ctx.team.get("track")} · {ctx.ronda === "final" ? "Final" : "Semifinal"}
+        {ctx.team.get("track")} · {ctx.team.get("categoria") === "JUNIOR" ? "Junior" : "Open"} · Show and Tell
       </p>
 
       <details className="mt-6 rounded border border-border bg-surface p-4">

@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import { adminDb } from "@/lib/firebase/admin";
 
-export const metadata: Metadata = { title: "Resultados", description: "Ranking final y premios de la Hackathon EduTech." };
+export const metadata: Metadata = { title: "Resultados", description: "Ganadores de la Hackathon EduTech." };
 export const dynamic = "force-dynamic";
 
 interface Publicados {
   publicado: boolean;
-  ranking: { posicion: number; equipo: string; track: string | null }[];
-  premios: { premio: string; equipo: string }[];
+  premios: { premio: string; equipo: string; track?: string | null }[];
 }
 
 /** Visible solo cuando el comité publica (prompt §4). */
@@ -22,25 +21,19 @@ export default async function Resultados() {
         <p className="mt-4 text-muted">Los resultados se publicarán al cierre del evento, el sábado 28 de noviembre.</p>
       ) : (
         <>
-          <h2 className="mt-10 text-2xl font-semibold">Ranking de la final</h2>
-          <ol className="mt-4 grid gap-2">
-            {datos.ranking.map((r) => (
-              <li key={r.posicion} className={`flex items-baseline gap-4 rounded border p-4 ${r.posicion <= 3 ? "border-accent bg-surface" : "border-border"}`}>
-                <span className="w-10 font-display text-2xl font-semibold tabular-nums">{r.posicion}.</span>
-                <span className="flex-1 font-medium">{r.equipo}</span>
-                {r.track && <span className="text-sm text-muted">{r.track}</span>}
-              </li>
-            ))}
-          </ol>
-          <h2 className="mt-10 text-2xl font-semibold">Premios</h2>
+          <h2 className="mt-10 text-2xl font-semibold">Ganadores</h2>
           <dl className="mt-4 grid gap-3">
             {datos.premios.map((p) => (
-              <div key={`${p.premio}-${p.equipo}`} className="grid gap-1 border-b border-border pb-3 sm:grid-cols-2">
+              <div key={`${p.premio}-${p.equipo}`} className="grid gap-1 rounded border border-accent bg-surface p-4 sm:grid-cols-2">
                 <dt className="text-muted">{p.premio}</dt>
-                <dd className="font-medium">{p.equipo}</dd>
+                <dd className="font-medium">
+                  {p.equipo}
+                  {p.track && <span className="ml-2 text-sm font-normal text-muted">{p.track}</span>}
+                </dd>
               </div>
             ))}
           </dl>
+          <p className="mt-6 text-sm text-muted">Todos los participantes reciben un certificado digital con la retroalimentación del jurado.</p>
         </>
       )}
     </section>

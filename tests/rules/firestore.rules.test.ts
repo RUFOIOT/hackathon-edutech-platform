@@ -150,16 +150,16 @@ describe("jurado", () => {
     await assertSucceeds(getDoc(doc(as("juez3"), "repositories/equipo-b")));
   });
 
-  it("el jurado de la final ve a los finalistas de otras salas; un juez de semifinal no", async () => {
-    await assertSucceeds(getDoc(doc(as("juezFinal"), "teams/equipo-c")));
+  it("sin final: un juez solo ve los equipos de su sala, aunque tenga marcas viejas de final o finalista", async () => {
+    await assertFails(getDoc(doc(as("juezFinal"), "teams/equipo-c"))); // marcas heredadas: final=true y finalista=true
     await assertFails(getDoc(doc(as("juez1"), "teams/equipo-c")));
-    await assertFails(getDoc(doc(as("juezFinal"), "teams/equipo-b"))); // de otra sala y no finalista
+    await assertSucceeds(getDoc(doc(as("juez3"), "teams/equipo-c"))); // equipo-c presenta en sala-2
   });
 
-  it("orden de presentación: cada juez ve el de su sala; el jurado final, el de la final", async () => {
+  it("orden de presentación: cada juez ve solo el de su sala", async () => {
     await assertSucceeds(getDoc(doc(as("juez3"), "presentation_slots/sala-2_1")));
     await assertFails(getDoc(doc(as("juez1"), "presentation_slots/sala-2_1")));
-    await assertSucceeds(getDoc(doc(as("juezFinal"), "presentation_slots/final_1")));
+    await assertFails(getDoc(doc(as("juezFinal"), "presentation_slots/final_1")));
     await assertFails(getDoc(doc(as("juez1"), "presentation_slots/final_1")));
   });
 

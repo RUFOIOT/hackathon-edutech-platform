@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Timestamp } from "firebase-admin/firestore";
 import { requireJuez } from "@/lib/auth/session";
 import { adminDb } from "@/lib/firebase/admin";
-import { SALA_FINAL, rondaActiva } from "@/lib/jurado/servicio";
+import { RONDA } from "@/lib/jurado/servicio";
 import { BotonSalir } from "@/components/boton-salir";
 
 export const metadata = { title: "Jurado" };
@@ -15,22 +15,21 @@ const hora = (t: Timestamp | null | undefined) =>
 export default async function Jurado() {
   const id = await requireJuez("/jurado");
   const db = adminDb();
-  const [juez, ronda] = await Promise.all([db.doc(`judges/${id.uid}`).get(), rondaActiva()]);
-  const enFinal = ronda === "final" && juez.get("final") === true;
-  const roomId = enFinal ? SALA_FINAL : (juez.get("roomId") as string | null);
+  const juez = await db.doc(`judges/${id.uid}`).get();
+  const roomId = juez.get("roomId") as string | null;
 
-  if (!roomId || (ronda === "final" && !enFinal)) {
+  if (!roomId) {
     return (
       <Contenedor>
-        <p className="mt-6">{ronda === "final" ? "La semifinal terminó. No formas parte del jurado de la final." : "Aún no tienes sala asignada. Escribe a la coordinación."}</p>
+        <p className="mt-6">Aún no tienes sala asignada. Escribe a la coordinación.</p>
       </Contenedor>
     );
   }
 
   const [sala, slots, puntajes, conflictos] = await Promise.all([
     db.doc(`rooms/${roomId}`).get(),
-    db.collection("presentation_slots").where("ronda", "==", ronda).where("roomId", "==", roomId).get(),
-    db.collection("scores").where("judgeId", "==", id.uid).where("ronda", "==", ronda).get(),
+    db.collection("presentation_slots").where("ronda", "==", RONDA).where("roomId", "==", roomId).get(),
+    db.collection("scores").where("judgeId", "==", id.uid).where("ronda", "==", RONDA).get(),
     db.collection("conflicts").where("judgeId", "==", id.uid).get(),
   ]);
   const evaluados = new Map(puntajes.docs.map((p) => [p.get("teamId") as string, p.get("total") as number]));
@@ -40,7 +39,7 @@ export default async function Jurado() {
   return (
     <Contenedor>
       <p className="mt-2 text-muted">
-        {ronda === "final" ? "Final" : "Semifinal"} · {sala.get("nombre") ?? roomId}
+        Show and Tell · {sala.get("nombre") ?? roomId}
       </p>
       {sala.get("cerrada") && (
         <p className="mt-4 rounded border border-accent bg-surface p-3 text-sm">La sala está cerrada: los puntajes quedaron bloqueados.</p>

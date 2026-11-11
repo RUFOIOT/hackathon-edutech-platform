@@ -132,7 +132,6 @@ export async function construirDataset(db: Firestore, opts: { ahora: Date; conCo
       requiere_adulto: b(t.requiereAdulto),
       adulto_asignado: b(t.adultoResponsableId),
       room_id: t.roomId ?? null,
-      finalista: b(t.finalista),
       repo_registrado: b(r?.validado),
       checkpoint1: (s?.checkpoint1 as string) ?? null,
       checkpoint2: (s?.checkpoint2 as string) ?? null,
@@ -239,7 +238,6 @@ export async function construirDataset(db: Firestore, opts: { ahora: Date; conCo
   const jueces: Fila[] = col.judges.docs.map((d) => ({
     judge_id: d.id,
     room_id: d.get("roomId") ?? null,
-    final: b(d.get("final")),
     perfil: d.get("perfil") ?? null,
     conflictos: conflictosDe(d.id).length,
     conflictos_en_sala: conflictosDe(d.id).filter((c) =>

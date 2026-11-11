@@ -96,8 +96,8 @@ sequenceDiagram
 ### Jurado y resultados
 
 - Cada juez evalúa solo los equipos de su sala; el total se calcula con `lib/scoring.ts`.
-- El comité cierra la sala (bloquea puntajes), normaliza por sala, elige finalistas, resuelve
-  empates y publica. `results.published` dispara los certificados de WF-09.
+- El comité cierra la sala (bloquea puntajes), normaliza por sala, revisa el ranking Open y Junior,
+  confirma los premios y publica (sin final, D-47). `results.published` dispara los certificados de WF-09.
 
 ## Datos (Firestore)
 

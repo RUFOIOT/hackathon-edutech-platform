@@ -363,7 +363,7 @@ export async function resolveDeliveryTag(
 
 export interface Admisibilidad {
   a1: boolean; // repo en la organización, creado después del kick-off
-  a2: boolean; // tag entrega antes de las 12:00 y no movido después
+  a2: boolean; // tag entrega antes de las 14:00 y no movido después
   a3: boolean; // README.md, PRIOR_WORK.md y AI_USAGE.md presentes
   a4: boolean | null; // corresponde al track: lo decide la mesa técnica (null = pendiente)
   a5: boolean; // declaración de datos sintéticos en el formulario de entrega

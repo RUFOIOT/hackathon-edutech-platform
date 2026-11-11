@@ -29,7 +29,7 @@ export default async function Entrega() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
       <h1 className="text-3xl font-semibold">Entregar proyecto</h1>
-      <p className="mt-2 text-muted">Cierra a las 12:00 del sábado (code freeze). Puedes volver a entregar hasta esa hora; vale la última.</p>
+      <p className="mt-2 text-muted">Cierra a las 14:00 del sábado (code freeze). Puedes volver a entregar hasta esa hora; vale la última.</p>
 
       <ol className="mt-6 list-decimal space-y-1 pl-5 text-sm">
         <li>
@@ -59,7 +59,7 @@ export default async function Entrega() {
           <p className="rounded border border-accent bg-surface p-4">
             {t < fecha("kickoff")
               ? `La entrega se habilita desde el kick-off: ${fechaEnEcuador(fecha("kickoff"))}.`
-              : "El formulario de entrega cerró a las 12:00 del sábado (code freeze)."}
+              : "El formulario de entrega cerró a las 14:00 del sábado (code freeze)."}
           </p>
         ) : !repo.exists || !repo.get("validado") ? (
           <p className="rounded border border-accent bg-surface p-4">

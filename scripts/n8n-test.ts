@@ -127,7 +127,7 @@ async function main() {
     comprobar(firmada.status === 200, `consulta firmada → ${firmada.status}`);
     const sinFirma = await fetch(`${app}/api/n8n/consulta`, { method: "POST", headers: { "Content-Type": "application/json" }, body: cuerpo });
     comprobar(sinFirma.status === 401, `consulta sin firma → ${sinFirma.status}`);
-    const pdf = JSON.stringify({ nombre: "Ana Pérez", equipo: "Los Nodos", tipo: "finalista" });
+    const pdf = JSON.stringify({ nombre: "Ana Pérez", equipo: "Los Nodos", tipo: "ganador", premio: "1.er lugar Open" });
     const cert = await fetch(`${app}/api/n8n/certificado`, { method: "POST", headers: { "Content-Type": "application/json", ...cabecerasFirmadas(secretoApp, pdf) }, body: pdf });
     comprobar(cert.status === 200 && cert.headers.get("content-type") === "application/pdf", `certificado firmado → ${cert.status} ${cert.headers.get("content-type")}`);
   } else {

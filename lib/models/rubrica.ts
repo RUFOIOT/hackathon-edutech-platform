@@ -77,7 +77,7 @@ export const RUBRICA: Criterio[] = [
     nombre: "Show and Tell",
     peso: 15,
     descriptores: {
-      5: "Narrativa clara, demo bien guiada, dentro de los 8 minutos, respuestas precisas al jurado.",
+      5: "Narrativa clara, demo bien guiada, dentro de los 3 minutos de demo, respuestas precisas al jurado.",
       4: "Clara y dentro de tiempo, con algún tramo confuso.",
       3: "Se entiende, pero excede el tiempo o las respuestas son vagas.",
       2: "Desordenada; el jurado no logra entender el valor.",

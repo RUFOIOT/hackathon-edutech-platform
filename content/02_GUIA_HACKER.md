@@ -30,7 +30,7 @@ No hay stack obligatorio. Lo que sí se exige es que funcione en vivo y que cual
 
 | Capa | Opciones sugeridas |
 |---|---|
-| Automatización | n8n (cuenta para el premio especial) |
+| Automatización | n8n (suma en el criterio C4 de la rúbrica) |
 | Frontend | Next.js, React, Vue, Svelte, Flutter, o no-code con exportación |
 | Backend y datos | Supabase, Firebase, PostgreSQL, SQLite, Google Sheets vía n8n |
 | IA | APIs de Claude, OpenAI, Gemini, modelos locales con Ollama |
@@ -89,13 +89,13 @@ edutech26-t1-alerta-temprana/
 
 | Hora | Checkpoint | Qué debe existir en el repositorio |
 |---|---|---|
-| Vie 20:00 | 1 · Problema | README con problema, usuario, evidencia de la entrevista y arquitectura propuesta |
-| Sáb 10:30 | 2 · Demo mínima | Algo ejecutable de punta a punta, aunque sea feo |
-| Sáb 12:00 | Code freeze | Tag `entrega` creado y formulario de entrega enviado |
+| Vie 19:00 | 1 · Problema | README con problema, usuario, evidencia de la entrevista y arquitectura propuesta |
+| Sáb 12:30 | 2 · Demo mínima | Algo ejecutable de punta a punta, aunque sea feo |
+| Sáb 14:00 | Code freeze | Tag `entrega` creado y formulario de entrega enviado |
 
 La plataforma lee tu repositorio cada 15 minutos y muestra tu estado en el dashboard. Si un checkpoint aparece en rojo, la mesa técnica te contacta.
 
-## 6. Cómo entregar (antes del sábado a las 12:00)
+## 6. Cómo entregar (antes del sábado a las 14:00)
 
 ```bash
 git add .
@@ -112,20 +112,17 @@ Luego, en la plataforma, pestaña **Entregar proyecto**:
 4. Marca las declaraciones: datos sintéticos, trabajo previo declarado, uso de IA declarado.
 5. Pulsa **Entregar proyecto**. Recibirás un correo con el hash del commit evaluado.
 
-Si mueves el tag `entrega` después de las 12:00, el sistema lo detecta y el comité revisa el caso.
+Si mueves el tag `entrega` después de las 14:00, el sistema lo detecta y el comité revisa el caso.
 
-## 7. Show and Tell: 12 minutos
+## 7. Show and Tell: 10 minutos
 
-Tienes 12 minutos como máximo: 8 para exponer y demostrar, 4 para responder al jurado. El cronómetro es visible y el micrófono se apaga al minuto 12.
+El sábado a las 15:00, en dos salas simultáneas con 3 jurados cada una. Tienes 10 minutos: 3 para mostrar tu proyecto funcionando en vivo y 7 para responder al jurado. El cronómetro es visible y el micrófono se apaga al minuto 10. No hay final: con estos puntajes se definen los ganadores.
 
 | Minuto | Bloque | Lo que el jurado necesita ver |
 |---|---|---|
-| 0:00 – 1:00 | El problema | Un dato o una historia real, no una definición |
-| 1:00 – 2:00 | El usuario | A quién entrevistaron y qué aprendieron |
-| 2:00 – 6:00 | Demo en vivo | El flujo principal funcionando de inicio a fin |
-| 6:00 – 7:00 | Cómo está construido | Arquitectura, repositorio, automatizaciones |
-| 7:00 – 8:00 | Por qué se adoptaría | Quién paga o quién lo usa mañana, y el siguiente paso |
-| 8:00 – 12:00 | Preguntas | Respuestas directas; "no lo sabemos aún" es una respuesta válida |
+| 0:00 – 0:30 | El problema y el usuario | Un dato o una historia real, y a quién entrevistaron |
+| 0:30 – 3:00 | Demo en vivo | El flujo principal funcionando de inicio a fin |
+| 3:00 – 10:00 | Preguntas | Cómo está construido, por qué se adoptaría y el siguiente paso. Respuestas directas; "no lo sabemos aún" es una respuesta válida |
 
 **Consejos que suman puntos**
 
@@ -142,11 +139,11 @@ Tienes 12 minutos como máximo: 8 para exponer y demostrar, 4 para responder al 
 
 ## 9. Mentoría
 
-Los mentores te ayudan a pensar, no escriben tu código. Pide mentoría desde la plataforma, pestaña **Pedir mentor**, indicando el tema: producto, técnica, n8n, IA o pitch. Hay dos rondas fijas y mentoría a demanda mientras la sede esté abierta.
+Los mentores te ayudan a pensar, no escriben tu código. Pide mentoría desde la plataforma, pestaña **Pedir mentor**, indicando el tema: producto, técnica, n8n, IA o pitch. Hay dos rondas de mentoría (viernes desde las 17:45 y sábado de 10:00 a 12:30), en las que los mentores recorren las mesas, y mentoría a demanda desde la plataforma.
 
 ## 10. Preguntas frecuentes
 
-**¿Puedo cambiar de track durante el evento?** Sí, hasta el checkpoint 1 del viernes a las 20:00.
+**¿Puedo cambiar de track durante el evento?** Sí, hasta el checkpoint 1 del viernes a las 19:00.
 
 **¿Puedo usar un proyecto que ya tenía?** No como proyecto. Puedes reutilizar librerías o componentes genéricos declarándolos en `PRIOR_WORK.md`.
 

@@ -44,7 +44,7 @@ export function FormEntrega({ repoUrl, demoPrevia, pitchSubido }: { repoUrl: str
         <p className="mt-1 break-all font-mono text-lg">{exito.tagSha}</p>
         <p className="mt-2 text-sm text-muted">
           Fecha del commit: {new Date(exito.tagCommitAt).toLocaleString("es-EC", { timeZone: "America/Guayaquil" })} (hora de Ecuador). Te
-          enviamos un correo con este hash. Si mueves el tag entrega después de las 12:00, el sistema lo detecta y el comité revisa el caso.
+          enviamos un correo con este hash. Si mueves el tag entrega después de las 14:00, el sistema lo detecta y el comité revisa el caso.
         </p>
         <button type="button" onClick={() => setExito(null)} className="mt-4 text-sm underline">
           Volver a entregar (antes del code freeze)

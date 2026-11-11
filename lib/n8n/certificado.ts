@@ -6,14 +6,13 @@ import { EVENT } from "@/config/event";
 export const certificadoSchema = z.object({
   nombre: z.string().trim().min(2).max(120),
   equipo: z.string().trim().min(1).max(80),
-  tipo: z.enum(["participacion", "finalista", "ganador"]),
+  tipo: z.enum(["participacion", "ganador"]),
   premio: z.string().trim().max(120).nullish(),
 });
 export type DatosCertificado = z.infer<typeof certificadoSchema>;
 
 const TITULO: Record<DatosCertificado["tipo"], string> = {
   participacion: "Certificado de participación",
-  finalista: "Certificado de finalista",
   ganador: "Certificado de reconocimiento",
 };
 
@@ -52,11 +51,7 @@ export async function generarCertificado(d: DatosCertificado): Promise<Uint8Arra
   centrado(d.nombre, height - 275, 36, serif);
   centrado(`integrante del equipo ${d.equipo}`, height - 315, 14);
   const motivo =
-    d.tipo === "ganador" && d.premio
-      ? `por obtener: ${d.premio}`
-      : d.tipo === "finalista"
-        ? "por llegar a la final del Show and Tell"
-        : "por construir en vivo una solución para la educación";
+    d.tipo === "ganador" && d.premio ? `por obtener: ${d.premio}` : "por construir en vivo una solución para la educación";
   centrado(motivo, height - 345, 14);
   centrado(`Quito, 27 y 28 de noviembre de 2026 · ${EVENT.organiza}`, 70, 11);
   return pdf.save();

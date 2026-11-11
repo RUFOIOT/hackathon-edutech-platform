@@ -66,7 +66,7 @@ export interface ResultadoEntrega {
 }
 
 export async function enviarEntrega(uid: string, teamId: string, datos: Entrega): Promise<ResultadoEntrega> {
-  if (!entregaAbierta()) throw new ErrorRegistro("El formulario de entrega cerró a las 12:00 del sábado (code freeze).");
+  if (!entregaAbierta()) throw new ErrorRegistro("El formulario de entrega cerró a las 14:00 del sábado (code freeze).");
   const [team, repo] = await Promise.all([db().doc(`teams/${teamId}`).get(), db().doc(`repositories/${teamId}`).get()]);
   if (!repo.exists || !repo.get("validado")) {
     throw new ErrorRegistro("Primero registra un repositorio válido en la pestaña Repositorio.", "repo");

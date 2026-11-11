@@ -250,11 +250,11 @@ movido a un commit **anterior** al freeze aunque no haya llegado el webhook.
 La rúbrica define z = (puntaje − promedio de la sala) ÷ desviación de la sala, pero no dice si la
 desviación es poblacional o muestral. Se usa la **poblacional** (σ): la sala es toda la población
 evaluada, no una muestra. Si σ = 0 (todos empatan), z = 0. Una sala con menos de 4 equipos queda
-"sin normalizar" (z = null): la propuesta de finalistas solo toma salas normalizadas y avisa al
-comité, que decide esos cupos (rúbrica §5). Si el comité prefiere la muestral, se cambia en una
+"sin normalizar" (z = null): sus equipos van al final del ranking y el comité decide su
+ubicación (rúbrica §5). Si el comité prefiere la muestral, se cambia en una
 línea de `roomNormalization` y en su test.
 
-## D-31 · Orden de asignación de premios especiales
+## D-31 · Orden de asignación de premios especiales (reemplazada por D-47)
 
 La guía permite como máximo un premio general y un premio especial por equipo, pero no fija el
 orden entre especiales. Se asignan en este orden: mejor por track (T1, T2, T3), n8n, Junior. Un
@@ -263,7 +263,7 @@ interfaz dice "Sin ganador elegible: decide el comité". Un empate en C4 para el
 marca para que desempate el representante de n8n. La Aceleradora la elige el comité entre el top
 10 (lista ordenada por C1 + C5).
 
-## D-32 · Rondas y jurado de la final
+## D-32 · Rondas y jurado de la final (reemplazada por D-47)
 
 `events.rondaActiva` decide qué ronda evalúa el jurado. Al confirmar los finalistas, el comité
 marca `teams.finalista`, pasa a la ronda "final" y se genera el orden en la sala `final`, desde
@@ -285,13 +285,13 @@ El cronómetro guarda en `public_state/cronometro_{sala}` el inicio (en ms) y el
 no una cuenta que se actualiza cada segundo: así una pausa o un corte de red no lo desfasan. Cada
 proyector calcula el tiempo con su propio reloj, por eso **el equipo del proyector debe tener la
 hora sincronizada** (RUNBOOK). Las fases de la Guía del Hacker §7 se muestran con texto, no solo
-con color: exposición (0–8 min), preguntas (8–12) y "tiempo cumplido".
+con color: exposición (0–3 min), preguntas (3–10) y "tiempo cumplido".
 
 ## D-35 · Retroalimentación anónima
 
 Al publicar, cada equipo recibe en `results/{teamId}` todas las fortalezas y recomendaciones de los
-jueces, sin identificar quién las escribió. La auditoría de la publicación guarda el orden final,
-los empates resueltos por el comité y la Aceleradora.
+jueces, sin identificar quién las escribió. La auditoría de la publicación guarda los premios
+elegidos y los empates sin resolver de cada categoría.
 
 ## D-36 · El dataset del dashboard equivale a la vista `v_dashboard_dataset`
 
@@ -389,14 +389,35 @@ Para probar el registro en producción antes de la fecha oficial, `INSCRIPCIONES
 no cambia. Se activa con la variable y un deploy, y se desactiva borrándola y desplegando de nuevo.
 Las inscripciones hechas durante la prueba quedan en Firestore: se limpian antes de la apertura real.
 
+## D-47 · Show and Tell en una sola ronda, sin final (reunión de staff, 10 nov 2026)
+
+La reunión de staff cambió el formato. El Show and Tell es **una sola ronda** (15:00–16:30) en **2
+salas simultáneas con 3 jurados cada una**, y los equipos no se agrupan por track. Cada equipo
+tiene 10 min (3 de demo y 7 de preguntas) más 3 de transición. No hay final ni finalistas:
+`events.rondaActiva`, `judges.final`, `teams.finalista` y la sala `final` dejaron de usarse, y las
+reglas de Firestore solo dejan a cada juez ver su sala (test de que las marcas viejas no dan
+acceso). La única ronda conserva el id `semifinal` en `scores/` y `presentation_slots/` para no
+romper ids ni el dataset (`RONDA` en `lib/jurado/servicio.ts`).
+
+Premios: **1.er y 2.º lugar Open, mejor equipo Junior y certificado digital para todos**. Se quitan
+el 3.er lugar, el mejor por track, el premio n8n y la Aceleradora. `proponerPremios` ordena cada
+categoría por el z de su sala (rúbrica §5) y el comité confirma o corrige en `/admin/resultados`
+(`validarPremios`: Open para los lugares Open, Junior para el premio Junior, un premio por equipo).
+Un equipo MIXTO cuenta como Open para el ranking, aunque la regla nueva dice que los equipos son de
+una sola categoría (el registro todavía no lo impide). Hora límite de resultados: 16:30;
+premiación: 16:45.
+
+Nuevas horas: checkpoint 1 a las 19:00, checkpoint 2 a las 12:30, code freeze y entrega a las
+14:00 (ventana de 21 h). Los crons de n8n (WF-04, WF-05 y WF-06) se movieron con ellas.
+
 ## Diferencias entre el prompt y las guías (gana la guía)
 
 1. **Sede:** "Unidad Educativa Particular Eight Academy, sede La Prensa". La dirección y el aforo
    están por confirmar.
 2. **Cruce con el POA:** la fecha original (sábado 7) estaba asignada a la "1era Integración Padres"; el
    evento pasó al 27–28 nov y falta verificar el POA para esas fechas. El viernes 27 es día lectivo. Bloquea la convocatoria (guía §12, decisiones 1 y 2).
-3. **Desempate:** la guía añade un 4.º criterio, la votación del jurado de la final. Se registrará
-   como una decisión manual del comité.
+3. **Desempate:** la guía añade un 4.º criterio, la deliberación del jurado (antes, la votación
+   del jurado de la final). Se registra como una decisión manual del comité.
 4. **Junior:** además del representante, la guía exige un *mentor adulto asignado*.
 5. **Cupo:** es una propuesta (30 equipos / 150 personas) sujeta al aforo.
 6. **Temas de mentoría:** producto, técnica, n8n, IA, pitch.

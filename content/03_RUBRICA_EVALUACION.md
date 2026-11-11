@@ -11,7 +11,7 @@ Se verifica antes del Show and Tell. Un equipo que no cumple los cinco puntos no
 | N° | Condición | Cómo se verifica |
 |---|---|---|
 | A1 | Repositorio en la organización oficial, creado después del kick-off | GitHub API · fecha de creación |
-| A2 | Tag `entrega` creado antes de las 12:00 del sábado y no movido después | GitHub API · fecha del commit etiquetado y registro del webhook |
+| A2 | Tag `entrega` creado antes de las 14:00 del sábado y no movido después | GitHub API · fecha del commit etiquetado y registro del webhook |
 | A3 | `README.md`, `PRIOR_WORK.md` y `AI_USAGE.md` presentes | Lectura automática del árbol del repositorio |
 | A4 | El proyecto corresponde al track inscrito | Mesa técnica |
 | A5 | Declaración de datos sintéticos firmada en el formulario de entrega | Plataforma |
@@ -89,7 +89,7 @@ En T3 (comercial y administrativo) este criterio exige estimar el ahorro de tiem
 
 | Nivel | Descriptor |
 |---|---|
-| 5 | Narrativa clara, demo bien guiada, dentro de los 8 minutos, respuestas precisas al jurado. |
+| 5 | Narrativa clara, demo bien guiada, dentro de los 3 minutos de demo, respuestas precisas al jurado. |
 | 4 | Clara y dentro de tiempo, con algún tramo confuso. |
 | 3 | Se entiende, pero excede el tiempo o las respuestas son vagas. |
 | 2 | Desordenada; el jurado no logra entender el valor. |
@@ -106,27 +106,27 @@ Puntaje del equipo en la sala = promedio de los jueces de esa sala, aplicando la
 
 ## 5. Normalización entre salas
 
-Cuando la semifinal usa más de una sala, cada sala tiene jurados distintos. Para comparar de forma justa, el puntaje de cada equipo se normaliza dentro de su sala:
+El Show and Tell usa dos salas simultáneas con 3 jurados distintos en cada una. Para comparar de forma justa, el puntaje de cada equipo se normaliza dentro de su sala:
 
 `z = (puntaje del equipo − promedio de la sala) ÷ desviación estándar de la sala`
 
-Los 5 mejores valores de z pasan a la final. En la final, el mismo jurado evalúa a los 5 equipos con la rúbrica completa desde cero y no se arrastran puntajes. Si una sala tiene menos de 4 equipos, no se normaliza y el comité decide los cupos.
+No hay final: el ranking de cada categoría (Open y Junior) se ordena por z y de ahí salen el 1.er y 2.º lugar Open y el mejor equipo Junior. Si una sala tiene menos de 4 equipos, no se normaliza y el comité decide la ubicación de sus equipos.
 
 ## 6. Desempates (en este orden)
 
 1. Mayor puntaje en C2.
 2. Mayor puntaje en C1.
 3. Menor tiempo de exposición utilizado.
-4. Votación del jurado de la final.
+4. Deliberación del jurado.
 
-## 7. Premios especiales
+## 7. Premios
 
 | Premio | Base de decisión |
 |---|---|
-| Mejor por track | Mayor puntaje de la semifinal dentro del track, excluyendo a los 3 ganadores generales |
-| Premio n8n | Mayor puntaje en C4 entre equipos con workflows de n8n en `/n8n` · desempata el representante de n8n |
-| Mejor equipo Junior | Mayor puntaje entre equipos 100 % Junior |
-| Pase a la Aceleradora | Comité, entre el top 10, priorizando C1 y C5 |
+| 1.er y 2.º lugar Open | Los dos mayores valores de z entre los equipos Open |
+| Mejor equipo Junior | Mayor valor de z entre los equipos Junior |
+
+Los jurados deliberan con estos puntajes y tienen los resultados listos a las 16:30. Todos los participantes reciben un certificado digital con la retroalimentación del jurado.
 
 ## 8. Integridad del jurado
 

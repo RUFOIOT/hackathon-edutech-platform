@@ -257,7 +257,7 @@ export default async function Admin() {
           <Kpi titulo="Jueces con conflicto declarado" valor={k.jurado.juecesConConflicto} />
           <Kpi titulo="Tiempo medio por presentación" valor={k.jurado.tiempoMedioPresentacionSeg ? `${Math.floor(k.jurado.tiempoMedioPresentacionSeg / 60)} min ${k.jurado.tiempoMedioPresentacionSeg % 60} s` : "—"} />
           <Kpi titulo="Salas atrasadas (más de 10 min)" valor={k.jurado.salasAtrasadas.length} detalle={k.jurado.salasAtrasadas.join(", ") || undefined} />
-          {comite && <Kpi titulo="Evaluaciones de semifinal" valor={k.jurado.evaluacionesRegistradas} />}
+          {comite && <Kpi titulo="Evaluaciones del Show and Tell" valor={k.jurado.evaluacionesRegistradas} />}
         </dl>
         {comite && (
           <ul className="mt-3 grid gap-1 text-sm">
@@ -273,7 +273,7 @@ export default async function Admin() {
       {comite && (
         <Bloque id="resultados" titulo="Resultados">
           <p className="text-sm">
-            El ranking por sala, los z-scores, el top 5 y los ganadores por premio están en{" "}
+            El ranking por sala, los z-scores y los ganadores por premio están en{" "}
             <Link href="/admin/resultados" className="underline">
               Resultados
             </Link>{" "}

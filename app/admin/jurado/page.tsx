@@ -1,11 +1,10 @@
 import Link from "next/link";
 import type { Timestamp } from "firebase-admin/firestore";
-import { TRACK_CODES } from "@/config/event";
 import { BotonAccion, FormularioAccion } from "@/components/admin/accion";
 import { CampoSelect, CampoTexto, claseInput } from "@/components/formulario";
 import { requireAdmin } from "@/lib/auth/session";
 import { adminDb } from "@/lib/firebase/admin";
-import { SALA_FINAL, cargarRonda, rondaActiva } from "@/lib/jurado/servicio";
+import { RONDA, cargarRonda } from "@/lib/jurado/servicio";
 import { aviso, cerrarSala, crearJuez, crearSala, cronometro, generar, mover, reabrirSala, turno } from "./acciones";
 
 export const metadata = { title: "Jurado y salas" };
@@ -20,15 +19,14 @@ const hora = (t: Timestamp | Date | null | undefined) => {
 export default async function AdminJurado() {
   await requireAdmin("/admin/jurado");
   const db = adminDb();
-  const ronda = await rondaActiva();
   const [salas, jueces, slots, estados, progreso] = await Promise.all([
     db.collection("rooms").get(),
     db.collection("judges").get(),
-    db.collection("presentation_slots").where("ronda", "==", ronda).get(),
+    db.collection("presentation_slots").where("ronda", "==", RONDA).get(),
     db.collection("public_state").get(),
-    cargarRonda(ronda),
+    cargarRonda(),
   ]);
-  const salasRonda = salas.docs.filter((s) => (ronda === "final" ? s.id === SALA_FINAL : s.id !== SALA_FINAL));
+  const salasRonda = salas.docs;
   const nombreSala = Object.fromEntries(salas.docs.map((s) => [s.id, s.get("nombre") as string]));
   const crono = Object.fromEntries(estados.docs.filter((d) => d.id.startsWith("cronometro_")).map((d) => [d.get("roomId") as string, d]));
   const avisoActual = estados.docs.find((d) => d.id === "pantalla")?.get("aviso") as string | null | undefined;
@@ -36,7 +34,9 @@ export default async function AdminJurado() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
       <h1 className="text-2xl font-semibold">Jurado y salas</h1>
-      <p className="mt-1 text-sm text-muted">Ronda activa: {ronda === "final" ? "Final" : "Semifinal"}</p>
+      <p className="mt-1 text-sm text-muted">
+        Show and Tell en una sola ronda: 2 salas simultáneas con 3 jurados cada una. Los equipos se reparten sin agruparse por track.
+      </p>
 
       <section aria-labelledby="salas" className="mt-8">
         <h2 id="salas" className="text-xl font-semibold">
@@ -47,7 +47,6 @@ export default async function AdminJurado() {
             <thead>
               <tr className="border-b border-border">
                 <th scope="col" className="py-2 pr-4">Sala</th>
-                <th scope="col" className="py-2 pr-4">Tracks</th>
                 <th scope="col" className="py-2 pr-4">Evaluaciones</th>
                 <th scope="col" className="py-2 pr-4">Conflictos</th>
                 <th scope="col" className="py-2 pr-4">Estado</th>
@@ -61,7 +60,6 @@ export default async function AdminJurado() {
                 return (
                   <tr key={s.id} className="border-b border-border align-top">
                     <td className="py-2 pr-4 font-medium">{s.get("nombre")}</td>
-                    <td className="py-2 pr-4">{(s.get("tracks") as string[]).join(", ")}</td>
                     <td className="py-2 pr-4 tabular-nums">
                       {p ? `${p.registradas} de ${p.esperadas}` : "—"} {completo && <span className="text-positive-text">(completas)</span>}
                     </td>
@@ -93,16 +91,8 @@ export default async function AdminJurado() {
             <FormularioAccion accion={crearSala} etiqueta="Guardar sala">
               <div className="grid gap-3 sm:grid-cols-2">
                 <CampoTexto id="sala-id" name="id" etiqueta="Identificador" placeholder="sala-1" />
-                <CampoTexto id="sala-nombre" name="nombre" etiqueta="Nombre" placeholder="Sala T1" />
+                <CampoTexto id="sala-nombre" name="nombre" etiqueta="Nombre" placeholder="Sala 1" />
               </div>
-              <fieldset className="flex flex-wrap gap-4">
-                <legend className="mb-1 font-medium">Tracks</legend>
-                {TRACK_CODES.map((t) => (
-                  <label key={t} className="flex items-center gap-2">
-                    <input type="checkbox" name="tracks" value={t} className="accent-navy-700" /> {t}
-                  </label>
-                ))}
-              </fieldset>
             </FormularioAccion>
           </div>
         </details>
@@ -118,8 +108,7 @@ export default async function AdminJurado() {
               <tr className="border-b border-border">
                 <th scope="col" className="py-2 pr-4">Nombre</th>
                 <th scope="col" className="py-2 pr-4">Perfil</th>
-                <th scope="col" className="py-2 pr-4">Sala de semifinal</th>
-                <th scope="col" className="py-2">Jurado de la final</th>
+                <th scope="col" className="py-2">Sala</th>
               </tr>
             </thead>
             <tbody>
@@ -127,8 +116,7 @@ export default async function AdminJurado() {
                 <tr key={j.id} className="border-b border-border">
                   <td className="py-2 pr-4">{j.get("nombre")}</td>
                   <td className="py-2 pr-4">{j.get("perfil")}</td>
-                  <td className="py-2 pr-4">{nombreSala[j.get("roomId")] ?? "Sin sala"}</td>
-                  <td className="py-2">{j.get("final") ? "Sí" : "No"}</td>
+                  <td className="py-2">{nombreSala[j.get("roomId")] ?? "Sin sala"}</td>
                 </tr>
               ))}
             </tbody>
@@ -154,13 +142,10 @@ export default async function AdminJurado() {
                 <CampoSelect
                   id="juez-sala"
                   name="roomId"
-                  etiqueta="Sala de semifinal"
-                  opciones={salas.docs.filter((s) => s.id !== SALA_FINAL).map((s) => ({ valor: s.id, etiqueta: s.get("nombre") }))}
+                  etiqueta="Sala"
+                  opciones={salas.docs.map((s) => ({ valor: s.id, etiqueta: s.get("nombre") }))}
                 />
               </div>
-              <label className="flex items-center gap-2">
-                <input type="checkbox" name="final" className="accent-navy-700" /> Forma parte del jurado de la final
-              </label>
             </FormularioAccion>
           </div>
         </details>
@@ -171,11 +156,9 @@ export default async function AdminJurado() {
           <h2 id="orden" className="text-xl font-semibold">
             Orden de presentación y cronómetro
           </h2>
-          {ronda === "semifinal" && (
-            <BotonAccion accion={generar.bind(null, "semifinal")} confirmar="Esto reemplaza el orden actual de la semifinal. ¿Continuar?">
-              Generar orden de semifinal
-            </BotonAccion>
-          )}
+          <BotonAccion accion={generar} confirmar="Esto reemplaza el orden actual del Show and Tell. ¿Continuar?">
+            Generar orden del Show and Tell
+          </BotonAccion>
         </div>
         <div className="mt-4 grid gap-8 lg:grid-cols-2">
           {salasRonda.map((s) => {

@@ -140,7 +140,7 @@ export default async function MiEquipo({ searchParams }: { searchParams: Promise
             <h2 id="sin-equipo" className="text-xl font-semibold">
               Estás en el matchmaking
             </h2>
-            <p className="mt-2 text-sm">La organización forma los equipos el viernes a las 16:45. Si alguien te comparte un código, puedes unirte ahora.</p>
+            <p className="mt-2 text-sm">La organización forma los equipos el viernes a las 16:50. Si alguien te comparte un código, puedes unirte ahora.</p>
             <div className="mt-4">
               <FormUnirme />
             </div>

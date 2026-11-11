@@ -1,9 +1,11 @@
+import { PREMIO } from "@/config/event";
 import { RUBRICA, TOPE_C2_UNO, type CriterioCodigo } from "@/lib/models/rubrica";
 
 /**
  * Cálculo de puntajes (rúbrica §4–§7). Funciones puras: las usan /admin/resultados, la
  * publicación y los tests. Equivalen a las funciones SQL score_total, room_normalization y
- * tiebreak del prompt (D-01).
+ * tiebreak del prompt (D-01). Desde la reunión de staff del 10 nov 2026 hay una sola ronda de
+ * Show and Tell (2 salas, sin final): el ranking sale de los z-scores de esa ronda.
  */
 
 export type Niveles = Record<"c1" | "c2" | "c3" | "c4" | "c5" | "c6", number>;
@@ -111,7 +113,7 @@ export function roomNormalization(resultados: ResultadoEquipo[]): { equipos: Nor
 
 /**
  * Desempate (rúbrica §6): mayor C2, luego mayor C1, luego menor tiempo de exposición. El cuarto
- * criterio (votación del jurado de la final) es manual: si persiste el empate, devuelve 0.
+ * criterio (deliberación del jurado) es manual: si persiste el empate, devuelve 0.
  */
 export function tiebreak(a: ResultadoEquipo, b: ResultadoEquipo): number {
   if (a.promedioC2 !== b.promedioC2) return b.promedioC2 - a.promedioC2;
@@ -126,7 +128,7 @@ function ordenar<T extends ResultadoEquipo>(lista: T[], valor: (r: T) => number)
 
 export interface Ranking<T extends ResultadoEquipo = ResultadoEquipo> {
   orden: T[];
-  /** Pares que siguen empatados tras C2, C1 y tiempo: los decide la votación del jurado de la final. */
+  /** Pares que siguen empatados tras C2, C1 y tiempo: los decide la deliberación del jurado. */
   empatesSinResolver: [string, string][];
 }
 
@@ -141,89 +143,84 @@ function rankingPor<T extends ResultadoEquipo>(lista: T[], valor: (r: T) => numb
   return { orden, empatesSinResolver };
 }
 
-export interface PropuestaFinalistas {
-  finalistas: string[];
-  /** Hay salas sin normalizar: el comité decide sus cupos (rúbrica §5). */
+export interface RankingGeneral extends Ranking<Normalizado> {
+  /** Hay salas sin normalizar (menos de 4 equipos): el comité ubica a sus equipos (rúbrica §5). */
   requiereDecisionComite: boolean;
   salasSinNormalizar: string[];
-  empatesSinResolver: [string, string][];
 }
 
-/** Los 5 mejores z pasan a la final. Las salas sin normalizar quedan para decisión del comité. */
-export function seleccionarFinalistas(normalizados: Normalizado[], cupos = 5): PropuestaFinalistas {
-  const conZ = normalizados.filter((n) => n.z !== null);
-  const { orden, empatesSinResolver } = rankingPor(conZ, (n) => n.z!);
+/**
+ * Ranking de una lista de equipos por z (rúbrica §5). Si ningún equipo tiene z (todas las salas
+ * sin normalizar), ordena por puntaje y avisa al comité. Los equipos sin z van al final.
+ */
+export function rankingGeneral(normalizados: Normalizado[]): RankingGeneral {
   const salasSinNormalizar = [...new Set(normalizados.filter((n) => n.sinNormalizar).map((n) => n.roomId))];
-  const corte = orden.slice(0, cupos).map((n) => n.teamId);
+  const conZ = normalizados.filter((n) => n.z !== null);
+  const base = conZ.length ? rankingPor(conZ, (n) => n.z!) : rankingPor(normalizados, (n) => n.puntaje);
+  const resto = conZ.length ? ordenar(normalizados.filter((n) => n.z === null), (n) => n.puntaje) : [];
   return {
-    finalistas: corte,
+    orden: [...base.orden, ...resto],
+    empatesSinResolver: base.empatesSinResolver,
     requiereDecisionComite: salasSinNormalizar.length > 0,
     salasSinNormalizar,
-    // Solo importan los empates que tocan el corte de la final.
-    empatesSinResolver: empatesSinResolver.filter(([a, b]) => corte.includes(a) || corte.includes(b)),
   };
-}
-
-/** Ranking de la final: puntajes desde cero (no se arrastran los de la semifinal). */
-export function rankingFinal(resultadosFinal: ResultadoEquipo[]): Ranking {
-  return rankingPor(resultadosFinal, (r) => r.puntaje);
 }
 
 // ---------------------------------------------------------------------------
 // Premios (guía §8, rúbrica §7)
 // ---------------------------------------------------------------------------
 
-export interface DatosPremios {
-  /** Orden final ya resuelto (incluye la decisión manual de empates si la hubo). */
-  ordenFinal: string[];
-  semifinal: ResultadoEquipo[];
-  track: Record<string, "T1" | "T2" | "T3">;
-  tieneN8n: Record<string, boolean>;
-  esJunior: Record<string, boolean>; // equipo 100 % Junior
+export interface PropuestaPremios {
+  primeroOpen: string | null;
+  segundoOpen: string | null;
+  mejorJunior: string | null;
+  rankingOpen: RankingGeneral;
+  rankingJunior: RankingGeneral;
+}
+
+/**
+ * Propuesta de premios a partir del Show and Tell: 1.º y 2.º lugar Open y mejor equipo Junior
+ * (reunión de staff del 10 nov 2026). Cada categoría se ordena por separado con el mismo z de su
+ * sala. El comité confirma o corrige la propuesta antes de publicar.
+ */
+export function proponerPremios(normalizados: Normalizado[], esJunior: Record<string, boolean>): PropuestaPremios {
+  const rankingOpen = rankingGeneral(normalizados.filter((n) => !esJunior[n.teamId]));
+  const rankingJunior = rankingGeneral(normalizados.filter((n) => esJunior[n.teamId]));
+  return {
+    primeroOpen: rankingOpen.orden[0]?.teamId ?? null,
+    segundoOpen: rankingOpen.orden[1]?.teamId ?? null,
+    mejorJunior: rankingJunior.orden[0]?.teamId ?? null,
+    rankingOpen,
+    rankingJunior,
+  };
 }
 
 export interface Premio {
   premio: string;
   teamId: string | null;
-  nota?: string;
 }
 
-/**
- * Asigna premios generales (1.º–3.º de la final) y especiales. Un equipo puede recibir como máximo
- * un premio general y uno especial (guía §8): si ya tiene un especial, el siguiente pasa al
- * siguiente elegible. Orden de asignación de especiales: por track, n8n, Junior (D-31).
- * La Aceleradora la decide el comité: solo se propone una lista.
- */
-export function calcularPremios(d: DatosPremios): { premios: Premio[]; candidatosAceleradora: string[] } {
-  const premios: Premio[] = [];
-  const generales = d.ordenFinal.slice(0, 3);
-  ["1er lugar general", "2do lugar general", "3er lugar general"].forEach((p, i) => premios.push({ premio: p, teamId: generales[i] ?? null }));
+export interface DecisionPremios {
+  primeroOpen: string | null;
+  segundoOpen: string | null;
+  mejorJunior: string | null;
+}
 
-  const conEspecial = new Set<string>();
-  const primero = (lista: ResultadoEquipo[], valor: (r: ResultadoEquipo) => number, excluir: Set<string> = new Set()) => {
-    const elegible = ordenar(lista, valor).find((r) => !excluir.has(r.teamId) && !conEspecial.has(r.teamId));
-    if (elegible) conEspecial.add(elegible.teamId);
-    return elegible?.teamId ?? null;
-  };
+/** Valida la decisión del comité: Open para los lugares Open, Junior para el premio Junior, sin repetir. */
+export function validarPremios(d: DecisionPremios, esJunior: Record<string, boolean>, presentaron: Set<string>): string | null {
+  const elegidos = [d.primeroOpen, d.segundoOpen, d.mejorJunior].filter((x): x is string => !!x);
+  if (elegidos.some((t) => !presentaron.has(t))) return "Solo pueden recibir premios los equipos evaluados en el Show and Tell.";
+  if (new Set(elegidos).size !== elegidos.length) return "Un equipo no puede recibir dos premios.";
+  if ([d.primeroOpen, d.segundoOpen].some((t) => t && esJunior[t])) return "Los lugares Open son solo para equipos de la categoría Open.";
+  if (d.mejorJunior && !esJunior[d.mejorJunior]) return "El premio Junior es solo para equipos de la categoría Junior.";
+  if (!d.primeroOpen && d.segundoOpen) return "Asigna primero el 1.er lugar Open.";
+  return null;
+}
 
-  for (const t of ["T1", "T2", "T3"] as const) {
-    // Mejor por track: mayor puntaje de la semifinal en el track, excluyendo a los 3 generales.
-    const lista = d.semifinal.filter((r) => d.track[r.teamId] === t);
-    premios.push({ premio: `Mejor solución ${t}`, teamId: primero(lista, (r) => r.puntaje, new Set(generales)) });
-  }
-  const conN8n = d.semifinal.filter((r) => d.tieneN8n[r.teamId]);
-  const n8n = primero(conN8n, (r) => r.promedioC4);
-  const c4Ganador = conN8n.find((x) => x.teamId === n8n)?.promedioC4;
-  const empateN8n = n8n !== null && conN8n.some((r) => r.teamId !== n8n && !conEspecial.has(r.teamId) && r.promedioC4 === c4Ganador);
-  premios.push({
-    premio: "Premio n8n a la mejor automatización",
-    teamId: n8n,
-    nota: empateN8n ? "Empate en C4: desempata el representante de n8n." : undefined,
-  });
-  premios.push({ premio: "Mejor equipo Junior", teamId: primero(d.semifinal.filter((r) => d.esJunior[r.teamId]), (r) => r.puntaje) });
-
-  // Aceleradora: el comité elige entre el top 10, priorizando C1 y C5.
-  const top10 = ordenar(d.semifinal, (r) => r.puntaje).slice(0, 10);
-  const candidatosAceleradora = [...top10].sort((a, b) => b.promedioC1 + b.promedioC5 - (a.promedioC1 + a.promedioC5)).map((r) => r.teamId);
-  return { premios, candidatosAceleradora };
+export function listaPremios(d: DecisionPremios): Premio[] {
+  return [
+    { premio: PREMIO.primeroOpen, teamId: d.primeroOpen },
+    { premio: PREMIO.segundoOpen, teamId: d.segundoOpen },
+    { premio: PREMIO.mejorJunior, teamId: d.mejorJunior },
+  ];
 }

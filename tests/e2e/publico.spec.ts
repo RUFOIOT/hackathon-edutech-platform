@@ -69,7 +69,7 @@ test.describe("páginas públicas", () => {
 
   test("los premios sin confirmar se muestran como 'Por anunciar'", async ({ page }) => {
     await page.goto("/");
-    const fila = page.getByRole("region", { name: "Premios" }).getByRole("listitem").filter({ hasText: "1er lugar general" });
+    const fila = page.getByRole("region", { name: "Premios" }).getByRole("listitem").filter({ hasText: "1.er lugar Open" });
     await expect(fila).toContainText("Por anunciar");
     await expect(page.getByText("[POR CONFIRMAR]")).toHaveCount(0);
   });

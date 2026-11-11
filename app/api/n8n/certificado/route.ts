@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 /**
  * POST /api/n8n/certificado — WF-09 pide un PDF por integrante al publicar resultados.
- * Cuerpo firmado: `{ "nombre", "equipo", "tipo": "participacion|finalista|ganador", "premio"? }`.
+ * Cuerpo firmado: `{ "nombre", "equipo", "tipo": "participacion|ganador", "premio"? }`.
  * No guarda nada: el PDF se genera al vuelo y n8n lo adjunta al correo.
  */
 export async function POST(req: NextRequest) {

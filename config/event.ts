@@ -53,16 +53,18 @@ export const EVENT = {
     aperturaInscripciones: { iso: "2026-10-05T00:00:00-05:00", confirmada: false },
     webinar: { iso: "2026-10-28T18:00:00-05:00", confirmada: false },
     cierreInscripciones: { iso: "2026-11-27T12:00:00-05:00", confirmada: true },
-    // Evento (guía §4). Confirmadas en la guía, sujetas a la alerta de calendario del POA (§12, decisión 1).
+    // Evento (guía §4). Agenda acordada en la reunión de staff del 10 nov 2026.
     checkin: { iso: "2026-11-27T15:30:00-05:00", confirmada: true },
     kickoff: { iso: "2026-11-27T17:00:00-05:00", confirmada: true },
-    checkpoint1: { iso: "2026-11-27T20:00:00-05:00", confirmada: true },
+    checkpoint1: { iso: "2026-11-27T19:00:00-05:00", confirmada: true },
     cierreSedeViernes: { iso: "2026-11-27T21:00:00-05:00", confirmada: true },
-    checkpoint2: { iso: "2026-11-28T10:30:00-05:00", confirmada: true },
-    codeFreeze: { iso: "2026-11-28T12:00:00-05:00", confirmada: true },
-    showAndTell: { iso: "2026-11-28T13:30:00-05:00", confirmada: true },
-    final: { iso: "2026-11-28T17:00:00-05:00", confirmada: true },
-    premiacion: { iso: "2026-11-28T18:30:00-05:00", confirmada: true },
+    checkpoint2: { iso: "2026-11-28T12:30:00-05:00", confirmada: true },
+    codeFreeze: { iso: "2026-11-28T14:00:00-05:00", confirmada: true },
+    showAndTell: { iso: "2026-11-28T15:00:00-05:00", confirmada: true },
+    /** Hora límite interna para que el jurado tenga los resultados (no se publica en la agenda). */
+    resultadosListos: { iso: "2026-11-28T16:30:00-05:00", confirmada: true },
+    premiacion: { iso: "2026-11-28T16:45:00-05:00", confirmada: true },
+    cierreEvento: { iso: "2026-11-28T17:00:00-05:00", confirmada: true },
     publicacionResultadosDetallados: { iso: "2026-12-04T12:00:00-05:00", confirmada: false },
   } satisfies Record<string, FechaClave>,
 
@@ -77,7 +79,11 @@ export const EVENT = {
     JUNIOR: { edadMin: 14, edadMax: 17, nombre: "Junior" },
     OPEN: { edadMin: 18, edadMax: null, nombre: "Open" },
   },
-  showAndTell: { minutosExposicion: 8, minutosPreguntas: 4, minutosTransicion: 3, finalistas: 5 },
+  /**
+   * Show and Tell en una sola ronda: 2 salas simultáneas con 3 jurados cada una, sin agrupar por
+   * track. 10 min por equipo (3 de demo en vivo y 7 de preguntas) más 3 de transición.
+   */
+  showAndTell: { minutosExposicion: 3, minutosPreguntas: 7, minutosTransicion: 3, salas: 2, juecesPorSala: 3 },
   /** Retención de datos personales tras el evento, en meses (Fase 8). */
   retencionMeses: 12,
 } as const;
@@ -122,21 +128,19 @@ export const TRACKS: Record<TrackCode, { nombre: string; pregunta: string; ejemp
   },
 };
 
-export const PREMIO_TRANSVERSAL = "Premio n8n a la mejor automatización";
+/** Nombres de los premios: los usan la web, el cálculo (lib/scoring.ts) y los certificados. */
+export const PREMIO = {
+  primeroOpen: "1.er lugar Open",
+  segundoOpen: "2.º lugar Open",
+  mejorJunior: "Mejor equipo Junior",
+} as const;
 
-/** Guía §8. Montos y beneficios pendientes: nunca se inventan. */
+/** Guía §8 (reunión de staff del 10 nov 2026). Montos y beneficios pendientes: nunca se inventan. */
 export const PREMIOS: { premio: string; alcance: string; beneficio: string }[] = [
-  { premio: "1er lugar general", alcance: "Todos los tracks", beneficio: POR_CONFIRMAR },
-  { premio: "2do lugar general", alcance: "Todos los tracks", beneficio: POR_CONFIRMAR },
-  { premio: "3er lugar general", alcance: "Todos los tracks", beneficio: POR_CONFIRMAR },
-  { premio: "Mejor solución por track", alcance: "T1, T2, T3", beneficio: POR_CONFIRMAR },
-  { premio: PREMIO_TRANSVERSAL, alcance: "Transversal", beneficio: POR_CONFIRMAR },
-  { premio: "Mejor equipo Junior", alcance: "Categoría Junior", beneficio: POR_CONFIRMAR },
-  {
-    premio: "Pase a la Aceleradora Eight Academy",
-    alcance: "Hasta 3 equipos",
-    beneficio: "Cupo en la siguiente cohorte del bootcamp",
-  },
+  { premio: PREMIO.primeroOpen, alcance: "Categoría Open, todos los tracks", beneficio: POR_CONFIRMAR },
+  { premio: PREMIO.segundoOpen, alcance: "Categoría Open, todos los tracks", beneficio: POR_CONFIRMAR },
+  { premio: PREMIO.mejorJunior, alcance: "Categoría Junior, todos los tracks", beneficio: POR_CONFIRMAR },
+  { premio: "Certificado digital", alcance: "Todos los participantes", beneficio: "Certificado de participación con la retroalimentación del jurado" },
 ];
 
 /** Auspiciantes y aliados: vacío hasta que el comité confirme (guía §12, decisiones 3 y 4). */
@@ -144,22 +148,23 @@ export const ALIADOS: { nombre: string; url: string }[] = [];
 
 /** Agenda oficial (guía §4). `hito` marca los bloques que la guía destaca en negrita. */
 export const AGENDA: { dia: "Viernes 27" | "Sábado 28"; hora: string; bloque: string; hito?: boolean }[] = [
-  { dia: "Viernes 27", hora: "15:30", bloque: "Check-in de equipos con QR, entrega de credenciales y kit" },
-  { dia: "Viernes 27", hora: "16:15", bloque: "Inauguración, presentación de tracks, aliados y jurado" },
-  { dia: "Viernes 27", hora: "16:45", bloque: "Matchmaking de inscritos individuales y confirmación de equipos" },
-  { dia: "Viernes 27", hora: "17:00", bloque: "Kick-off oficial: se habilita la creación de repositorios", hito: true },
-  { dia: "Viernes 27", hora: "17:30", bloque: "Taller express de n8n (30 min)" },
-  { dia: "Viernes 27", hora: "18:30", bloque: "Ronda de mentoría 1 · validación del problema" },
-  { dia: "Viernes 27", hora: "20:00", bloque: "Checkpoint 1: README con problema, usuario y arquitectura (commit obligatorio)" },
+  { dia: "Viernes 27", hora: "15:30", bloque: "Check-in con QR y entrega de name tags" },
+  { dia: "Viernes 27", hora: "16:00", bloque: "Inauguración: presentación de tracks, aliados, mentores y jurado" },
+  { dia: "Viernes 27", hora: "16:20", bloque: "Taller express de n8n (20 min)" },
+  { dia: "Viernes 27", hora: "16:40", bloque: "Dinámica de integración" },
+  { dia: "Viernes 27", hora: "16:50", bloque: "Matchmaking de inscritos individuales y confirmación de equipos" },
+  { dia: "Viernes 27", hora: "17:00", bloque: "Kick-off oficial: empieza el hacking y se habilita la creación de repositorios", hito: true },
+  { dia: "Viernes 27", hora: "17:45", bloque: "Rondas de mentoría 1 · validación del problema (los mentores recorren las mesas)" },
+  { dia: "Viernes 27", hora: "19:00", bloque: "Plazo del checkpoint 1: README con problema, usuario y arquitectura (commit obligatorio)" },
   { dia: "Viernes 27", hora: "21:00", bloque: "Cierre de sede. El hacking remoto continúa; los commits fuera de sede son válidos" },
-  { dia: "Sábado 28", hora: "08:00", bloque: "Apertura de sede, desayuno" },
-  { dia: "Sábado 28", hora: "09:00", bloque: "Ronda de mentoría 2 · demo y pitch" },
-  { dia: "Sábado 28", hora: "10:30", bloque: "Checkpoint 2: demo funcional mínima desplegada o ejecutable" },
-  { dia: "Sábado 28", hora: "12:00", bloque: "Code freeze: tag entrega y formulario de entrega cerrados", hito: true },
-  { dia: "Sábado 28", hora: "12:00", bloque: "Validación automática de repositorios" },
-  { dia: "Sábado 28", hora: "13:30", bloque: "Show and Tell · ronda semifinal por track (salas paralelas)" },
-  { dia: "Sábado 28", hora: "17:00", bloque: "Final: top 5 en plenaria" },
-  { dia: "Sábado 28", hora: "18:30", bloque: "Deliberación, premiación y cierre" },
+  { dia: "Sábado 28", hora: "08:00", bloque: "Apertura de sede" },
+  { dia: "Sábado 28", hora: "09:00", bloque: "Desayuno" },
+  { dia: "Sábado 28", hora: "10:00", bloque: "Rondas de mentoría 2 · demo y pitch" },
+  { dia: "Sábado 28", hora: "12:30", bloque: "Plazo del checkpoint 2: demo funcional mínima desplegada o ejecutable" },
+  { dia: "Sábado 28", hora: "13:00", bloque: "Almuerzo libre (no incluido)" },
+  { dia: "Sábado 28", hora: "14:00", bloque: "Entrega: se cierran el tag entrega y el formulario de entrega; validación automática de repositorios", hito: true },
+  { dia: "Sábado 28", hora: "15:00", bloque: "Show and Tell en dos salas simultáneas" },
+  { dia: "Sábado 28", hora: "16:45", bloque: "Premiación y cierre (hasta las 17:00)" },
 ];
 
 /** Preguntas frecuentes: Guía del Hacker §10 y reglas de la guía §3 y §7. */
@@ -174,7 +179,11 @@ export const FAQ: { pregunta: string; respuesta: string }[] = [
     respuesta:
       "No. Los equipos son de 2 a 5 personas, pero puedes inscribirte solo: la organización forma equipos el viernes en el bloque de matchmaking.",
   },
-  { pregunta: "¿Puedo cambiar de track durante el evento?", respuesta: "Sí, hasta el checkpoint 1 del viernes a las 20:00." },
+  { pregunta: "¿Puedo cambiar de track durante el evento?", respuesta: "Sí, hasta el checkpoint 1 del viernes a las 19:00." },
+  {
+    pregunta: "¿Hay comida durante el evento?",
+    respuesta: "El sábado de 9:00 a 10:00 hay desayuno incluido. El almuerzo del sábado (13:00 a 14:00) es libre y no está incluido: cada participante elige dónde comer.",
+  },
   {
     pregunta: "¿Puedo usar un proyecto que ya tenía?",
     respuesta:

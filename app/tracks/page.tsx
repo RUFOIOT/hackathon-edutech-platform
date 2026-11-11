@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PREMIO_TRANSVERSAL, TRACKS, TRACK_CODES } from "@/config/event";
+import { TRACKS, TRACK_CODES } from "@/config/event";
 import { asset } from "@/lib/sitio";
 
 export const metadata: Metadata = { title: "Tracks", description: "Los tres tracks del hackathon, sus preguntas guía y retos de ejemplo." };
@@ -10,7 +10,7 @@ export default function Tracks() {
     <div className="mx-auto max-w-6xl px-4 py-12">
       <h1 className="text-3xl font-semibold sm:text-4xl">Tracks</h1>
       <p className="mt-3 max-w-prose text-muted">
-        Cada equipo compite en un solo track. Puedes cambiarlo hasta el checkpoint 1, el viernes a las 20:00. Los ejemplos
+        Cada equipo compite en un solo track. Puedes cambiarlo hasta el checkpoint 1, el viernes a las 19:00. Los ejemplos
         son puntos de partida, no una lista cerrada.
       </p>
 
@@ -43,14 +43,13 @@ export default function Tracks() {
           </section>
         ))}
 
-        <section aria-labelledby="premio-n8n" className="rounded border-2 border-accent bg-surface p-6">
-          <h2 id="premio-n8n" className="text-2xl font-semibold">
-            {PREMIO_TRANSVERSAL}
+        <section aria-labelledby="automatizacion-n8n" className="rounded border-2 border-accent bg-surface p-6">
+          <h2 id="automatizacion-n8n" className="text-2xl font-semibold">
+            Automatización con n8n
           </h2>
           <p className="mt-3 max-w-prose">
-            Transversal a los tres tracks. Lo gana el mayor puntaje en el criterio C4 (automatización e inteligencia) entre
-            los equipos que tengan sus workflows de n8n exportados en la carpeta <code className="font-mono">/n8n</code>{" "}
-            del repositorio. En caso de empate, decide el representante de n8n.
+            Transversal a los tres tracks. El jurado evalúa la automatización en el criterio C4 (automatización e inteligencia): exporta tus
+            workflows de n8n a la carpeta <code className="font-mono">/n8n</code> del repositorio para que cuenten.
           </p>
           <p className="mt-4 text-sm">
             <Link href={`/rubrica#${ANCLA_C4}`} className="font-medium text-positive-text underline underline-offset-4">

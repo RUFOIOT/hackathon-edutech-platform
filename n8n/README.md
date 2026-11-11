@@ -13,12 +13,12 @@ plan (WF-01 a WF-09), WF-00 (reintenta los eventos que n8n no recibió) y WF-99 
 | WF-01 | Confirmación de inscripción | Webhooks `registration.created`, `guardian.validated`, `checkin.created` | Correo de bienvenida con próximos pasos (y recordatorio de autorización si es Junior); correo con la decisión sobre la autorización; aviso en Slack de inscripciones y check-in Junior |
 | WF-02 | Invitaciones de equipo | Webhooks `team.invitation`, `team.completed` | Correo con código y enlace; aviso en Slack cuando un equipo alcanza el mínimo |
 | WF-03 | Recordatorios de convocatoria | Cada día 09:00 | Autorizaciones pendientes, equipos incompletos e invitación al webinar (la app decide si la convocatoria sigue abierta) |
-| WF-04 | Monitor de repositorios | Cada 15 min, vie 17:00 → sáb 12:00 | `POST /api/github/snapshot {todos:true}`; alertas rojas nuevas a Slack y a la mesa técnica (sin repetir) |
-| WF-05 | Recordatorio de checkpoints | Vie 19:30, sáb 10:00 y 11:30 | Correo a los equipos en riesgo 30 min antes del checkpoint 1, el checkpoint 2 y el freeze |
-| WF-06 | Validación de entregas | Sáb 12:05 + webhook `submission.created` | Snapshot final y reporte A1–A5 al comité; acuse de recibo de cada entrega al equipo |
+| WF-04 | Monitor de repositorios | Cada 15 min, vie 17:00 → sáb 14:00 | `POST /api/github/snapshot {todos:true}`; alertas rojas nuevas a Slack y a la mesa técnica (sin repetir) |
+| WF-05 | Recordatorio de checkpoints | Vie 18:30, sáb 12:00 y 13:30 | Correo a los equipos en riesgo 30 min antes del checkpoint 1, el checkpoint 2 y el freeze |
+| WF-06 | Validación de entregas | Sáb 14:05 + webhook `submission.created` | Snapshot final y reporte A1–A5 al comité; acuse de recibo de cada entrega al equipo |
 | WF-07 | Mentoría | Webhook `mentor.requested` | Correo a los mentores del tema y aviso en Slack; a los 30 min, si sigue abierta, escala a la mesa técnica |
 | WF-08 | Comunicados | Webhook `announcement.created` | Un correo por destinatario y copia en Slack |
-| WF-09 | Resultados y certificados | Webhook `results.published` | Certificado PDF por integrante (participación, finalista o ganador) con la retroalimentación del jurado |
+| WF-09 | Resultados y certificados | Webhook `results.published` | Certificado PDF por integrante (participación o ganador) con la retroalimentación del jurado |
 
 ## Cómo se comunican la app y n8n
 
@@ -128,7 +128,7 @@ Activa los diez workflows. Los webhooks quedan en `https://<tu-n8n>/webhook/<eve
 ## Fechas
 
 Los workflows programados tienen las horas del evento en su cron (zona America/Guayaquil):
-WF-04 (vie 27 17:00 → sáb 28 12:00), WF-05 (19:30, 10:00, 11:30) y WF-06 (sáb 12:05). Si cambia
+WF-04 (vie 27 17:00 → sáb 28 14:00), WF-05 (18:30, 12:00, 13:30) y WF-06 (sáb 14:05). Si cambia
 la agenda en `config/event.ts`, ajusta los cron en `scripts/generar-workflows.ts` y regenera.
 WF-03 corre a diario, pero la app responde `activo:false` fuera de la convocatoria.
 

@@ -31,16 +31,9 @@ export default async function Resultado() {
       <h1 className="text-3xl font-semibold">Nuestro resultado</h1>
       <dl className="mt-6 grid gap-4 sm:grid-cols-3">
         <div className="rounded border border-border bg-surface p-4">
-          <dt className="text-sm text-muted">Puntaje en la semifinal</dt>
-          <dd className="text-3xl font-semibold tabular-nums">{r.get("puntajeSemifinal")}/100</dd>
+          <dt className="text-sm text-muted">Puntaje en el Show and Tell</dt>
+          <dd className="text-3xl font-semibold tabular-nums">{r.get("puntaje")}/100</dd>
         </div>
-        {r.get("finalista") && (
-          <div className="rounded border border-accent bg-surface p-4">
-            <dt className="text-sm text-muted">Final</dt>
-            <dd className="text-3xl font-semibold tabular-nums">{r.get("posicionFinal")}.º lugar</dd>
-            <dd className="text-sm">{r.get("puntajeFinal")}/100</dd>
-          </div>
-        )}
         {premios.length > 0 && (
           <div className="rounded border border-accent bg-surface p-4">
             <dt className="text-sm text-muted">Premios</dt>

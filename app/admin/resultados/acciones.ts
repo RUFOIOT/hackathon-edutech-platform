@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import type { ResultadoAccion } from "@/components/admin/accion";
 import { exigirAdmin } from "@/lib/auth/session";
-import { confirmarFinalistas, publicarResultados } from "@/lib/jurado/servicio";
+import { publicarResultados } from "@/lib/jurado/servicio";
 import { log } from "@/lib/log";
 import { ErrorRegistro } from "@/lib/registro/servicio";
 
@@ -23,22 +23,11 @@ async function ejecutar(fn: (uid: string) => Promise<string>): Promise<Resultado
   }
 }
 
-export async function finalistas(fd: FormData) {
-  return ejecutar(async (uid) => {
-    const ids = fd.getAll("finalista").map(String);
-    await confirmarFinalistas(ids, uid);
-    return `Finalistas confirmados (${ids.length}). La ronda final está abierta y su orden generado.`;
-  });
-}
-
 export async function publicar(fd: FormData) {
   return ejecutar(async (uid) => {
-    if (fd.get("revisado") !== "on") throw new ErrorRegistro("Confirma que el comité revisó el ranking y los premios.");
-    // Posiciones elegidas por el comité (permite resolver empates por votación del jurado).
-    const posiciones = [...fd.entries()].filter(([k]) => k.startsWith("pos_")).map(([k, v]) => ({ teamId: k.slice(4), pos: Number(v) }));
-    if (new Set(posiciones.map((p) => p.pos)).size !== posiciones.length) throw new ErrorRegistro("Hay posiciones repetidas en el orden final.");
-    const orden = posiciones.sort((a, b) => a.pos - b.pos).map((p) => p.teamId);
-    await publicarResultados(orden, fd.getAll("aceleradora").map(String), uid);
+    if (fd.get("revisado") !== "on") throw new ErrorRegistro("Confirma que el comité revisó el ranking, los desempates y los premios.");
+    const elegido = (k: string) => String(fd.get(k) ?? "").trim() || null;
+    await publicarResultados({ primeroOpen: elegido("primeroOpen"), segundoOpen: elegido("segundoOpen"), mejorJunior: elegido("mejorJunior") }, uid);
     return "Resultados publicados. Los equipos ya los ven y n8n enviará los certificados.";
   });
 }

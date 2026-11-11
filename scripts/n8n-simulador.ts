@@ -284,15 +284,13 @@ export const EVENTOS_EJEMPLO: Record<string, { payload: Record<string, unknown>;
         {
           teamId: "los-nodos",
           nombre: "Los Nodos",
-          finalista: true,
-          posicionFinal: 1,
-          premios: ["1er lugar general"],
+          premios: ["1.er lugar Open"],
           integrantes: [
             { nombre: "Ana Pérez", email: "ana@edutech.test" },
             { nombre: "Sin Correo", email: null },
           ],
         },
-        { teamId: "otro", nombre: "Otro", finalista: false, posicionFinal: null, premios: [], integrantes: [{ nombre: "Luis", email: "luis@edutech.test" }] },
+        { teamId: "otro", nombre: "Otro", premios: [], integrantes: [{ nombre: "Luis", email: "luis@edutech.test" }] },
       ],
     },
     correos: 2,
@@ -355,10 +353,10 @@ export const ESCENARIOS_PROGRAMADOS: { archivo: string; disparador: string; corr
   { archivo: "WF-00-reintento-eventos.json", disparador: "Cada 30 minutos", correos: 0, slack: 1 },
   { archivo: "WF-03-recordatorios-convocatoria.json", disparador: "Cada día a las 09:00", correos: 4, slack: 1, consulta: { consulta: "recordatorios-convocatoria" } },
   { archivo: "WF-04-monitor-repositorios.json", disparador: "Cada 15 min en la ventana", correos: 1, slack: 1 },
-  { archivo: "WF-05-recordatorio-checkpoints.json", disparador: "Viernes 19:30 (checkpoint 1)", correos: 2, slack: 1, consulta: { consulta: "checkpoints-en-riesgo", hito: "checkpoint1" } },
-  { archivo: "WF-05-recordatorio-checkpoints.json", disparador: "Sábado 10:00 (checkpoint 2)", correos: 2, slack: 1, consulta: { consulta: "checkpoints-en-riesgo", hito: "checkpoint2" } },
-  { archivo: "WF-05-recordatorio-checkpoints.json", disparador: "Sábado 11:30 (code freeze)", correos: 2, slack: 1, consulta: { consulta: "checkpoints-en-riesgo", hito: "freeze" } },
-  { archivo: "WF-06-validacion-entregas.json", disparador: "Sábado 12:05", correos: 1, slack: 1, consulta: { consulta: "reporte-entregas" } },
+  { archivo: "WF-05-recordatorio-checkpoints.json", disparador: "Viernes 18:30 (checkpoint 1)", correos: 2, slack: 1, consulta: { consulta: "checkpoints-en-riesgo", hito: "checkpoint1" } },
+  { archivo: "WF-05-recordatorio-checkpoints.json", disparador: "Sábado 12:00 (checkpoint 2)", correos: 2, slack: 1, consulta: { consulta: "checkpoints-en-riesgo", hito: "checkpoint2" } },
+  { archivo: "WF-05-recordatorio-checkpoints.json", disparador: "Sábado 13:30 (code freeze)", correos: 2, slack: 1, consulta: { consulta: "checkpoints-en-riesgo", hito: "freeze" } },
+  { archivo: "WF-06-validacion-entregas.json", disparador: "Sábado 14:05", correos: 1, slack: 1, consulta: { consulta: "reporte-entregas" } },
 ];
 
 /** Ejecución fallida de ejemplo, con la forma que entrega el Error Trigger de n8n. */

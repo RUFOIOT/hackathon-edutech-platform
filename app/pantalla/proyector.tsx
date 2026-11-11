@@ -93,13 +93,13 @@ export function Proyector({
             {r.dias > 0 ? `${r.dias}d ` : ""}
             {dos(r.horas)}:{dos(r.minutos)}:{dos(r.segundos)}
           </p>
-          <p className="mt-4 text-xl text-paper-50/80">Sábado 12:00 · tag entrega y formulario de entrega</p>
+          <p className="mt-4 text-xl text-paper-50/80">Sábado 14:00 · tag entrega y formulario de entrega</p>
         </div>
       ) : (
         <div>
           <h1 className="text-3xl font-semibold sm:text-5xl">Show and Tell</h1>
           <p className="mt-4 text-xl text-paper-50/80">
-            {ahora !== null && ahora < new Date(showAndTellIso).getTime() ? "Comienza a las 13:30." : "Esperando al siguiente equipo."}
+            {ahora !== null && ahora < new Date(showAndTellIso).getTime() ? "Comienza a las 15:00." : "Esperando al siguiente equipo."}
           </p>
         </div>
       )}

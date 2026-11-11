@@ -15,7 +15,6 @@ import {
   publicarAviso,
   salaSchema,
   type AccionCronometro,
-  type Ronda,
 } from "@/lib/jurado/servicio";
 import { log } from "@/lib/log";
 import { ErrorRegistro } from "@/lib/registro/servicio";
@@ -37,7 +36,7 @@ async function ejecutar(fn: (uid: string) => Promise<string>): Promise<Resultado
 
 export async function crearSala(fd: FormData) {
   return ejecutar(async (uid) => {
-    const r = salaSchema.safeParse({ id: fd.get("id"), nombre: fd.get("nombre"), tracks: fd.getAll("tracks") });
+    const r = salaSchema.safeParse({ id: fd.get("id"), nombre: fd.get("nombre") });
     if (!r.success) throw new ErrorRegistro(r.error.issues[0]!.message);
     await guardarSala(r.data, uid);
     return `Sala ${r.data.nombre} guardada.`;
@@ -51,7 +50,6 @@ export async function crearJuez(fd: FormData) {
       nombre: fd.get("nombre"),
       perfil: fd.get("perfil"),
       roomId: fd.get("roomId"),
-      final: fd.get("final") === "on",
     });
     if (!r.success) throw new ErrorRegistro(r.error.issues[0]!.message);
     await guardarJuez(r.data, uid);
@@ -59,8 +57,8 @@ export async function crearJuez(fd: FormData) {
   });
 }
 
-export async function generar(ronda: Ronda) {
-  return ejecutar(async (uid) => `Orden generado: ${await generarOrden(ronda, uid)} turnos.`);
+export async function generar() {
+  return ejecutar(async (uid) => `Orden generado: ${await generarOrden(uid)} turnos.`);
 }
 
 export async function mover(slotId: string, direccion: -1 | 1) {

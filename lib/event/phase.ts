@@ -11,7 +11,7 @@ export type Fase = (typeof FASES)[number];
  * - Pre-evento: del cierre al kick-off.
  * - Hacking: kick-off → code freeze.
  * - Code freeze: code freeze → inicio del Show and Tell (validación de repositorios).
- * - Show and Tell: semifinal y final, hasta la premiación.
+ * - Show and Tell: ronda única en 2 salas y deliberación, hasta la premiación (16:45).
  * - Resultados: desde la premiación.
  */
 export function faseActual(ahora: Date = new Date()): Fase {

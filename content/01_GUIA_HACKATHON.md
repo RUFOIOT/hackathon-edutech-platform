@@ -25,7 +25,7 @@ La regla de oro del evento: **se premia lo que funciona en vivo y está en el re
 | T2 | Infraestructura y mejora de sistemas educativos estudiantiles | ¿Qué sistema usa el estudiante a diario y cómo lo hacemos más útil, abierto y confiable? | Portafolio digital con credenciales verificables, integración de plataformas (LMS, Runachay), analítica de aprendizaje, accesibilidad, conectividad offline |
 | T3 | Soluciones comerciales y administrativas para instituciones | ¿Qué proceso de la institución consume tiempo, dinero o confianza y puede automatizarse? | Admisiones y matrículas, cobranza y pensiones, horarios y distributivo, comunicación con familias, planificación curricular (PCA/PSA), reportes de cumplimiento |
 
-**Premio transversal n8n:** mejor automatización construida con n8n en cualquier track.
+**Automatización con n8n:** transversal a los tres tracks. Se evalúa en el criterio C4 de la rúbrica.
 
 ## 3. Categorías y elegibilidad
 
@@ -35,6 +35,7 @@ La regla de oro del evento: **se premia lo que funciona en vivo y está en el re
 | Open | Mayores de 18 años: universitarios, profesionales, docentes | Documento de identidad en el check-in |
 
 - Equipos de 2 a 5 personas. Se aceptan inscripciones individuales: la organización forma equipos el viernes en el bloque de matchmaking.
+- Cada equipo es de una sola categoría: Junior u Open.
 - Cada equipo compite en un solo track.
 - Docentes y personal de Eight Academy pueden participar en Open, pero no ser jurado del track en el que compitan sus estudiantes.
 - [CONFIRMAR] Cupo máximo: propuesta de 30 equipos / 150 personas, sujeto al aforo de la sede.
@@ -43,36 +44,33 @@ La regla de oro del evento: **se premia lo que funciona en vivo y está en el re
 
 | Día | Hora | Bloque |
 |---|---|---|
-| Vie 27 | 15:30 | Check-in de equipos con QR, entrega de credenciales y kit |
-| | 16:15 | Inauguración, presentación de tracks, aliados y jurado |
-| | 16:45 | Matchmaking de inscritos individuales y confirmación de equipos |
-| | **17:00** | **Kick-off oficial: se habilita la creación de repositorios** |
-| | 17:30 | Taller express de n8n (30 min) |
-| | 18:30 | Ronda de mentoría 1 · validación del problema |
-| | 20:00 | Checkpoint 1: README con problema, usuario y arquitectura (commit obligatorio) |
+| Vie 27 | 15:30 | Check-in con QR y entrega de name tags |
+| | 16:00 | Inauguración: presentación de tracks, aliados, mentores y jurado |
+| | 16:20 | Taller express de n8n (20 min) |
+| | 16:40 | Dinámica de integración |
+| | 16:50 | Matchmaking de inscritos individuales y confirmación de equipos |
+| | **17:00** | **Kick-off oficial: empieza el hacking y se habilita la creación de repositorios** |
+| | 17:45 | Rondas de mentoría 1 · validación del problema (los mentores recorren las mesas) |
+| | 19:00 | Plazo del checkpoint 1: README con problema, usuario y arquitectura (commit obligatorio) |
 | | 21:00 | Cierre de sede. El hacking remoto continúa; los commits fuera de sede son válidos |
-| Sáb 28 | 08:00 | Apertura de sede, desayuno |
-| | 09:00 | Ronda de mentoría 2 · demo y pitch |
-| | 10:30 | Checkpoint 2: demo funcional mínima desplegada o ejecutable |
-| | **12:00** | **Code freeze: tag `entrega` y formulario de entrega cerrados** |
-| | 12:00 | Validación automática de repositorios |
-| | 13:30 | Show and Tell · ronda semifinal por track (salas paralelas) |
-| | 17:00 | Final: top 5 en plenaria |
-| | 18:30 | Deliberación, premiación y cierre |
+| Sáb 28 | 08:00 | Apertura de sede |
+| | 09:00 | Desayuno (incluido) |
+| | 10:00 | Rondas de mentoría 2 · demo y pitch |
+| | 12:30 | Plazo del checkpoint 2: demo funcional mínima desplegada o ejecutable |
+| | 13:00 | Almuerzo libre (no incluido) |
+| | **14:00** | **Entrega: se cierran el tag `entrega` y el formulario de entrega; validación automática de repositorios** |
+| | 15:00 | Show and Tell en dos salas simultáneas |
+| | 16:45 | Premiación y cierre (hasta las 17:00) |
 
 > **Reprogramación.** El hackathon se movió al viernes 27 y sábado 28 de noviembre de 2026. En la fecha original (6 y 7 de noviembre) el POA 2026-2027 asignaba el sábado 7 a la "1era Integración Padres" (SEM 009). Debe verificarse que el 27 y 28 estén libres en el POA y confirmarse el uso compartido de la sede el viernes 27, que es día lectivo. Ver sección 12.
 
-## 5. Capacidad del Show and Tell
+## 5. Show and Tell
 
-Cada equipo dispone de **12 minutos como máximo**: 8 de exposición y demo en vivo, 4 de preguntas del jurado. Con 3 minutos de transición, cada sala evalúa 4 equipos por hora.
+Una sola ronda, de 15:00 a 16:30, en **dos salas simultáneas con 3 jurados cada una**. Los equipos no se agrupan por track: cada uno indica el track que eligió. No hay final.
 
-| Equipos inscritos | Salas de semifinal | Duración de semifinal |
-|---|---|---|
-| hasta 12 | 1 | 3 h |
-| 13 a 24 | 2 (una por track; T1+T2 comparten si hace falta) | 3 h |
-| 25 a 30 | 3 (una por track) | 2 h 30 |
+Cada equipo dispone de **10 minutos**: 3 de demo en vivo del proyecto funcionando y 7 de preguntas del jurado. El cronómetro es visible en la sala.
 
-La final reúne a los 5 mejores puntajes normalizados (ver Rúbrica, sección 5).
+Con los puntajes de la rúbrica, normalizados por sala (ver Rúbrica, sección 5), el jurado delibera y define el 1.er y 2.º lugar Open y el mejor equipo Junior. Los resultados se anuncian en la premiación de las 16:45.
 
 ## 6. Infraestructura técnica
 
@@ -88,7 +86,7 @@ Todo el evento se gestiona sobre GitHub.
 
 ## 7. Reglas de juego
 
-1. Todo el código del proyecto se escribe dentro de la ventana oficial: viernes 17:00 a sábado 12:00 (hora de Ecuador, UTC-5).
+1. Todo el código del proyecto se escribe dentro de la ventana oficial: viernes 17:00 a sábado 14:00 (hora de Ecuador, UTC-5).
 2. Se permite usar librerías open source, APIs, plantillas de n8n y boilerplates públicos, siempre que se declaren en `PRIOR_WORK.md`.
 3. Se permite usar inteligencia artificial para construir. Su uso se declara en `AI_USAGE.md`. Ocultarlo es causal de descalificación; usarlo no resta puntos.
 4. Prohibido usar datos reales de estudiantes, familias o docentes. Se trabaja con datos sintéticos o anonimizados. Esto aplica la LOPDP.
@@ -107,15 +105,12 @@ Todo el evento se gestiona sobre GitHub.
 
 | Premio | Alcance | Monto o beneficio |
 |---|---|---|
-| 1er lugar general | Todos los tracks | [MONTO USD] |
-| 2do lugar general | Todos los tracks | [MONTO USD] |
-| 3er lugar general | Todos los tracks | [MONTO USD] |
-| Mejor solución por track | T1, T2, T3 | [BENEFICIO DE AUSPICIANTE] |
-| Premio n8n a la mejor automatización | Transversal | [CONFIRMAR con n8n] |
-| Mejor equipo Junior | Categoría Junior | [BENEFICIO] |
-| Pase a la Aceleradora Eight Academy | Hasta 3 equipos | Cupo en la siguiente cohorte del bootcamp |
+| 1.er lugar Open | Categoría Open, todos los tracks | [MONTO USD] |
+| 2.º lugar Open | Categoría Open, todos los tracks | [MONTO USD] |
+| Mejor equipo Junior | Categoría Junior, todos los tracks | [BENEFICIO] |
+| Certificado digital | Todos los participantes | Certificado de participación con la retroalimentación del jurado |
 
-Un equipo puede recibir como máximo un premio general y un premio especial. Los premios económicos de categoría Junior se entregan al representante legal.
+Un equipo recibe como máximo un premio. Los premios económicos de categoría Junior se entregan al representante legal.
 
 ## 9. Roles del evento
 
@@ -125,7 +120,7 @@ Un equipo puede recibir como máximo un premio general y un premio especial. Los
 | Coordinación operativa | Sede, logística, tiempos, check-in | [CONFIRMAR] |
 | Mesa técnica | Plataforma, GitHub, n8n, conectividad | EIGHT LABS |
 | Mentores | Acompañan a equipos sin escribir su código | [LISTA] · mínimo 1 por cada 5 equipos |
-| Jurado | Evalúa con la rúbrica oficial | 3 a 5 por sala, al menos uno técnico y uno del sector educativo |
+| Jurado | Evalúa con la rúbrica oficial el sábado (no asiste el viernes) | 6 en total: 3 por sala, al menos uno técnico y uno del sector educativo |
 | Marketing | Convocatoria, cobertura y transmisión | Departamento de MKT |
 | Inspección y DECE | Seguridad y bienestar de participantes Junior | Inspección / DECE |
 

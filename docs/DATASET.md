@@ -37,7 +37,7 @@ Solo admin: `nombres`, `apellidos`, `email`, `celular`.
 ### equipos (una fila por equipo)
 
 `team_id`, `nombre`, `track` (T1–T3), `categoria`, `estado`, `miembros`, `requiere_adulto`,
-`adulto_asignado`, `room_id`, `finalista`, `repo_registrado`, `checkpoint1`, `checkpoint2`
+`adulto_asignado`, `room_id`, `repo_registrado`, `checkpoint1`, `checkpoint2`
 (ok / pendiente / falta), `commits_ventana`, `autores`, `ultimo_commit_at`, `entregado`,
 `tag_sha`, `tag_movido_tras_freeze`, `a1`…`a5` (criterios de admisibilidad; `a4` vacío mientras la
 mesa técnica no lo revise), `presentes`, `mentorias_abiertas`, `semaforo` (verde / ambar / rojo),
@@ -61,7 +61,7 @@ mesa técnica no lo revise), `presentes`, `mentorias_abiertas`, `semaforo` (verd
 
 ### puntajes (solo admin y comité)
 
-`ronda` (semifinal / final), `room_id`, `team_id`, `judge_id`, `c1`…`c6` (niveles 0–4), `total`
+`ronda` (siempre `semifinal`: id histórico de la única ronda del Show and Tell), `room_id`, `team_id`, `judge_id`, `c1`…`c6` (niveles 0–4), `total`
 (0–100, con tope de 60 si C2 = 1), `tiempo_usado_seg`, `demo_en_vivo`.
 Son puntajes crudos; la normalización por sala se calcula al publicar resultados.
 
@@ -72,7 +72,7 @@ Son puntajes crudos; la normalización por sala se calcula al publicar resultado
 
 ### jueces
 
-`judge_id`, `room_id`, `final`, `perfil`, `conflictos`, `conflictos_en_sala`, `evaluaciones`.
+`judge_id`, `room_id`, `perfil`, `conflictos`, `conflictos_en_sala`, `evaluaciones`.
 No incluye nombres: se cruzan con la lista del comité si hace falta.
 
 ### mentorias

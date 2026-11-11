@@ -68,7 +68,8 @@ async function main() {
 
   // Salas: una por track (escenario de la guía §5 con 25–30 equipos).
   const salas: { id: string; track: TrackCode }[] = TRACK_CODES.map((t, i) => ({ id: `sala-${i + 1}`, track: t }));
-  for (const s of salas) set(`rooms/${s.id}`, { nombre: `Sala ${s.track}`, tracks: [s.track], cerrada: false });
+  // El reparto por track es solo para que el seed sea determinista: las salas aceptan cualquier track.
+  for (const s of salas) set(`rooms/${s.id}`, { nombre: `Sala ${s.id.slice(-1)}`, cerrada: false });
 
   // Equipos: tamaños 5,4,4,4,4,3,3,3,2,2 = 34 personas + 6 individuales sin equipo = 40.
   const tamanos = [5, 4, 4, 4, 4, 3, 3, 3, 2, 2];
@@ -188,14 +189,14 @@ async function main() {
 
   // 4 jueces ficticios: 2 en sala-1, 1 en sala-2, 1 en sala-3.
   const jueces = [
-    { uid: "juez-1", roomId: "sala-1", perfil: "tecnico", final: true },
-    { uid: "juez-2", roomId: "sala-1", perfil: "educativo", final: true },
+    { uid: "juez-1", roomId: "sala-1", perfil: "tecnico" },
+    { uid: "juez-2", roomId: "sala-1", perfil: "educativo" },
     { uid: "juez-3", roomId: "sala-2", perfil: "tecnico" },
     { uid: "juez-4", roomId: "sala-3", perfil: "negocio" },
   ];
   for (const [i, j] of jueces.entries()) {
     await crearUsuario(j.uid, `${j.uid}@edutech.test`, `Juez Ficticio ${i + 1}`);
-    set(`judges/${j.uid}`, { nombre: `Juez Ficticio ${i + 1}`, perfil: j.perfil, roomId: j.roomId, final: "final" in j && j.final === true });
+    set(`judges/${j.uid}`, { nombre: `Juez Ficticio ${i + 1}`, perfil: j.perfil, roomId: j.roomId });
   }
 
   // Staff de desarrollo, uno por rol.
@@ -211,9 +212,9 @@ async function main() {
     set(`staff/${s.uid}`, { nombre: s.uid, roles: s.roles, ...("temas" in s ? { temas: s.temas } : {}) });
   }
 
-  // Orden de semifinal y puntajes de ejemplo: sala-1 (T1, 4 equipos) se normaliza; sala-2 y
+  // Orden del Show and Tell y puntajes de ejemplo: sala-1 (T1, 4 equipos) se normaliza; sala-2 y
   // sala-3 (3 equipos) quedan "sin normalizar" para ver ese caso en /admin/resultados.
-  set(`events/${EVENT.id}`, { nombre: EVENT.nombre, resultadosPublicados: false, resultadosPublicadosAt: null, rondaActiva: "semifinal" });
+  set(`events/${EVENT.id}`, { nombre: EVENT.nombre, resultadosPublicados: false, resultadosPublicadosAt: null });
   const inicioShow = new Date(EVENT.fechas.showAndTell.iso).getTime();
   for (const sala of salas) {
     const equiposSala = tamanos.map((_, e) => ({ e, teamId: `equipo-${dd(e + 1)}` })).filter(({ e }) => TRACK_CODES[e % 3] === sala.track);
@@ -225,7 +226,7 @@ async function main() {
         track: sala.track,
         ronda: "semifinal",
         orden: orden + 1,
-        horaProgramada: Timestamp.fromMillis(inicioShow + orden * 15 * 60_000),
+        horaProgramada: Timestamp.fromMillis(inicioShow + orden * 13 * 60_000),
         inicioReal: null,
         finReal: null,
       });
@@ -240,11 +241,11 @@ async function main() {
           ronda: "semifinal",
           ...niveles,
           total: scoreTotal(niveles),
-          tiempoUsadoSeg: int(420, 720),
+          tiempoUsadoSeg: int(420, 660),
           demoEnVivo: rnd() > 0.15,
           fortaleza: "Fortaleza ficticia del seed: problema bien acotado y demo clara.",
           recomendacion: "Recomendación ficticia del seed: medir el impacto con datos de un piloto.",
-          enviadoAt: ts("2026-11-28T14:00:00-05:00"),
+          enviadoAt: ts("2026-11-28T16:00:00-05:00"),
           bloqueado: false,
         });
       }

@@ -33,7 +33,7 @@ Nota de traspaso para retomar el trabajo desde otra máquina.
   agenda nueva (taller n8n 16:20, dinámica de integración 16:40, matchmaking 16:50, checkpoint 1 a las 19:00,
   checkpoint 2 a las 12:30, entrega/code freeze a las 14:00, Show and Tell 15:00–16:30 en 2 salas con 3 jurados,
   premiación 16:45), sin final ni finalistas, premios reducidos a 1.º y 2.º Open, mejor Junior y certificado para
-  todos, y crons de n8n movidos. Falta desplegar la web y volver a subir los workflows a n8n (ver pendientes).
+  todos, y crons de n8n movidos. Desplegado el mismo día: reglas de Firestore, Netlify, Pages y los 11 workflows de n8n; aviso enviado al grupo de staff en Telegram.
 
 ## Pendiente
 
@@ -43,9 +43,7 @@ Nota de traspaso para retomar el trabajo desde otra máquina.
    registrados y correr `python3 -I scripts/campana-luma/enviar.py recordatorio "<csv>" --excluir <correos.txt> --si`.
 3. Actualizar a mano la fecha del evento en Luma.
 4. Confirmar en el POA del colegio que el 27–28 de noviembre está libre.
-5. Desplegar la web con la agenda nueva (Netlify, copia limpia) y volver a subir los workflows a n8n
-   (`scripts/n8n-desplegar.ts`): WF-04, WF-05, WF-06 y WF-09 cambiaron de horario o de contenido.
-6. Abiertos de la reunión de staff: qué se hace con un Junior inscrito solo si no hay otros Junior; si se mantiene
+5. Abiertos de la reunión de staff: qué se hace con un Junior inscrito solo si no hay otros Junior; si se mantiene
    la evidencia de entrevista en el checkpoint 1 (ahora solo 2 h después del kick-off); documento de identidad de
    Open en el check-in; cupo máximo del Show and Tell (~12 equipos con 2 salas); cena VIP (lugar, personas,
    presupuesto); el registro aún permite equipos MIXTO aunque ahora son de una sola categoría.

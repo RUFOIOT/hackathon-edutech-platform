@@ -72,6 +72,11 @@ El enlace mágico se imprime en la terminal de los emuladores.
   `.trazo-infinito`, `.borde-ocho` en `globals.css`; colores `ocho-*` y `n8n`). Todo se apaga con
   `prefers-reduced-motion` y un test e2e lo garantiza. Logos oficiales en `public/brand/`; fotos y
   videos solo con autorización de imagen, declarados en `config/medios.ts`.
+- **Encabezado y revelado (D-48):** el encabezado es fijo (`components/encabezado.tsx`); su alto
+  vive en `--alto-header` y de ahí salen `scroll-padding-top` y los `top` de lo que sea sticky.
+  `.revelar` solo oculta contenido si `<html>` tiene la clase `js`. Una animación nueva necesita
+  `animation: none` explícito bajo reduce. Una sección nueva con ancla en la portada se suma a
+  `SECCIONES_PORTADA` en `app/layout.tsx`.
 - **Registro:** `lib/registro/servicio.ts` hace toda la inscripción en UNA transacción (cupo,
   equipo, invitaciones, consentimientos, auditoría y outbox). Los esquemas Zod de
   `lib/validation/registro.ts` se usan en el cliente y en el servidor. El borrador vive en

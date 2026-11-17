@@ -1,9 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
-import { AGENDA, ALIADOS, EVENT, FAQ, JURADO, MENTORES, PREMIOS, TRACKS, TRACK_CODES, fecha, type TrackCode } from "@/config/event";
+import { ALIADOS, EVENT, FAQ, JURADO, MENTORES, PREMIOS, TRACKS, TRACK_CODES, fecha, type TrackCode } from "@/config/event";
 import { MEDIOS } from "@/config/medios";
+import { AgendaEnVivo } from "@/components/agenda-en-vivo";
+import { Cifra } from "@/components/cifra";
 import { HeroInfinito } from "@/components/hero-infinito";
 import { Revelar } from "@/components/revelar";
+import { SeccionViva } from "@/components/seccion-viva";
+import { bloquesAgenda } from "@/lib/event/agenda";
 import { diaEnEcuador, fechaEnEcuador } from "@/lib/event/countdown";
 import { faseActual, inscripcionesAbiertas } from "@/lib/event/phase";
 import { ahora } from "@/lib/event/reloj";
@@ -69,19 +73,19 @@ function EstadoInscripciones({ oscuro = false }: { oscuro?: boolean }) {
 }
 
 export default function Inicio() {
-  const dias = ["Viernes 27", "Sábado 28"] as const;
   const retos = TRACK_CODES.flatMap((t) => TRACKS[t].ejemplos);
   const registro = enlacePlataforma("/registro");
 
   return (
-    <>
+    // Las variantes laterales del revelado desplazan contenido hacia los lados: se recorta para que no haya scroll horizontal.
+    <div className="overflow-x-clip">
       {/* ---------- Hero ---------- */}
-      <section aria-labelledby="titulo" className="relative isolate overflow-hidden bg-navy-900 text-paper-50">
+      <SeccionViva etiquetadaPor="titulo" className="relative isolate overflow-hidden bg-navy-900 text-paper-50">
         <div aria-hidden="true" className="absolute inset-0 -z-10">
-          <span className="mancha left-[-10%] top-[-20%] h-[28rem] w-[28rem] bg-ocho-azul" />
-          <span className="mancha right-[-8%] top-[10%] h-[24rem] w-[24rem] bg-ocho-rosa [animation-delay:-6s]" />
-          <span className="mancha bottom-[-25%] left-[20%] h-[26rem] w-[26rem] bg-ocho-verde [animation-delay:-12s]" />
-          <span className="mancha bottom-[-10%] right-[15%] h-[18rem] w-[18rem] bg-ocho-ambar [animation-delay:-3s]" />
+          <span className="mancha left-[-14%] top-[-26%] h-[34rem] w-[34rem] [--mancha:var(--color-ocho-azul)]" />
+          <span className="mancha right-[-12%] top-[4%] h-[29rem] w-[29rem] [--mancha:var(--color-ocho-rosa)] [animation-delay:-6s]" />
+          <span className="mancha bottom-[-31%] left-[16%] h-[31rem] w-[31rem] [--mancha:var(--color-ocho-verde)] [animation-delay:-12s]" />
+          <span className="mancha bottom-[-14%] right-[11%] h-[22rem] w-[22rem] [--mancha:var(--color-ocho-ambar)] [animation-delay:-3s]" />
           {MEDIOS.videoHero && (
             <video className="absolute inset-0 h-full w-full object-cover opacity-25 mix-blend-luminosity" autoPlay muted loop playsInline poster={MEDIOS.videoHero.poster}>
               <source src={MEDIOS.videoHero.src} type="video/mp4" />
@@ -127,12 +131,12 @@ export default function Inicio() {
             </ul>
           </div>
         </div>
-      </section>
+      </SeccionViva>
 
       {/* ---------- Qué es + cifras ---------- */}
       <section aria-labelledby="que-es" className="mx-auto max-w-6xl px-4 py-20">
         <div className="grid gap-12 lg:grid-cols-[1.1fr_1fr] lg:items-center">
-          <Revelar>
+          <Revelar variante="izquierda">
             <h2 id="que-es" className="text-3xl font-semibold sm:text-4xl">
               Construye en vivo lo que la educación necesita
             </h2>
@@ -144,23 +148,23 @@ export default function Inicio() {
               Se premia lo que funciona en vivo y está en el repositorio, no lo que se promete en una diapositiva.
             </blockquote>
           </Revelar>
-          <dl className="grid grid-cols-2 gap-4">
+          <Revelar como="dl" variante="escalonado" className="grid grid-cols-2 gap-4">
             {[
               { n: "21 h", t: "de hacking", d: "Viernes 17:00 a sábado 14:00", c: "var(--color-ocho-azul)" },
               { n: "3", t: "tracks", d: "Con n8n como herramienta de automatización", c: "var(--color-ocho-rosa)" },
               { n: "2–5", t: "personas por equipo", d: "O inscríbete solo: te asignamos equipo", c: "var(--color-ocho-verde)" },
               { n: "10 min", t: "de Show and Tell", d: "3 de demo en vivo, 7 de preguntas del jurado", c: "var(--color-ocho-ambar)" },
-            ].map((x, i) => (
-              <Revelar key={x.t} retraso={i * 90}>
-                <div className="h-full rounded-2xl border border-border bg-surface p-5" style={{ boxShadow: `inset 0 4px 0 ${x.c}` }}>
-                  <dt className="sr-only">{x.t}</dt>
-                  <dd className="font-display text-4xl font-semibold tabular-nums">{x.n}</dd>
-                  <dd className="mt-1 font-medium">{x.t}</dd>
-                  <dd className="mt-1 text-sm text-muted">{x.d}</dd>
-                </div>
-              </Revelar>
+            ].map((x) => (
+              <div key={x.t} className="h-full rounded-2xl border border-border bg-surface p-5" style={{ boxShadow: `inset 0 4px 0 ${x.c}` }}>
+                <dt className="sr-only">{x.t}</dt>
+                <dd className="font-display text-4xl font-semibold tabular-nums">
+                  <Cifra valor={x.n} />
+                </dd>
+                <dd className="mt-1 font-medium">{x.t}</dd>
+                <dd className="mt-1 text-sm text-muted">{x.d}</dd>
+              </div>
             ))}
-          </dl>
+          </Revelar>
         </div>
       </section>
 
@@ -179,7 +183,8 @@ export default function Inicio() {
                 <Revelar retraso={i * 120} className="h-full">
                   <Link
                     href="/tracks"
-                    className="group flex h-full flex-col rounded-2xl border border-border bg-bg p-6 transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-20px_var(--color-navy-700)]"
+                    className="tarjeta-track group flex h-full flex-col rounded-2xl border border-border bg-bg p-6"
+                    style={{ "--brillo": COLOR_TRACK[code] } as React.CSSProperties}
                   >
                     <span className="flex h-12 w-12 items-center justify-center rounded-xl text-navy-900" style={{ backgroundColor: COLOR_TRACK[code] }}>
                       <IconoTrack track={code} />
@@ -194,7 +199,7 @@ export default function Inicio() {
             ))}
           </ul>
 
-          <Revelar className="mt-8">
+          <Revelar variante="derecha" className="mt-8">
             <div className="flex flex-col items-start gap-5 rounded-2xl bg-navy-900 p-6 text-paper-50 sm:flex-row sm:items-center">
               <Image src={asset("/brand/n8n_pink+white_logo.svg")} alt="n8n" width={110} height={36} unoptimized className="h-8 w-auto" />
               <div>
@@ -243,25 +248,7 @@ export default function Inicio() {
           </h2>
           <p className="mt-2 text-sm text-muted">Hora de Ecuador (UTC-5).</p>
         </Revelar>
-        <div className="mt-10 grid gap-12 md:grid-cols-2">
-          {dias.map((dia, d) => (
-            <Revelar key={dia} retraso={d * 120}>
-              <h3 className="text-xl font-semibold">{dia} de noviembre</h3>
-              <ol className="relative mt-6 grid gap-5 border-l-2 border-border pl-6">
-                {AGENDA.filter((a) => a.dia === dia).map((a) => (
-                  <li key={`${a.hora}-${a.bloque}`} className="relative">
-                    <span
-                      aria-hidden="true"
-                      className={`absolute -left-[33px] top-1 h-4 w-4 rounded-full border-2 border-bg ${a.hito ? "bg-ocho-ambar ring-4 ring-ocho-ambar/25" : "bg-ocho-azul"}`}
-                    />
-                    <time className="text-sm font-semibold tabular-nums text-muted">{a.hora}</time>
-                    <p className={a.hito ? "font-semibold" : ""}>{a.bloque}</p>
-                  </li>
-                ))}
-              </ol>
-            </Revelar>
-          ))}
-        </div>
+        <AgendaEnVivo bloques={bloquesAgenda()} />
       </section>
 
       {/* ---------- Premios ---------- */}
@@ -275,7 +262,7 @@ export default function Inicio() {
           <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {PREMIOS.map((p, i) => (
               <li key={p.premio}>
-                <Revelar retraso={(i % 4) * 80} className="h-full">
+                <Revelar variante="escala" retraso={(i % 4) * 80} className="h-full">
                   <div className={`h-full rounded-2xl p-5 ${i < 3 ? "borde-ocho" : "border border-border bg-bg"}`}>
                     {i < 2 && <p className="font-display text-3xl font-semibold">{i + 1}.º</p>}
                     <p className="mt-1 font-semibold">{p.premio}</p>
@@ -302,9 +289,9 @@ export default function Inicio() {
 
       {/* ---------- Mentores y jurado (config/event.ts: solo confirmados) ---------- */}
       {(MENTORES.length > 0 || JURADO.length > 0) && (
-        <section aria-labelledby="personas" className="mx-auto max-w-6xl px-4 py-20">
+        <section aria-labelledby="mentores-jurado" className="mx-auto max-w-6xl px-4 py-20">
           <Revelar>
-            <h2 id="personas" className="text-3xl font-semibold sm:text-4xl">
+            <h2 id="mentores-jurado" className="text-3xl font-semibold sm:text-4xl">
               Mentores y jurado
             </h2>
             <p className="mt-3 max-w-prose text-muted">
@@ -432,7 +419,7 @@ export default function Inicio() {
         </h2>
         <div className="mt-8 grid max-w-3xl gap-3">
           {FAQ.map((f) => (
-            <details key={f.pregunta} className="group rounded-2xl border border-border bg-surface px-5 py-4 open:shadow-[inset_4px_0_0_var(--color-ocho-azul)]">
+            <details key={f.pregunta} className="faq group rounded-2xl border border-border bg-surface px-5 py-4 open:shadow-[inset_4px_0_0_var(--color-ocho-azul)]">
               <summary className="cursor-pointer list-none font-medium after:float-right after:content-['+'] group-open:after:content-['−']">{f.pregunta}</summary>
               <p className="mt-3 max-w-prose">{f.respuesta}</p>
             </details>
@@ -452,10 +439,10 @@ export default function Inicio() {
       </section>
 
       {/* ---------- Cierre ---------- */}
-      <section aria-labelledby="cta" className="relative isolate overflow-hidden bg-navy-900 text-paper-50">
+      <SeccionViva etiquetadaPor="cta" className="relative isolate overflow-hidden bg-navy-900 text-paper-50">
         <div aria-hidden="true" className="absolute inset-0 -z-10">
-          <span className="mancha left-[5%] top-[-30%] h-80 w-80 bg-ocho-rosa" />
-          <span className="mancha bottom-[-40%] right-[5%] h-96 w-96 bg-ocho-azul [animation-delay:-9s]" />
+          <span className="mancha left-[2%] top-[-36%] h-96 w-96 [--mancha:var(--color-ocho-rosa)]" />
+          <span className="mancha bottom-[-46%] right-[2%] h-[29rem] w-[29rem] [--mancha:var(--color-ocho-azul)] [animation-delay:-9s]" />
         </div>
         <div className="mx-auto max-w-6xl px-4 py-20 text-center">
           <h2 id="cta" className="mx-auto max-w-[22ch] text-3xl font-semibold sm:text-5xl">
@@ -465,7 +452,7 @@ export default function Inicio() {
             <EstadoInscripciones oscuro />
           </div>
         </div>
-      </section>
-    </>
+      </SeccionViva>
+    </div>
   );
 }

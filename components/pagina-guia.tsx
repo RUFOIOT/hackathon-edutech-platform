@@ -21,7 +21,9 @@ function ListaIndice({ indice }: { indice: Encabezado[] }) {
 export function PaginaGuia({ doc, descripcion }: { doc: Documento; descripcion?: string }) {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 lg:grid lg:grid-cols-[15rem_1fr] lg:gap-12">
-      <aside className="lg:sticky lg:top-6 lg:max-h-[calc(100dvh-3rem)] lg:self-start lg:overflow-y-auto">
+      {/* Progreso de lectura: solo CSS (animation-timeline), invisible donde no hay soporte o con reduce. */}
+      <div aria-hidden="true" className="progreso-lectura" />
+      <aside className="lg:sticky lg:top-[calc(var(--alto-header)+1.5rem)] lg:max-h-[calc(100dvh-var(--alto-header)-3rem)] lg:self-start lg:overflow-y-auto">
         <nav aria-label="Contenido de esta guía">
           <details className="rounded border border-border bg-surface p-3 lg:hidden">
             <summary className="cursor-pointer font-medium">Contenido de esta guía</summary>

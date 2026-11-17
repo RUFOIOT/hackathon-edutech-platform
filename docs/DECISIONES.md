@@ -412,6 +412,33 @@ premiación: 16:45.
 Nuevas horas: checkpoint 1 a las 19:00, checkpoint 2 a las 12:30, code freeze y entrega a las
 14:00 (ventana de 21 h). Los crons de n8n (WF-04, WF-05 y WF-06) se movieron con ellas.
 
+## D-48 · Fase A de interfaz: encabezado fijo, movimiento a prueba de fallos y agenda en vivo
+
+Mejoras de la web pública sin dependencias nuevas y sin tocar el registro ni la CSP:
+
+- **Encabezado** (`components/encabezado.tsx`): fijo en todos los anchos; se compacta al hacer
+  scroll sin mover el contenido (el margen compensa la altura). Suma el botón «Inscribir a mi
+  equipo» mientras las inscripciones están abiertas (se oculta en el registro, el portal y el
+  panel, y en el sitio estático sin `URL_PLATAFORMA`). Bajo 1024 px los enlaces van en un popover
+  nativo («Menú»): Escape y el foco los resuelve el navegador; sin soporte de popover, el panel
+  queda como una fila más. En la portada hay una fila de anclas con la sección activa
+  (`aria-current="location"`). `--alto-header` alimenta `scroll-padding-top` y el índice de las guías.
+- **Revelado a prueba de fallos:** el contenido solo se oculta si un script en línea puso la clase
+  `js` en `<html>` (D-42 ya admite scripts en línea). Si la página no se hidrata en 5 s, la clase
+  se retira. Sin JavaScript, al imprimir o con reduce, todo se ve de entrada.
+- **Movimiento más barato:** las manchas son degradados radiales (sin `filter: blur` ni
+  `will-change`) y las animaciones continuas se pausan cuando su sección sale de pantalla
+  (`components/seccion-viva.tsx`). FAQ, barra de lectura de las guías y entrada del menú usan
+  CSS moderno bajo `@supports`; donde no existe, se comportan como antes.
+- **Ocho en falso 3D:** capas que se inclinan con el mouse; en táctil y con reduce queda plano.
+- **Agenda en vivo** (`components/agenda-en-vivo.tsx`, `lib/event/agenda.ts`): con el reloj del
+  navegador resalta «Ahora» y «Sigue» desde las 00:00 del viernes 27 hasta el cierre. Un bloque
+  dura hasta que empieza el siguiente, así que de noche sigue vigente «Cierre de sede. El hacking
+  remoto continúa». `ahora()` de `lib/event/reloj.ts` es del servidor y no aplica aquí: la portada
+  se sirve desde caché y una hora del servidor quedaría desfasada.
+
+Toda animación nueva lleva su `animation: none` bajo `prefers-reduced-motion` (lo exige el e2e).
+
 ## Diferencias entre el prompt y las guías (gana la guía)
 
 1. **Sede:** "Unidad Educativa Particular Eight Academy, sede La Prensa". La dirección y el aforo

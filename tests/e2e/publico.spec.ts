@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { AGENDA, PREMIOS } from "../../config/event";
 
 const PUBLICAS = ["/", "/tracks", "/guia", "/guia-hacker", "/rubrica", "/privacidad"];
 
@@ -67,11 +68,16 @@ test.describe("páginas públicas", () => {
     });
   }
 
-  test("los premios sin confirmar se muestran como 'Por anunciar'", async ({ page }) => {
+  test("los premios confirmados se muestran con su alcance y sus beneficios", async ({ page }) => {
     await page.goto("/");
-    const fila = page.getByRole("region", { name: "Premios" }).getByRole("listitem").filter({ hasText: "1.er lugar Open" });
-    await expect(fila).toContainText("Por anunciar");
-    await expect(page.getByText("[POR CONFIRMAR]")).toHaveCount(0);
+    const region = page.getByRole("region", { name: "Premios" });
+    // Los valores salen de config/event.ts: el test no fija montos por su cuenta.
+    for (const p of PREMIOS) {
+      const tarjeta = region.getByRole("listitem").filter({ hasText: p.premio }).first();
+      await expect(tarjeta).toContainText(p.alcance);
+      for (const b of p.beneficios) await expect(tarjeta).toContainText(b);
+    }
+    await expect(region).not.toContainText("Por anunciar");
   });
 
   test("la guía tiene índice con anclas que llevan a su sección", async ({ page }) => {
@@ -89,5 +95,87 @@ test.describe("páginas públicas", () => {
     const texto = await page.locator("article").innerText();
     expect(texto).not.toMatch(/\[CONFIRMAR|\[MONTO|Alerta de calendario|Decisiones pendientes/);
     expect(texto).toContain("Por anunciar");
+  });
+});
+
+test.describe("encabezado", () => {
+  test("queda fijo arriba y las anclas de la portada no dejan el título debajo", async ({ page }) => {
+    await page.goto("/");
+    await page.getByRole("navigation", { name: "Secciones de esta página" }).getByRole("link", { name: "Agenda" }).click();
+    await expect(page).toHaveURL(/#agenda$/);
+    const titulo = page.getByRole("heading", { name: "Agenda", exact: true });
+    await expect(titulo).toBeInViewport();
+    await expect
+      .poll(() =>
+        page.evaluate(() => {
+          const header = document.querySelector("header")!.getBoundingClientRect();
+          return { arriba: header.top, libre: document.getElementById("agenda")!.getBoundingClientRect().top >= header.bottom };
+        }),
+      )
+      .toEqual({ arriba: 0, libre: true });
+    await expect(page.getByRole("navigation", { name: "Secciones de esta página" }).getByRole("link", { name: "Agenda" })).toHaveAttribute("aria-current", "location");
+  });
+
+  test("en pantallas angostas el menú se abre con el botón y se cierra con Escape", async ({ page }) => {
+    await page.goto("/tracks");
+    const boton = page.getByRole("button", { name: "Menú", exact: true });
+    test.skip(!(await boton.isVisible()), "En escritorio los enlaces están a la vista.");
+    const enlace = page.locator("#menu-principal").getByRole("link", { name: "Rúbrica" });
+    await expect(enlace).toBeHidden();
+    await boton.click();
+    await expect(enlace).toBeVisible();
+    await expect(boton).toHaveAttribute("aria-expanded", "true");
+    await page.keyboard.press("Escape");
+    await expect(enlace).toBeHidden();
+    await expect(boton).toHaveAttribute("aria-expanded", "false");
+    await boton.click();
+    await enlace.click();
+    await expect(page).toHaveURL(/\/rubrica$/);
+    await expect(enlace).toBeHidden();
+  });
+});
+
+test.describe("revelado", () => {
+  test("sin JavaScript todo el contenido de la portada es visible", async ({ browser }) => {
+    const ctx = await browser.newContext({ javaScriptEnabled: false });
+    const page = await ctx.newPage();
+    await page.goto("/");
+    const ocultos = await page.locator(".revelar, .revelar > *").evaluateAll((els) => els.filter((el) => getComputedStyle(el).opacity !== "1").length);
+    expect(ocultos).toBe(0);
+    await ctx.close();
+  });
+
+  test("con JavaScript el contenido se revela al llegar a él", async ({ page }) => {
+    await page.goto("/");
+    const titulo = page.getByRole("region", { name: "Premios" }).locator(".revelar").first();
+    await expect(titulo).toHaveCSS("opacity", "0");
+    await titulo.scrollIntoViewIfNeeded();
+    await expect(titulo).toHaveCSS("opacity", "1");
+  });
+});
+
+test.describe("agenda en vivo", () => {
+  test("fuera del evento no resalta ningún bloque", async ({ page }) => {
+    await page.clock.setFixedTime(new Date("2026-11-20T10:00:00-05:00"));
+    await page.goto("/");
+    const agenda = page.getByRole("region", { name: "Agenda" });
+    await expect(agenda.getByRole("listitem")).toHaveCount(AGENDA.length);
+    await expect(agenda.locator('[aria-current="time"]')).toHaveCount(0);
+    await expect(agenda.getByText("Ahora", { exact: true })).toHaveCount(0);
+  });
+
+  test("durante el evento marca el bloque actual y el siguiente, aunque el navegador esté en otra zona", async ({ browser }) => {
+    const ctx = await browser.newContext({ timezoneId: "Asia/Tokyo" });
+    const page = await ctx.newPage();
+    // Viernes 27 a las 17:10 de Ecuador: corre el kick-off (17:00) y sigue la mentoría (17:45).
+    await page.clock.setFixedTime(new Date("2026-11-27T17:10:00-05:00"));
+    await page.goto("/");
+    const agenda = page.getByRole("region", { name: "Agenda" });
+    const actual = agenda.locator('[aria-current="time"]');
+    await expect(actual).toHaveCount(1);
+    await expect(actual).toContainText("17:00");
+    await expect(actual).toContainText("Ahora");
+    await expect(agenda.getByRole("listitem").filter({ hasText: "Sigue" })).toContainText("17:45");
+    await ctx.close();
   });
 });

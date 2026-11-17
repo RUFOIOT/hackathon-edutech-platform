@@ -60,9 +60,33 @@
     }
   }
 
+  /*
+   * Alto del encabezado fijo (components/encabezado.tsx): barra de 3.5rem y, en la portada, una
+   * fila de 2.5rem con los enlaces a las secciones. Las anclas y el foco se detienen debajo.
+   */
+  :root {
+    --alto-header: 3.5rem;
+  }
+  :root:has(.nav-secciones) {
+    --alto-header: 6rem;
+  }
+
   html {
     font-size: 100%;
     -webkit-text-size-adjust: 100%;
+    scroll-padding-top: var(--alto-header);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  /* Aire entre el encabezado y el título al que lleva un ancla. */
+  main h2[id],
+  main h3[id] {
+    scroll-margin-top: 2.5rem;
   }
 
   body {
@@ -145,6 +169,7 @@
   margin-top: 2.25em;
   font-size: var(--text-xl);
   font-weight: 600;
+  /* Se suma al scroll-padding-top de html, que ya descuenta el encabezado fijo. */
   scroll-margin-top: 1.5rem;
 }
 .prosa h3 {
@@ -240,7 +265,11 @@
   --color-n8n: #ea4b71;
 }
 
-/* Fondo vivo del hero: manchas de color que se desplazan lento. */
+/*
+ * Fondo vivo del hero: manchas de color que se desplazan lento. Son degradados radiales (sin
+ * filter: blur ni will-change): el navegador las pinta una vez y solo mueve la capa.
+ * El color llega por --mancha.
+ */
 @keyframes deriva {
   0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
   50% { transform: translate3d(6%, -4%, 0) scale(1.12); }
@@ -248,21 +277,57 @@
 .mancha {
   position: absolute;
   border-radius: 9999px;
-  filter: blur(70px);
-  opacity: 0.45;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--mancha, var(--color-ocho-azul)) 85%, transparent),
+    color-mix(in srgb, var(--mancha, var(--color-ocho-azul)) 45%, transparent) 50%,
+    transparent
+  );
+  opacity: 0.5;
   animation: deriva 18s ease-in-out infinite;
-  will-change: transform;
 }
 
-/* Revelado al hacer scroll (components/revelar.tsx). */
-.revelar {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+/* Las animaciones continuas se pausan cuando su sección sale de pantalla (components/seccion-viva.tsx). */
+[data-fuera="true"] :is(.mancha, .cinta, .trazo-infinito) {
+  animation-play-state: paused;
 }
-.revelar[data-visible="true"] {
-  opacity: 1;
-  transform: none;
+
+/*
+ * Revelado al hacer scroll (components/revelar.tsx). A prueba de fallos: el contenido solo se
+ * oculta si hay JavaScript (clase .js en <html>, que pone un script en línea de app/layout.tsx y
+ * que se retira sola si la página no llega a hidratarse), en pantalla y sin reduce.
+ * Variantes: subir (por defecto), escala, izquierda, derecha y escalonado (anima a los hijos).
+ */
+@media screen and (prefers-reduced-motion: no-preference) {
+  .js .revelar:not([data-variante="escalonado"]),
+  .js .revelar[data-variante="escalonado"] > * {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .js .revelar[data-variante="escala"] {
+    transform: scale(0.92);
+  }
+  .js .revelar[data-variante="izquierda"] {
+    transform: translateX(-28px);
+  }
+  .js .revelar[data-variante="derecha"] {
+    transform: translateX(28px);
+  }
+  .js .revelar[data-variante="escalonado"] > * {
+    transform: translateY(18px) scale(0.96);
+    transition-delay: calc(var(--i, 0) * 90ms);
+  }
+  .js .revelar[data-variante="escalonado"] > :nth-child(2) { --i: 1; }
+  .js .revelar[data-variante="escalonado"] > :nth-child(3) { --i: 2; }
+  .js .revelar[data-variante="escalonado"] > :nth-child(4) { --i: 3; }
+  .js .revelar[data-variante="escalonado"] > :nth-child(5) { --i: 4; }
+  .js .revelar[data-variante="escalonado"] > :nth-child(n + 6) { --i: 5; }
+  .js .revelar[data-visible="true"]:not([data-variante="escalonado"]),
+  .js .revelar[data-variante="escalonado"][data-visible="true"] > * {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* Borde con degradado de la marca para tarjetas. */
@@ -282,14 +347,191 @@
   animation: cinta 40s linear infinite;
 }
 
+/* ---------- Encabezado fijo (components/encabezado.tsx) ---------- */
+.encabezado {
+  transition: box-shadow 0.25s ease, background-color 0.25s ease, margin-bottom 0.25s ease;
+}
+.encabezado .barra {
+  min-height: 3.5rem;
+  transition: min-height 0.25s ease;
+}
+/* Compacto al hacer scroll: la barra baja 0.5rem y el margen lo compensa, así nada salta (CLS 0). */
+.encabezado[data-compacto="true"] {
+  margin-bottom: 0.5rem;
+  background-color: color-mix(in srgb, var(--color-bg) 95%, transparent);
+  box-shadow: 0 10px 30px -18px color-mix(in srgb, var(--color-navy-900) 70%, transparent);
+}
+.encabezado[data-compacto="true"] .barra {
+  min-height: 3rem;
+}
+.nav-secciones ul {
+  scrollbar-width: none;
+}
+.nav-secciones ul::-webkit-scrollbar {
+  display: none;
+}
+
+/*
+ * Menú móvil: popover nativo (se cierra con Escape o tocando fuera y devuelve el foco al botón).
+ * Sin soporte de popover, el panel queda como una fila más del encabezado y el botón no aparece.
+ */
+.menu-boton,
+.menu-cerrar {
+  display: none;
+}
+@supports selector(:popover-open) {
+  .menu-boton,
+  .menu-cerrar {
+    display: inline-flex;
+  }
+  .menu-panel {
+    position: fixed;
+    inset: 0 0 auto 0;
+    width: 100%;
+    max-width: none;
+    max-height: 100dvh;
+    margin: 0;
+    overflow-y: auto;
+    border: 0;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-bg);
+    color: var(--color-fg);
+    box-shadow: 0 24px 48px -24px color-mix(in srgb, var(--color-navy-900) 80%, transparent);
+  }
+  .menu-panel::backdrop {
+    background: color-mix(in srgb, var(--color-navy-900) 45%, transparent);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .menu-panel {
+      opacity: 0;
+      translate: 0 -12px;
+      transition: opacity 0.2s ease, translate 0.2s ease, overlay 0.2s allow-discrete, display 0.2s allow-discrete;
+    }
+    .menu-panel:popover-open {
+      opacity: 1;
+      translate: 0 0;
+    }
+    @starting-style {
+      .menu-panel:popover-open {
+        opacity: 0;
+        translate: 0 -12px;
+      }
+    }
+  }
+}
+
+/* ---------- Tarjetas de tracks: al pasar el puntero o enfocar, brillan con el color del track (--brillo) ---------- */
+.tarjeta-track {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.tarjeta-track:hover,
+.tarjeta-track:focus-visible {
+  transform: translateY(-4px);
+  border-color: var(--brillo);
+  box-shadow:
+    0 0 0 1px var(--brillo),
+    0 22px 44px -22px var(--brillo),
+    0 0 36px -12px color-mix(in srgb, var(--brillo) 70%, transparent);
+}
+
+/* ---------- Preguntas frecuentes: la respuesta se abre con transición donde el navegador lo permite ---------- */
+@supports (interpolate-size: allow-keywords) {
+  @media (prefers-reduced-motion: no-preference) {
+    .faq {
+      interpolate-size: allow-keywords;
+    }
+    .faq::details-content {
+      block-size: 0;
+      overflow: clip;
+      opacity: 0;
+      transition: block-size 0.35s ease, opacity 0.35s ease, content-visibility 0.35s allow-discrete;
+    }
+    .faq[open]::details-content {
+      block-size: auto;
+      opacity: 1;
+    }
+  }
+}
+
+/* ---------- Guías: barra de progreso de lectura, ligada al scroll sin JavaScript ---------- */
+@keyframes progreso-lectura {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+.progreso-lectura {
+  display: none;
+}
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .progreso-lectura {
+      display: block;
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 50;
+      height: 3px;
+      transform-origin: 0 50%;
+      background: linear-gradient(90deg, var(--color-ocho-azul), var(--color-ocho-rosa), var(--color-ocho-verde), var(--color-ocho-ambar));
+      animation: progreso-lectura linear both;
+      animation-timeline: scroll(root block);
+    }
+  }
+}
+
+/* ---------- Agenda en vivo: el punto del bloque actual late ---------- */
+@keyframes pulso-ahora {
+  from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-n8n) 60%, transparent); }
+  to { box-shadow: 0 0 0 12px transparent; }
+}
+.punto-ahora {
+  animation: pulso-ahora 1.8s ease-out infinite;
+}
+
+/*
+ * ---------- Hero: falso 3D del ocho (components/hero-infinito.tsx) ----------
+ * Capas apiladas a distinta profundidad que se inclinan con el puntero (--rx, --ry). Solo con
+ * puntero fino y sin reduce: en táctil el ocho se ve plano, como siempre.
+ */
+.ocho-sombra {
+  display: none;
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .ocho-escena {
+    perspective: 900px;
+  }
+  .ocho-3d {
+    transform-style: preserve-3d;
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform 0.25s ease-out;
+  }
+  /* --z es la profundidad en px (sin unidad). La escala compensa la perspectiva: en reposo cada capa mide lo mismo que en plano. */
+  .ocho-capa {
+    transform: translateZ(calc(var(--z, 0) * 1px)) scale(calc(1 - var(--z, 0) / 900));
+  }
+  .ocho-sombra {
+    display: block;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .mancha,
-  .cinta {
+  .cinta,
+  .punto-ahora,
+  .progreso-lectura {
     animation: none;
   }
-  .revelar {
-    opacity: 1;
-    transform: none;
+  .progreso-lectura {
+    display: none;
+  }
+  .faq::details-content,
+  .menu-panel,
+  .tarjeta-track,
+  .ocho-3d {
     transition: none;
+  }
+  .tarjeta-track:hover,
+  .tarjeta-track:focus-visible,
+  .ocho-3d,
+  .ocho-capa {
+    transform: none;
   }
 }

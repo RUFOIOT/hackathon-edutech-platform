@@ -2,7 +2,10 @@ import type { Metadata, Viewport } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Fraunces, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
-import { EVENT } from "@/config/event";
+import { Encabezado, type EnlaceNav, type SeccionPortada } from "@/components/encabezado";
+import { EVENT, JURADO, MENTORES } from "@/config/event";
+import { inscripcionesAbiertas } from "@/lib/event/phase";
+import { ahora } from "@/lib/event/reloj";
 import { asset, enlacePlataforma } from "@/lib/sitio";
 import "./globals.css";
 
@@ -22,29 +25,48 @@ export const viewport: Viewport = {
   ],
 };
 
+/**
+ * Marca <html> con la clase "js" antes de pintar: solo entonces globals.css oculta lo que se
+ * revela al hacer scroll. Si la página no llega a hidratarse (el encabezado pone data-hidratado),
+ * la clase se retira y todo el contenido queda a la vista. La CSP admite scripts en línea (D-42).
+ */
+const SCRIPT_JS = `(function(d){d.classList.add("js");setTimeout(function(){if(!d.hasAttribute("data-hidratado"))d.classList.remove("js")},5000)})(document.documentElement)`;
+
+/** Secciones de la portada con ancla: el id es el del título de cada sección en app/page.tsx. */
+const SECCIONES_PORTADA: SeccionPortada[] = [
+  { id: "tracks", texto: "Tracks" },
+  { id: "agenda", texto: "Agenda" },
+  { id: "premios", texto: "Premios" },
+  ...(MENTORES.length > 0 || JURADO.length > 0 ? [{ id: "mentores-jurado", texto: "Mentores y jurado" }] : []),
+  { id: "faq", texto: "FAQ" },
+];
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const resultados = enlacePlataforma("/resultados");
+  const enlaces: EnlaceNav[] = [
+    { href: "/tracks", texto: "Tracks" },
+    { href: "/guia", texto: "Guía" },
+    { href: "/guia-hacker", texto: "Guía del hacker" },
+    { href: "/rubrica", texto: "Rúbrica" },
+    ...(resultados ? [{ href: resultados, texto: "Resultados", externo: true }] : []),
+  ];
+
   return (
-    <html lang="es-EC" className={`${fraunces.variable} ${plexSans.variable} ${plexMono.variable}`}>
+    // La clase "js" la agrega el script en línea: por eso <html> no avisa de diferencias al hidratar.
+    <html lang="es-EC" className={`${fraunces.variable} ${plexSans.variable} ${plexMono.variable}`} data-scroll-behavior="smooth" suppressHydrationWarning>
       <body className="min-h-dvh flex flex-col">
-        <a href="#contenido" className="sr-only focus:not-sr-only focus:absolute focus:m-2 focus:bg-surface focus:p-2">
+        <script dangerouslySetInnerHTML={{ __html: SCRIPT_JS }} />
+        <a href="#contenido" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:m-2 focus:bg-surface focus:p-2">
           Saltar al contenido
         </a>
-        <header className="z-40 sm:sticky sm:top-0 border-b border-border bg-bg/85 backdrop-blur-md">
-          <nav aria-label="Principal" className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3">
-            <Link href="/" className="flex items-center gap-3" aria-label="Inicio: Hackathon EduTech Eight Academy by n8n">
-              <Image src={asset("/brand/eight-academy-logo.png")} alt="" width={507} height={125} className="h-8 w-auto rounded-lg" />
-              <span className="font-display text-lg font-semibold">EduTech</span>
-            </Link>
-            <ul className="ml-auto flex flex-wrap items-center gap-4 text-sm">
-              <li><Link href="/tracks" className="underline-offset-4 hover:underline">Tracks</Link></li>
-              <li><Link href="/guia" className="underline-offset-4 hover:underline">Guía</Link></li>
-              <li><Link href="/guia-hacker" className="underline-offset-4 hover:underline">Guía del hacker</Link></li>
-              <li><Link href="/rubrica" className="underline-offset-4 hover:underline">Rúbrica</Link></li>
-              {enlacePlataforma("/resultados") && <li><a href={enlacePlataforma("/resultados")!} className="underline-offset-4 hover:underline">Resultados</a></li>}
-              {enlacePlataforma("/ingresar") && <li><a href={enlacePlataforma("/ingresar")!} className="rounded-full bg-accent px-3 py-1 font-medium text-on-accent">Ingresar</a></li>}
-            </ul>
-          </nav>
-        </header>
+        <Encabezado
+          logo={asset("/brand/eight-academy-logo.png")}
+          enlaces={enlaces}
+          secciones={SECCIONES_PORTADA}
+          registro={inscripcionesAbiertas(ahora()) ? enlacePlataforma("/registro") : null}
+          ingresar={enlacePlataforma("/ingresar")}
+          cierreInscripcionesIso={EVENT.fechas.cierreInscripciones.iso}
+        />
         <main id="contenido" className="flex-1">
           {children}
         </main>

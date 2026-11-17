@@ -143,6 +143,72 @@ export const PREMIOS: { premio: string; alcance: string; beneficio: string }[] =
   { premio: "Certificado digital", alcance: "Todos los participantes", beneficio: "Certificado de participación con la retroalimentación del jurado" },
 ];
 
+/**
+ * Mentores y jurado confirmados (hoja MASTER del staff, pestaña «Mentores y jurados», 17 nov 2026).
+ * Solo quien tiene «SI» en Confirmación. Bios resumidas de lo que cada persona envió; sin teléfonos
+ * ni correos. Al confirmar a alguien más, agrégalo aquí.
+ */
+export interface PersonaInvitada {
+  nombre: string;
+  organizacion: string;
+  bio: string;
+  linkedin: string;
+}
+
+export const MENTORES: PersonaInvitada[] = [
+  {
+    nombre: "Daniel Jerez",
+    organizacion: "UTA",
+    bio: "Emprendedor tecnológico, docente en la UTA y la UEES y coordinador de la Oficina de Transferencia Tecnológica FISEI-UTA. Trabaja en software, educación STEAM, automatización e IA aplicada a los negocios.",
+    linkedin: "https://www.linkedin.com/in/daniel-sebastian-j-3aa6a1154/",
+  },
+  {
+    nombre: "Miguel Vargas",
+    organizacion: "Lernix",
+    bio: "Ingeniero de software con más de 10 años creando productos. Es VP of Engineering en Lernix, donde desarrolla IA para la educación, y antes construyó aplicaciones para salud, fintech e IA.",
+    linkedin: "https://www.linkedin.com/in/lmiguelvargasf/",
+  },
+  {
+    nombre: "Luis Fernando Cuji",
+    organizacion: "PoliDevs",
+    bio: "Desarrollador full stack y tech lead. Fundador de PoliDevs.",
+    linkedin: "https://www.linkedin.com/in/luis-fernando-cuji-7178b5378/",
+  },
+  {
+    nombre: "Damián Palacios",
+    organizacion: "Insight Transfer Ecuador",
+    bio: "Fundador y director de Insight Transfer Ecuador, docente en la Universidad Central y la UISEK, y entrenador de mentores en emprendimiento acreditado por KOICA y ConQuito.",
+    linkedin: "https://www.linkedin.com/in/dpalaciosz-tit",
+  },
+];
+
+export const JURADO: PersonaInvitada[] = [
+  {
+    nombre: "Rommel De los Ríos",
+    organizacion: "VyralMedia",
+    bio: "Estratega digital en producto, marketing y Web3. Como Managing Partner de VyralMedia conecta creadores, marcas y audiencias, y ha ayudado a startups y comunidades Web3 a escalar.",
+    linkedin: "https://www.linkedin.com/in/romdelosrios/",
+  },
+  {
+    nombre: "Christian Rivera",
+    organizacion: "Kudert",
+    bio: "Cofundador y CEO de Kudert, la herramienta con la que más de 1.000 empresas en más de 10 países miden habilidades blandas. Fundó también Skilt, un simulador de habilidades digitales.",
+    linkedin: "https://www.linkedin.com/in/christorivera/",
+  },
+  {
+    nombre: "César Salazar",
+    organizacion: "Lernix",
+    bio: "Fundador y CEO de Lernix, empresa de IA para la educación que acompaña a colegios y universidades a adoptar IA. Ingeniero de la EPN, con educación ejecutiva en MIT y Stanford.",
+    linkedin: "https://www.linkedin.com/in/salazarcesar/",
+  },
+  {
+    nombre: "Mateo Moreira",
+    organizacion: "MOA",
+    bio: "Fundador de MOA, consultora de tecnología y educación corporativa, y gerente de producto de Microsoft AI Business Solutions en TD SYNNEX Ecuador. Profesor universitario y divulgador de IA.",
+    linkedin: "https://www.linkedin.com/in/mateo-moreira-arias-589154203/",
+  },
+];
+
 /** Auspiciantes y aliados: vacío hasta que el comité confirme (guía §12, decisiones 3 y 4). */
 export const ALIADOS: { nombre: string; url: string }[] = [];
 

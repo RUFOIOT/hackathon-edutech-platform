@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { AGENDA, ALIADOS, EVENT, FAQ, PREMIOS, TRACKS, TRACK_CODES, fecha, mostrar, type TrackCode } from "@/config/event";
+import { AGENDA, ALIADOS, EVENT, FAQ, JURADO, MENTORES, PREMIOS, TRACKS, TRACK_CODES, fecha, mostrar, type TrackCode } from "@/config/event";
 import { MEDIOS } from "@/config/medios";
 import { HeroInfinito } from "@/components/hero-infinito";
 import { Revelar } from "@/components/revelar";
@@ -292,6 +292,57 @@ export default function Inicio() {
           </p>
         </div>
       </section>
+
+      {/* ---------- Mentores y jurado (config/event.ts: solo confirmados) ---------- */}
+      {(MENTORES.length > 0 || JURADO.length > 0) && (
+        <section aria-labelledby="personas" className="mx-auto max-w-6xl px-4 py-20">
+          <Revelar>
+            <h2 id="personas" className="text-3xl font-semibold sm:text-4xl">
+              Mentores y jurado
+            </h2>
+            <p className="mt-3 max-w-prose text-muted">
+              Los mentores recorren las mesas en las dos rondas de mentoría. El jurado evalúa el Show and Tell del sábado con la rúbrica oficial.
+            </p>
+          </Revelar>
+          {[
+            { titulo: "Mentores", lista: MENTORES, color: "var(--color-ocho-verde)" },
+            { titulo: "Jurado", lista: JURADO, color: "var(--color-ocho-ambar)" },
+          ]
+            .filter((g) => g.lista.length > 0)
+            .map((g) => (
+              <div key={g.titulo} className="mt-12">
+                <h3 className="text-xl font-semibold">{g.titulo}</h3>
+                <ul className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                  {g.lista.map((p, i) => (
+                    <li key={p.nombre}>
+                      <Revelar retraso={(i % 4) * 80} className="h-full">
+                        <article className="flex h-full flex-col rounded-2xl border border-border bg-surface p-5" style={{ boxShadow: `inset 0 4px 0 ${g.color}` }}>
+                          <span
+                            aria-hidden="true"
+                            className="flex h-12 w-12 items-center justify-center rounded-full font-display text-lg font-semibold text-navy-900"
+                            style={{ backgroundColor: g.color }}
+                          >
+                            {p.nombre
+                              .split(" ")
+                              .slice(0, 2)
+                              .map((n) => n[0])
+                              .join("")}
+                          </span>
+                          <h4 className="mt-4 font-semibold">{p.nombre}</h4>
+                          <p className="text-sm font-medium text-muted">{p.organizacion}</p>
+                          <p className="mt-3 flex-1 text-sm">{p.bio}</p>
+                          <a href={p.linkedin} target="_blank" rel="noopener noreferrer" className={`mt-4 text-sm ${enlace}`}>
+                            LinkedIn<span className="sr-only"> de {p.nombre} (se abre en una pestaña nueva)</span>
+                          </a>
+                        </article>
+                      </Revelar>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+        </section>
+      )}
 
       {/* ---------- Gancho: Luma ---------- */}
       {faseActual(ahora()) === "Convocatoria" && (

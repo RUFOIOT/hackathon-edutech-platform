@@ -37,6 +37,8 @@ Nota de traspaso para retomar el trabajo desde otra máquina.
 
 - **17 nov:** el registro, el matchmaking y la fusión de equipos ya no permiten mezclar Junior y Open
   (los equipos son de una sola categoría, D-47). Revisar en `/admin/equipos` si quedó algún equipo MIXTO de antes.
+- **17 nov:** sección «Mentores y jurado» en la portada (Netlify y Pages) con los 8 confirmados de la hoja MASTER
+  (`MENTORES` y `JURADO` en `config/event.ts`). Al confirmar a alguien más, agregarlo ahí y volver a desplegar.
 
 ## Pendiente
 

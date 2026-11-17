@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calcularCategoria, categoriaEquipo, edadEn } from "@/lib/models/categoria";
+import { calcularCategoria, categoriaEquipo, edadEn, motivoCategoriaIncompatible } from "@/lib/models/categoria";
 
 describe("edadEn", () => {
   const kickoff = new Date("2026-11-27T17:00:00-05:00");
@@ -42,5 +42,19 @@ describe("categoriaEquipo", () => {
     expect(categoriaEquipo(["JUNIOR", "JUNIOR"])).toBe("JUNIOR");
     expect(categoriaEquipo(["JUNIOR", "OPEN"])).toBe("MIXTO");
     expect(categoriaEquipo(["OPEN", "OPEN"])).toBe("OPEN");
+  });
+});
+
+describe("motivoCategoriaIncompatible", () => {
+  it("permite entrar a un equipo vacío o de la misma categoría", () => {
+    expect(motivoCategoriaIncompatible(undefined, "JUNIOR")).toBeNull();
+    expect(motivoCategoriaIncompatible({ JUNIOR: 0, OPEN: 0 }, "OPEN")).toBeNull();
+    expect(motivoCategoriaIncompatible({ JUNIOR: 3 }, "JUNIOR")).toBeNull();
+    expect(motivoCategoriaIncompatible({ JUNIOR: 0, OPEN: 2 }, "OPEN")).toBeNull();
+  });
+
+  it("rechaza mezclar Junior y Open (D-47)", () => {
+    expect(motivoCategoriaIncompatible({ JUNIOR: 2, OPEN: 0 }, "OPEN")).toMatch(/una sola categoría/);
+    expect(motivoCategoriaIncompatible({ OPEN: 1 }, "JUNIOR")).toMatch(/categoría Open/);
   });
 });

@@ -35,6 +35,9 @@ Nota de traspaso para retomar el trabajo desde otra máquina.
   premiación 16:45), sin final ni finalistas, premios reducidos a 1.º y 2.º Open, mejor Junior y certificado para
   todos, y crons de n8n movidos. Desplegado el mismo día: reglas de Firestore, Netlify, Pages y los 11 workflows de n8n; aviso enviado al grupo de staff en Telegram.
 
+- **17 nov:** el registro, el matchmaking y la fusión de equipos ya no permiten mezclar Junior y Open
+  (los equipos son de una sola categoría, D-47). Revisar en `/admin/equipos` si quedó algún equipo MIXTO de antes.
+
 ## Pendiente
 
 1. n8n Cloud volvió a ejecutar (4 nov: webhooks responden 200). Vigilar el consumo mensual del plan;
@@ -46,7 +49,7 @@ Nota de traspaso para retomar el trabajo desde otra máquina.
 5. Abiertos de la reunión de staff: qué se hace con un Junior inscrito solo si no hay otros Junior; si se mantiene
    la evidencia de entrevista en el checkpoint 1 (ahora solo 2 h después del kick-off); documento de identidad de
    Open en el check-in; cupo máximo del Show and Tell (~12 equipos con 2 salas); cena VIP (lugar, personas,
-   presupuesto); el registro aún permite equipos MIXTO aunque ahora son de una sola categoría.
+   presupuesto).
 
 ## Para trabajar desde otra máquina
 

@@ -33,6 +33,20 @@ export function calcularCategoria(nacimiento: string, referencia: Date = fecha("
   return { ok: true, edad, categoria: edad <= EVENT.categorias.JUNIOR.edadMax ? "JUNIOR" : "OPEN" };
 }
 
+/**
+ * Los equipos son de una sola categoría (reunión de staff del 10 nov, D-47): nadie puede entrar a un
+ * equipo que ya tiene integrantes de la otra. Devuelve el motivo del rechazo o null si se permite.
+ */
+export function motivoCategoriaIncompatible(
+  conteo: Partial<Record<Categoria, number>> | undefined,
+  categoria: Categoria,
+): string | null {
+  const otra: Categoria = categoria === "JUNIOR" ? "OPEN" : "JUNIOR";
+  if ((conteo?.[otra] ?? 0) === 0) return null;
+  const nombre = { JUNIOR: "Junior (14 a 17 años)", OPEN: "Open (18 años o más)" };
+  return `Ese equipo es de la categoría ${nombre[otra]} y tú eres ${nombre[categoria]}: los equipos son de una sola categoría.`;
+}
+
 /** Categoría resultante del equipo: JUNIOR solo si todos sus integrantes son JUNIOR (rúbrica §7). */
 export function categoriaEquipo(categorias: Categoria[]): "JUNIOR" | "OPEN" | "MIXTO" {
   if (categorias.length === 0) return "OPEN";

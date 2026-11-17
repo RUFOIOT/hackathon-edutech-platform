@@ -147,6 +147,11 @@ export async function fusionarEquipos(fd: FormData) {
       const miembros = await tx.get(db().collection("team_members").where("teamId", "==", origen));
       const total = (b.get("miembros") ?? 0) + miembros.size;
       if (total > EVENT.equipo.max) throw new ErrorRegistro(`La fusión deja ${total} integrantes: el máximo es ${EVENT.equipo.max}.`);
+      const juniors = (a.get("conteoCategorias.JUNIOR") ?? 0) + (b.get("conteoCategorias.JUNIOR") ?? 0);
+      const opens = (a.get("conteoCategorias.OPEN") ?? 0) + (b.get("conteoCategorias.OPEN") ?? 0);
+      if (juniors > 0 && opens > 0) {
+        throw new ErrorRegistro("No se pueden fusionar: un equipo es Junior y el otro Open. Los equipos son de una sola categoría.");
+      }
       const conteo: Record<Categoria, number> = {
         JUNIOR: (b.get("conteoCategorias.JUNIOR") ?? 0) + (a.get("conteoCategorias.JUNIOR") ?? 0),
         OPEN: (b.get("conteoCategorias.OPEN") ?? 0) + (a.get("conteoCategorias.OPEN") ?? 0),

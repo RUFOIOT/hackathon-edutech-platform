@@ -403,8 +403,10 @@ Premios: **1.er y 2.º lugar Open, mejor equipo Junior y certificado digital par
 el 3.er lugar, el mejor por track, el premio n8n y la Aceleradora. `proponerPremios` ordena cada
 categoría por el z de su sala (rúbrica §5) y el comité confirma o corrige en `/admin/resultados`
 (`validarPremios`: Open para los lugares Open, Junior para el premio Junior, un premio por equipo).
-Un equipo MIXTO cuenta como Open para el ranking, aunque la regla nueva dice que los equipos son de
-una sola categoría (el registro todavía no lo impide). Hora límite de resultados: 16:30;
+Los equipos son de una sola categoría: desde el 17 nov el registro (unirse con código, paso 2 y
+confirmación), el matchmaking y la fusión de equipos rechazan mezclar Junior y Open
+(`motivoCategoriaIncompatible` en `lib/models/categoria.ts`). Un equipo MIXTO anterior a ese cambio
+cuenta como Open para el ranking. Hora límite de resultados: 16:30;
 premiación: 16:45.
 
 Nuevas horas: checkpoint 1 a las 19:00, checkpoint 2 a las 12:30, code freeze y entrega a las

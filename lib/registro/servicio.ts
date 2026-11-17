@@ -5,7 +5,7 @@ import { auditarEn } from "@/lib/audit";
 import { CONSENTIMIENTOS, VERSION_CONSENTIMIENTOS, type TipoConsentimiento } from "@/lib/content/consentimientos";
 import { encolarEn, despachar } from "@/lib/eventos";
 import { adminDb, adminStorage } from "@/lib/firebase/admin";
-import { calcularCategoria, categoriaEquipo, type Categoria } from "@/lib/models/categoria";
+import { calcularCategoria, categoriaEquipo, motivoCategoriaIncompatible, type Categoria } from "@/lib/models/categoria";
 import type { Evento } from "@/lib/n8n";
 import { estadoEquipo, generarCodigo, hayLugar, slugEquipo, vaAListaEspera } from "@/lib/registro/reglas";
 import type { Paso1, Paso2, Paso3, Paso4, Representante } from "@/lib/validation/registro";
@@ -54,13 +54,20 @@ export interface EquipoResumen {
   nombre: string;
   track: string;
   miembros: number;
+  conteoCategorias: Partial<Record<Categoria, number>>;
 }
 
 export async function buscarEquipoPorCodigo(codigo: string): Promise<EquipoResumen | null> {
   const q = await db().collection("teams").where("codigoInvitacion", "==", codigo.toUpperCase()).limit(1).get();
   const d = q.docs[0];
   if (!d) return null;
-  return { id: d.id, nombre: d.get("nombre"), track: d.get("track"), miembros: d.get("miembros") ?? 0 };
+  return {
+    id: d.id,
+    nombre: d.get("nombre"),
+    track: d.get("track"),
+    miembros: d.get("miembros") ?? 0,
+    conteoCategorias: d.get("conteoCategorias") ?? {},
+  };
 }
 
 export async function nombreEquipoDisponible(nombre: string): Promise<boolean> {
@@ -104,11 +111,13 @@ function categoriaDesdeConteo(c: Record<Categoria, number>) {
 }
 
 /** Lecturas para sumar una persona a un equipo existente (Firestore exige leer todo antes de escribir). */
-async function leerUnion(tx: Transaction, teamRef: DocumentReference, email: string) {
+async function leerUnion(tx: Transaction, teamRef: DocumentReference, email: string, categoria: Categoria) {
   const team = await tx.get(teamRef);
   if (!team.exists) throw new ErrorRegistro("Ese equipo ya no existe. Pide un código nuevo a tu capitán.", "codigo");
   const miembros: number = team.get("miembros") ?? 0;
   if (!hayLugar(miembros)) throw new ErrorRegistro("Ese equipo ya tiene 5 integrantes.", "codigo");
+  const choque = motivoCategoriaIncompatible(team.get("conteoCategorias"), categoria);
+  if (choque) throw new ErrorRegistro(choque, "codigo");
   const invRef = db().doc(`invitations/${invitacionId(team.id, email)}`);
   const inv = await tx.get(invRef);
   return { team, miembros, invRef, inv };
@@ -183,7 +192,7 @@ export async function confirmarRegistro(d: DatosConfirmacion): Promise<Resultado
       let slug: string | null = null;
       if (!listaEspera && borrador.modo === "unirse") {
         if (!borrador.equipoUnirse) throw new ErrorRegistro("Vuelve al paso 1 e ingresa el código de tu equipo.", "codigo");
-        union = await leerUnion(tx, db().doc(`teams/${borrador.equipoUnirse.id}`), email);
+        union = await leerUnion(tx, db().doc(`teams/${borrador.equipoUnirse.id}`), email, categoria);
       }
       if (!listaEspera && borrador.modo === "equipo") {
         if (!borrador.equipo) throw new ErrorRegistro("Vuelve al paso 4 y completa los datos del equipo.", "nombreEquipo");
@@ -367,7 +376,7 @@ export async function unirseConCodigo(uid: string, codigo: string): Promise<{ te
     if (!p.exists) throw new ErrorRegistro("Primero completa tu inscripción.");
     if (p.get("teamId")) throw new ErrorRegistro("Ya perteneces a un equipo: una persona solo puede estar en un equipo.", "codigo");
     if (p.get("enListaEspera")) throw new ErrorRegistro("Estás en lista de espera: la organización te avisará cuando haya cupo.", "codigo");
-    const union = await leerUnion(tx, db().doc(`teams/${equipo.id}`), p.get("email"));
+    const union = await leerUnion(tx, db().doc(`teams/${equipo.id}`), p.get("email"), p.get("categoria") as Categoria);
     const nuevos = aplicarUnion(tx, union, uid, p.get("categoria") as Categoria, eventos);
     tx.update(pRef, { teamId: union.team.id });
     tx.set(db().doc(`team_members/${union.team.id}_${uid}`), {

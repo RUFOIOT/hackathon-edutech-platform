@@ -7,7 +7,7 @@ import { inscripcionesAbiertas } from "@/lib/event/phase";
 import { ahora } from "@/lib/event/reloj";
 import { verificarUsuarioGithub } from "@/lib/github-usuarios";
 import { log } from "@/lib/log";
-import { calcularCategoria } from "@/lib/models/categoria";
+import { calcularCategoria, motivoCategoriaIncompatible } from "@/lib/models/categoria";
 import { ipActual, ipDe, limitar, mensajeLimite } from "@/lib/seguridad/limite";
 import {
   buscarEquipoPorCodigo,
@@ -77,6 +77,13 @@ export async function guardarPaso(paso: 1 | 2 | 3 | 4, datos: unknown): Promise<
   if (paso === 2) {
     const r = paso2Schema.safeParse(datos);
     if (!r.success) return { ok: false, errores: erroresPorCampo(r.error) };
+    // Quien se une con código: avisar ya, y no recién al confirmar, si su categoría no es la del equipo.
+    if (borrador.modo === "unirse" && borrador.codigo) {
+      const cat = calcularCategoria(r.data.fechaNacimiento);
+      const eq = await buscarEquipoPorCodigo(borrador.codigo);
+      const choque = cat.ok && eq ? motivoCategoriaIncompatible(eq.conteoCategorias, cat.categoria) : null;
+      if (choque) return fallo(`${choque} Vuelve al paso 1 para inscribirte sin equipo o con otro código.`, "fechaNacimiento");
+    }
     const gh = await verificarUsuarioGithub(r.data.githubUsername);
     if (gh === "no-existe") {
       return fallo(`No encontramos el usuario ${r.data.githubUsername} en GitHub. Revisa que esté bien escrito.`, "githubUsername");

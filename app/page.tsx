@@ -289,9 +289,9 @@ export default function Inicio() {
 
       {/* ---------- Mentores y jurado (config/event.ts: solo confirmados) ---------- */}
       {(MENTORES.length > 0 || JURADO.length > 0) && (
-        <section aria-labelledby="mentores-jurado" className="mx-auto max-w-6xl px-4 py-20">
+        <section aria-labelledby="personas" className="mx-auto max-w-6xl px-4 py-20">
           <Revelar>
-            <h2 id="mentores-jurado" className="text-3xl font-semibold sm:text-4xl">
+            <h2 id="personas" className="text-3xl font-semibold sm:text-4xl">
               Mentores y jurado
             </h2>
             <p className="mt-3 max-w-prose text-muted">

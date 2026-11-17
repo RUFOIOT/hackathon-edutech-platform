@@ -37,7 +37,7 @@ const SECCIONES_PORTADA: SeccionPortada[] = [
   { id: "tracks", texto: "Tracks" },
   { id: "agenda", texto: "Agenda" },
   { id: "premios", texto: "Premios" },
-  ...(MENTORES.length > 0 || JURADO.length > 0 ? [{ id: "mentores-jurado", texto: "Mentores y jurado" }] : []),
+  ...(MENTORES.length > 0 || JURADO.length > 0 ? [{ id: "personas", texto: "Mentores y jurado" }] : []),
   { id: "faq", texto: "FAQ" },
 ];
 

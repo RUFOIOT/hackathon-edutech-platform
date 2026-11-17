@@ -317,17 +317,29 @@ export default function Inicio() {
                     <li key={p.nombre}>
                       <Revelar retraso={(i % 4) * 80} className="h-full">
                         <article className="flex h-full flex-col rounded-2xl border border-border bg-surface p-5" style={{ boxShadow: `inset 0 4px 0 ${g.color}` }}>
-                          <span
-                            aria-hidden="true"
-                            className="flex h-12 w-12 items-center justify-center rounded-full font-display text-lg font-semibold text-navy-900"
-                            style={{ backgroundColor: g.color }}
-                          >
-                            {p.nombre
-                              .split(" ")
-                              .slice(0, 2)
-                              .map((n) => n[0])
-                              .join("")}
-                          </span>
+                          {p.foto ? (
+                            <Image
+                              src={asset(p.foto)}
+                              alt={`Foto de ${p.nombre}`}
+                              width={320}
+                              height={320}
+                              unoptimized
+                              className="h-16 w-16 rounded-full object-cover"
+                              style={{ boxShadow: `0 0 0 3px ${g.color}` }}
+                            />
+                          ) : (
+                            <span
+                              aria-hidden="true"
+                              className="flex h-16 w-16 items-center justify-center rounded-full font-display text-xl font-semibold text-navy-900"
+                              style={{ backgroundColor: g.color }}
+                            >
+                              {p.nombre
+                                .split(" ")
+                                .slice(0, 2)
+                                .map((n) => n[0])
+                                .join("")}
+                            </span>
+                          )}
                           <h4 className="mt-4 font-semibold">{p.nombre}</h4>
                           <p className="text-sm font-medium text-muted">{p.organizacion}</p>
                           <p className="mt-3 flex-1 text-sm">{p.bio}</p>

@@ -153,6 +153,8 @@ export interface PersonaInvitada {
   organizacion: string;
   bio: string;
   linkedin: string;
+  /** Foto enviada por la persona para el evento (public/media/personas/, 320×320). Sin foto: iniciales. */
+  foto?: string;
 }
 
 export const MENTORES: PersonaInvitada[] = [
@@ -167,6 +169,7 @@ export const MENTORES: PersonaInvitada[] = [
     organizacion: "Lernix",
     bio: "Ingeniero de software con más de 10 años creando productos. Es VP of Engineering en Lernix, donde desarrolla IA para la educación, y antes construyó aplicaciones para salud, fintech e IA.",
     linkedin: "https://www.linkedin.com/in/lmiguelvargasf/",
+    foto: "/media/personas/miguel-vargas.jpg",
   },
   {
     nombre: "Luis Fernando Cuji",
@@ -179,6 +182,7 @@ export const MENTORES: PersonaInvitada[] = [
     organizacion: "Insight Transfer Ecuador",
     bio: "Fundador y director de Insight Transfer Ecuador, docente en la Universidad Central y la UISEK, y entrenador de mentores en emprendimiento acreditado por KOICA y ConQuito.",
     linkedin: "https://www.linkedin.com/in/dpalaciosz-tit",
+    foto: "/media/personas/damian-palacios.jpg",
   },
 ];
 
@@ -200,6 +204,7 @@ export const JURADO: PersonaInvitada[] = [
     organizacion: "Lernix",
     bio: "Fundador y CEO de Lernix, empresa de IA para la educación que acompaña a colegios y universidades a adoptar IA. Ingeniero de la EPN, con educación ejecutiva en MIT y Stanford.",
     linkedin: "https://www.linkedin.com/in/salazarcesar/",
+    foto: "/media/personas/cesar-salazar.jpg",
   },
   {
     nombre: "Mateo Moreira",

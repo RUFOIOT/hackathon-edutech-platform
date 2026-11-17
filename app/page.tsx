@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { AGENDA, ALIADOS, EVENT, FAQ, JURADO, MENTORES, PREMIOS, TRACKS, TRACK_CODES, fecha, mostrar, type TrackCode } from "@/config/event";
+import { AGENDA, ALIADOS, EVENT, FAQ, JURADO, MENTORES, PREMIOS, TRACKS, TRACK_CODES, fecha, type TrackCode } from "@/config/event";
 import { MEDIOS } from "@/config/medios";
 import { HeroInfinito } from "@/components/hero-infinito";
 import { Revelar } from "@/components/revelar";
@@ -280,7 +280,14 @@ export default function Inicio() {
                     {i < 2 && <p className="font-display text-3xl font-semibold">{i + 1}.º</p>}
                     <p className="mt-1 font-semibold">{p.premio}</p>
                     <p className="text-sm text-muted">{p.alcance}</p>
-                    <p className="mt-3 text-sm font-medium">{mostrar(p.beneficio)}</p>
+                    <ul className="mt-3 grid gap-2 text-sm">
+                      {p.beneficios.map((b) => (
+                        <li key={b} className="flex gap-2">
+                          <span aria-hidden="true" className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-ocho-ambar" />
+                          <span>{b}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </Revelar>
               </li>

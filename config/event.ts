@@ -135,12 +135,12 @@ export const PREMIO = {
   mejorJunior: "Mejor equipo Junior",
 } as const;
 
-/** Guía §8 (reunión de staff del 10 nov 2026). Montos y beneficios pendientes: nunca se inventan. */
-export const PREMIOS: { premio: string; alcance: string; beneficio: string }[] = [
-  { premio: PREMIO.primeroOpen, alcance: "Categoría Open, todos los tracks", beneficio: POR_CONFIRMAR },
-  { premio: PREMIO.segundoOpen, alcance: "Categoría Open, todos los tracks", beneficio: POR_CONFIRMAR },
-  { premio: PREMIO.mejorJunior, alcance: "Categoría Junior, todos los tracks", beneficio: POR_CONFIRMAR },
-  { premio: "Certificado digital", alcance: "Todos los participantes", beneficio: "Certificado de participación con la retroalimentación del jurado" },
+/** Guía §8: premios confirmados por el comité (hoja MASTER del staff, pestaña «Premios», 17 nov 2026). */
+export const PREMIOS: { premio: string; alcance: string; beneficios: string[] }[] = [
+  { premio: PREMIO.primeroOpen, alcance: "Categoría Open, todos los tracks", beneficios: ["Beca del 50 % para la delegación de Silicon Valley Delegations (25 al 30 de abril de 2027, con hospedaje), valorada en USD 3,750 y sorteada entre los integrantes del equipo. Quien más del equipo quiera viajar recibe un 20 % de descuento (USD 1,500 cada uno). No incluye vuelos ni visa; aplican términos y condiciones.", "USD 300 para repartir entre los integrantes del equipo", "Pase a la aceleradora Eight Academy: cupo en la siguiente cohorte del bootcamp"] },
+  { premio: PREMIO.segundoOpen, alcance: "Categoría Open, todos los tracks", beneficios: ["USD 200 para repartir entre los integrantes del equipo", "Pase a la aceleradora Eight Academy: cupo en la siguiente cohorte del bootcamp"] },
+  { premio: PREMIO.mejorJunior, alcance: "Categoría Junior, todos los tracks", beneficios: ["Beca de inglés", "Pase a la aceleradora Eight Academy: cupo en la siguiente cohorte del bootcamp"] },
+  { premio: "Certificado digital", alcance: "Todos los participantes", beneficios: ["Certificado de participación con la retroalimentación del jurado"] },
 ];
 
 /**

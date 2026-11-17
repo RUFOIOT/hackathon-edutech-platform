@@ -105,9 +105,9 @@ Todo el evento se gestiona sobre GitHub.
 
 | Premio | Alcance | Monto o beneficio |
 |---|---|---|
-| 1.er lugar Open | Categoría Open, todos los tracks | [MONTO USD] |
-| 2.º lugar Open | Categoría Open, todos los tracks | [MONTO USD] |
-| Mejor equipo Junior | Categoría Junior, todos los tracks | [BENEFICIO] |
+| 1.er lugar Open | Categoría Open, todos los tracks | Beca del 50 % para la delegación de Silicon Valley Delegations (25 al 30 de abril de 2027, con hospedaje), valorada en USD 3,750 y sorteada entre los integrantes del equipo. Quien más del equipo quiera viajar recibe un 20 % de descuento (USD 1,500 cada uno). No incluye vuelos ni visa; aplican términos y condiciones. · USD 300 para repartir entre los integrantes del equipo · Pase a la aceleradora Eight Academy: cupo en la siguiente cohorte del bootcamp |
+| 2.º lugar Open | Categoría Open, todos los tracks | USD 200 para repartir entre los integrantes del equipo · Pase a la aceleradora Eight Academy: cupo en la siguiente cohorte del bootcamp |
+| Mejor equipo Junior | Categoría Junior, todos los tracks | Beca de inglés · Pase a la aceleradora Eight Academy: cupo en la siguiente cohorte del bootcamp |
 | Certificado digital | Todos los participantes | Certificado de participación con la retroalimentación del jurado |
 
 Un equipo recibe como máximo un premio. Los premios económicos de categoría Junior se entregan al representante legal.
@@ -138,7 +138,7 @@ El código y la propiedad intelectual pertenecen a cada equipo. Al participar, l
 |---|---|---|---|
 | 1 | Verificar en el POA que el sábado 28 esté libre (la fecha original, sábado 7, chocaba con la 1era Integración Padres, SEM 009) | El POA tiene precedencia sobre cualquier fecha | Dirección de sede |
 | 2 | Uso de la sede el viernes 27 en jornada lectiva | Define la hora real de inicio | Dirección de sede |
-| 3 | Montos de premios y auspiciantes confirmados | No se publica un premio sin respaldo | Comité |
+| 3 | Montos de premios (confirmados el 17 nov 2026) y auspiciantes | No se publica un premio sin respaldo | Comité |
 | 4 | Acuerdo de marca con n8n | El nombre del evento lo incluye | Dirección de Innovación |
 | 5 | Aforo y conectividad de la sede | Define el cupo máximo | Coordinación operativa |
 | 6 | Formato de autorización para menores | Requisito legal para la categoría Junior | DECE / Legal |

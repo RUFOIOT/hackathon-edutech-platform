@@ -39,6 +39,9 @@ Nota de traspaso para retomar el trabajo desde otra máquina.
   (los equipos son de una sola categoría, D-47). Revisar en `/admin/equipos` si quedó algún equipo MIXTO de antes.
 - **17 nov:** sección «Mentores y jurado» en la portada (Netlify y Pages) con los 8 confirmados de la hoja MASTER
   (`MENTORES` y `JURADO` en `config/event.ts`). Al confirmar a alguien más, agregarlo ahí y volver a desplegar.
+- **17 nov:** premios confirmados publicados en la portada y en la guía §8 (hoja MASTER, pestaña «Premios»):
+  1.º Open beca 50 % Silicon Valley Delegations + USD 300 + pase a la aceleradora; 2.º Open USD 200 + pase;
+  mejor Junior beca de inglés + pase. Anunciados en el grupo de inscritos de Telegram.
 
 ## Pendiente
 

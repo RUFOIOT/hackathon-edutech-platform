@@ -42,6 +42,9 @@ Nota de traspaso para retomar el trabajo desde otra máquina.
 - **17 nov:** premios confirmados publicados en la portada y en la guía §8 (hoja MASTER, pestaña «Premios»):
   1.º Open beca 50 % Silicon Valley Delegations + USD 300 + pase a la aceleradora; 2.º Open USD 200 + pase;
   mejor Junior beca de inglés + pase. Anunciados en el grupo de inscritos de Telegram.
+- **17 nov:** fase A de UI en producción (D-48): encabezado fijo con menú móvil y anclas, revelado a prueba de fallos,
+  falso 3D del ocho, cifras animadas y agenda en vivo. Fases B (scroll-spy en guías, transiciones) y C (ocho 3D con three)
+  quedan para después del evento. Pendiente: correr los e2e de registro/jurado/operación con el puerto 8080 libre.
 
 ## Pendiente
 

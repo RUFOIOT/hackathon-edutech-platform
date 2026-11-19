@@ -189,9 +189,10 @@ export const MENTORES: PersonaInvitada[] = [
 export const JURADO: PersonaInvitada[] = [
   {
     nombre: "Rommel De los Ríos",
-    organizacion: "VyralMedia",
-    bio: "Estratega digital en producto, marketing y Web3. Como Managing Partner de VyralMedia conecta creadores, marcas y audiencias, y ha ayudado a startups y comunidades Web3 a escalar.",
+    organizacion: "grou.online",
+    bio: "Managing Partner de grou.online, agencia de estrategia digital, software e IA. Trabaja en producto y Web3: construye productos digitales con IA y ha ayudado a startups y comunidades Web3 a escalar.",
     linkedin: "https://www.linkedin.com/in/romdelosrios/",
+    foto: "/media/personas/rommel-de-los-rios.jpg",
   },
   {
     nombre: "Christian Rivera",

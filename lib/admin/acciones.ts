@@ -334,6 +334,52 @@ export async function cambiarEstadoMentoria(requestId: string, estado: "atendida
   );
 }
 
+/**
+ * El mentor responde por escrito una solicitud. La respuesta queda en la solicitud (el equipo la ve
+ * en /mi-equipo/mentoria) y viaja al equipo como comunicado de alcance "equipo", el mismo canal de
+ * correo que ya maneja n8n (`announcement.created`).
+ */
+export async function responderMentoria(requestId: string, fd: FormData) {
+  return ejecutar(
+    "/admin/mentoria",
+    async (uid) => {
+      const respuesta = z
+        .string()
+        .trim()
+        .min(5, "Escribe la respuesta (mínimo 5 caracteres).")
+        .max(1000, "La respuesta admite hasta 1000 caracteres.")
+        .safeParse(fd.get("respuesta"));
+      if (!respuesta.success) throw new ErrorRegistro(respuesta.error.issues[0]!.message);
+      const ref = db().doc(`mentor_requests/${requestId}`);
+      const sol = await ref.get();
+      if (!sol.exists) throw new ErrorRegistro("La solicitud ya no existe.");
+      const teamId = sol.get("teamId") as string;
+      const personas = (await db().collection("participants").where("teamId", "==", teamId).get()).docs;
+      const mensaje = `Respuesta a su solicitud de mentoría (${sol.get("tema")})${sol.get("detalle") ? `: «${sol.get("detalle")}»` : ""}\n\n${respuesta.data}`;
+      const anuncio = db().collection("announcements").doc();
+      const batch = db().batch();
+      batch.update(ref, {
+        respuesta: respuesta.data,
+        respondidaPor: uid,
+        respondidaAt: FieldValue.serverTimestamp(),
+        ...(sol.get("estado") === "abierta" ? { estado: "atendida", mentorId: uid, atendidaAt: FieldValue.serverTimestamp() } : {}),
+      });
+      batch.set(anuncio, { alcance: { tipo: "equipo", teamId }, mensaje, autorId: uid, destinatarios: personas.length, enviadoAt: FieldValue.serverTimestamp() });
+      auditarEn(batch, { actor: uid, accion: "mentor.respuesta", entidad: "mentor_requests", entidadId: requestId });
+      const evento = encolarEn(batch, "announcement.created", {
+        id: anuncio.id,
+        alcance: { tipo: "equipo", teamId },
+        mensaje,
+        destinatarios: personas.map((p) => p.get("email") as string).filter(Boolean),
+      });
+      await batch.commit();
+      await despachar([evento]);
+      return `Respuesta enviada al equipo (${personas.length} personas por correo).`;
+    },
+    ["/admin/mentoria", "/mi-equipo/mentoria"],
+  );
+}
+
 /** El equipo pide mentoría por tema (Guía del Hacker §9). Una solicitud abierta por tema. */
 export async function pedirMentoria(fd: FormData): Promise<ResultadoAccion> {
   try {

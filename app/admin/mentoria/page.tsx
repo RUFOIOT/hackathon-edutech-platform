@@ -1,8 +1,9 @@
 import type { Timestamp } from "firebase-admin/firestore";
 import { requireAdmin } from "@/lib/auth/session";
-import { BotonAccion } from "@/components/admin/accion";
+import { BotonAccion, FormularioAccion } from "@/components/admin/accion";
+import { CampoArea } from "@/components/formulario";
 import { TiempoReal } from "@/components/tiempo-real";
-import { cambiarEstadoMentoria } from "@/lib/admin/acciones";
+import { cambiarEstadoMentoria, responderMentoria } from "@/lib/admin/acciones";
 import { ahora } from "@/lib/event/reloj";
 import { adminDb } from "@/lib/firebase/admin";
 
@@ -36,6 +37,25 @@ export default async function Mentoria() {
               <p className={`mt-1 text-sm ${atrasada ? "font-medium text-danger" : "text-muted"}`}>
                 {m.get("estado") === "abierta" ? `Esperando hace ${espera} min${atrasada ? " (más de 30: escalada)" : ""}` : "En atención"}
               </p>
+              {m.get("respuesta") ? (
+                <p className="mt-3 rounded border border-border bg-bg p-3 text-sm whitespace-pre-line">
+                  <span className="font-medium">Respuesta enviada:</span> {m.get("respuesta")}
+                </p>
+              ) : (
+                <div className="mt-3">
+                  <FormularioAccion accion={responderMentoria.bind(null, m.id)} etiqueta="Enviar respuesta">
+                    <CampoArea
+                      id={`respuesta-${m.id}`}
+                      name="respuesta"
+                      etiqueta="Tu respuesta al equipo"
+                      ayuda="Le llega por correo a todo el equipo y queda visible en su página de mentoría."
+                      minLength={5}
+                      maxLength={1000}
+                      rows={4}
+                    />
+                  </FormularioAccion>
+                </div>
+              )}
               <div className="mt-2 flex gap-2">
                 {m.get("estado") === "abierta" && <BotonAccion accion={cambiarEstadoMentoria.bind(null, m.id, "atendida")}>Tomar solicitud</BotonAccion>}
                 <BotonAccion accion={cambiarEstadoMentoria.bind(null, m.id, "cerrada")}>Cerrar</BotonAccion>

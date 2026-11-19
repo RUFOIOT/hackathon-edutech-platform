@@ -38,9 +38,17 @@ export default async function PedirMentor() {
       <h2 className="mt-10 text-xl font-semibold">Solicitudes del equipo</h2>
       <ul className="mt-3 grid gap-2">
         {solicitudes.map((s) => (
-          <li key={s.id} className="flex justify-between gap-3 rounded border border-border p-3 text-sm">
-            <span>{TEMA[s.get("tema")] ?? s.get("tema")}</span>
-            <span className="font-medium">{ESTADO[s.get("estado")] ?? s.get("estado")}</span>
+          <li key={s.id} className="rounded border border-border p-3 text-sm">
+            <div className="flex justify-between gap-3">
+              <span>{TEMA[s.get("tema")] ?? s.get("tema")}</span>
+              <span className="font-medium">{ESTADO[s.get("estado")] ?? s.get("estado")}</span>
+            </div>
+            {s.get("detalle") && <p className="mt-1 text-muted">{s.get("detalle")}</p>}
+            {s.get("respuesta") && (
+              <p className="mt-2 whitespace-pre-line rounded bg-surface p-2">
+                <span className="font-medium">Respuesta del mentor:</span> {s.get("respuesta")}
+              </p>
+            )}
           </li>
         ))}
         {solicitudes.length === 0 && <li className="text-muted">Aún no han pedido mentoría.</li>}

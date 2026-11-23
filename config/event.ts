@@ -155,6 +155,11 @@ export interface PersonaInvitada {
   linkedin: string;
   /** Foto enviada por la persona para el evento (public/media/personas/, 320×320). Sin foto: iniciales. */
   foto?: string;
+  /**
+   * Tarjeta de perfil animada del evento (public/media/personas/perfil/<slug>.mp4, 600×800, 10 s,
+   * sin audio) con su póster <slug>.jpg. Si existe, reemplaza a la foto en la portada.
+   */
+  perfil?: string;
 }
 
 export const MENTORES: PersonaInvitada[] = [
@@ -163,6 +168,7 @@ export const MENTORES: PersonaInvitada[] = [
     organizacion: "Openlab",
     bio: "Sociólogo y especialista en innovación abierta. Cofundador y coordinador de la Fundación Openlab Ecuador, con más de diez años diseñando y facilitando laboratorios de innovación, hackatones y procesos de prototipado colaborativo.",
     linkedin: "https://www.linkedin.com/in/ivntres/",
+    perfil: "/media/personas/perfil/ivan-terceros",
   },
   {
     nombre: "Miguel Vargas",
@@ -170,12 +176,14 @@ export const MENTORES: PersonaInvitada[] = [
     bio: "Ingeniero de software con más de 10 años creando productos. Es VP of Engineering en Lernix, donde desarrolla IA para la educación, y antes construyó aplicaciones para salud, fintech e IA.",
     linkedin: "https://www.linkedin.com/in/lmiguelvargasf/",
     foto: "/media/personas/miguel-vargas.jpg",
+    perfil: "/media/personas/perfil/miguel-vargas",
   },
   {
     nombre: "Luis Fernando Cuji",
     organizacion: "PoliDevs",
     bio: "Ingeniero de software y fundador de PoliDevs, startup ecuatoriana de desarrollo tecnológico. Tiene experiencia en arquitectura y despliegue de soluciones B2B, facturación electrónica, aplicaciones móviles e IA generativa.",
     linkedin: "https://www.linkedin.com/in/luis-fernando-cuji-7178b5378/",
+    perfil: "/media/personas/perfil/luis-fernando-cuji",
   },
   {
     nombre: "Damián Palacios",
@@ -183,24 +191,28 @@ export const MENTORES: PersonaInvitada[] = [
     bio: "Fundador y director de Insight Transfer Ecuador, docente en la Universidad Central y la UISEK, y entrenador de mentores en emprendimiento acreditado por KOICA y ConQuito.",
     linkedin: "https://www.linkedin.com/in/dpalaciosz-tit",
     foto: "/media/personas/damian-palacios.jpg",
+    perfil: "/media/personas/perfil/damian-palacios",
   },
   {
     nombre: "Martín Ruiz",
     organizacion: "Citus",
     bio: "Ingeniero de producto y desarrollador de software con más de 14 años conectando necesidades de usuario con soluciones técnicas. Trabaja con arquitecturas modernas, desarrollo guiado por IA y plataformas modulares.",
     linkedin: "https://www.linkedin.com/in/martin-ruizn/",
+    perfil: "/media/personas/perfil/martin-ruiz",
   },
   {
     nombre: "Sebastián Márquez",
     organizacion: "Kernel Growth",
     bio: "Fundador de Kernel Growth. Arquitecto de automatización, IA y sistemas de crecimiento B2B.",
     linkedin: "https://www.linkedin.com/in/smarquezbusiness/",
+    perfil: "/media/personas/perfil/sebastian-marquez",
   },
   {
     nombre: "Xavier Flores",
     organizacion: "Tether Group",
     bio: "Ejecutivo de producto y emprendedor con más de 15 años en tecnología e innovación digital. Ha liderado iniciativas en Waze, Telefónica, Sovos y Tether Group, y fundó GomiGuide, plataforma de turismo regenerativo.",
     linkedin: "https://www.linkedin.com/in/xflores/",
+    perfil: "/media/personas/perfil/xavier-flores",
   },
 ];
 
@@ -211,12 +223,14 @@ export const JURADO: PersonaInvitada[] = [
     bio: "Managing Partner de grou.online, agencia de estrategia digital, software e IA. Trabaja en producto y Web3: construye productos digitales con IA y ha ayudado a startups y comunidades Web3 a escalar.",
     linkedin: "https://www.linkedin.com/in/romdelosrios/",
     foto: "/media/personas/rommel-de-los-rios.jpg",
+    perfil: "/media/personas/perfil/rommel-de-los-rios",
   },
   {
     nombre: "Christian Rivera",
     organizacion: "Kudert",
     bio: "Cofundador y CEO de Kudert, la herramienta con la que más de 1.000 empresas en más de 10 países miden habilidades blandas. Fundó también Skilt, un simulador de habilidades digitales.",
     linkedin: "https://www.linkedin.com/in/christorivera/",
+    perfil: "/media/personas/perfil/christian-rivera",
   },
   {
     nombre: "César Salazar",
@@ -224,41 +238,50 @@ export const JURADO: PersonaInvitada[] = [
     bio: "Fundador y CEO de Lernix, empresa de IA para la educación que acompaña a colegios y universidades a adoptar IA. Ingeniero de la EPN, con educación ejecutiva en MIT y Stanford.",
     linkedin: "https://www.linkedin.com/in/salazarcesar/",
     foto: "/media/personas/cesar-salazar.jpg",
+    perfil: "/media/personas/perfil/cesar-salazar",
   },
   {
     nombre: "Mateo Moreira",
     organizacion: "MOA",
     bio: "Fundador de MOA, consultora de tecnología y educación corporativa, y gerente de producto de Microsoft AI Business Solutions en TD SYNNEX Ecuador. Profesor universitario y divulgador de IA.",
     linkedin: "https://www.linkedin.com/in/mateo-moreira-arias-589154203/",
+    perfil: "/media/personas/perfil/mateo-moreira",
   },
   {
     nombre: "Leonardo Burbano",
     organizacion: "Mercately",
     bio: "Senior AI Engineer y Tech Lead en Mercately (Techstars), donde lidera el equipo que desarrolla agentes conversacionales con LLMs para más de 1.500 negocios en 20 países. Ingeniero en Electrónica de la EPN.",
     linkedin: "https://www.linkedin.com/in/leoburbano/",
+    perfil: "/media/personas/perfil/leonardo-burbano",
   },
   {
     nombre: "María Isabel Vaca",
     organizacion: "VAMI",
     bio: "CEO de VAMI Business & Analytics Developers. Trabaja en estrategia, marketing y desarrollo de productos; es mentora en el Tec de Monterrey, profesora de maestría en la UDLA y ha sido jurado de los Effie Awards Latam.",
     linkedin: "https://www.linkedin.com/in/mar%C3%ADa-isabel-vaca-almeida-13648327/",
+    perfil: "/media/personas/perfil/maria-isabel-vaca",
   },
   {
     nombre: "Daniel Jerez",
     organizacion: "UTA",
     bio: "Emprendedor tecnológico, docente en la UTA y la UEES y coordinador de la Oficina de Transferencia Tecnológica FISEI-UTA. Trabaja en software, educación STEAM, automatización e IA aplicada a los negocios.",
     linkedin: "https://www.linkedin.com/in/daniel-sebastian-j-3aa6a1154/",
+    perfil: "/media/personas/perfil/daniel-jerez",
   },
   {
     nombre: "Gabriela Cobo",
     organizacion: "Kaito Networks",
     bio: "Líder de producto e innovación con más de 10 años en Europa, Estados Unidos y Latinoamérica. Lidera Producto en Kaito Networks, fintech de pagos transfronterizos, y ha trabajado en Farfetch, Inditex, Thoughtworks y DeUna.",
     linkedin: "https://www.linkedin.com/in/gcobo/",
+    perfil: "/media/personas/perfil/gabriela-cobo",
   },
 ];
 
 /** Auspiciantes y aliados: vacío hasta que el comité confirme (guía §12, decisiones 3 y 4). */
-export const ALIADOS: { nombre: string; url: string }[] = [];
+export const ALIADOS: { nombre: string; url: string }[] = [
+  // Carta de participación del 19 nov 2026 (becas del curso de Python para el equipo ganador).
+  { nombre: "Algorithmics Cumbayá - Tumbaco", url: "https://www.instagram.com/algorithmicscumbaec/" },
+];
 
 /** Agenda oficial (guía §4). `hito` marca los bloques que la guía destaca en negrita. */
 export const AGENDA: { dia: "Viernes 27" | "Sábado 28"; hora: string; bloque: string; hito?: boolean }[] = [

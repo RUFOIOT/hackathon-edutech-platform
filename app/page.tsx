@@ -311,7 +311,22 @@ export default function Inicio() {
                     <li key={p.nombre}>
                       <Revelar retraso={(i % 4) * 80} className="h-full">
                         <article className="flex h-full flex-col rounded-2xl border border-border bg-surface p-5" style={{ boxShadow: `inset 0 4px 0 ${g.color}` }}>
-                          {p.foto ? (
+                          {p.perfil ? (
+                            // Tarjeta animada del evento: solo se descarga al darle play.
+                            <video
+                              src={asset(`${p.perfil}.mp4`)}
+                              poster={asset(`${p.perfil}.jpg`)}
+                              aria-label={`Tarjeta de perfil de ${p.nombre}`}
+                              controls
+                              muted
+                              loop
+                              playsInline
+                              preload="none"
+                              width={600}
+                              height={800}
+                              className="aspect-[3/4] w-full rounded-xl bg-navy-900 object-cover"
+                            />
+                          ) : p.foto ? (
                             <Image
                               src={asset(p.foto)}
                               alt={`Foto de ${p.nombre}`}

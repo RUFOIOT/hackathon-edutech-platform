@@ -144,7 +144,7 @@ export const PREMIOS: { premio: string; alcance: string; beneficios: string[] }[
 ];
 
 /**
- * Mentores y jurado confirmados (hoja MASTER del staff, pestaña «Mentores y jurados», 17 nov 2026).
+ * Mentores y jurado confirmados (hoja MASTER del staff, pestaña «Mentores y jurados», 23 nov 2026).
  * Solo quien tiene «SI» en Confirmación. Bios resumidas de lo que cada persona envió; sin teléfonos
  * ni correos. Al confirmar a alguien más, agrégalo aquí.
  */
@@ -159,10 +159,10 @@ export interface PersonaInvitada {
 
 export const MENTORES: PersonaInvitada[] = [
   {
-    nombre: "Daniel Jerez",
-    organizacion: "UTA",
-    bio: "Emprendedor tecnológico, docente en la UTA y la UEES y coordinador de la Oficina de Transferencia Tecnológica FISEI-UTA. Trabaja en software, educación STEAM, automatización e IA aplicada a los negocios.",
-    linkedin: "https://www.linkedin.com/in/daniel-sebastian-j-3aa6a1154/",
+    nombre: "Iván Terceros",
+    organizacion: "Openlab",
+    bio: "Sociólogo y especialista en innovación abierta. Cofundador y coordinador de la Fundación Openlab Ecuador, con más de diez años diseñando y facilitando laboratorios de innovación, hackatones y procesos de prototipado colaborativo.",
+    linkedin: "https://www.linkedin.com/in/ivntres/",
   },
   {
     nombre: "Miguel Vargas",
@@ -174,7 +174,7 @@ export const MENTORES: PersonaInvitada[] = [
   {
     nombre: "Luis Fernando Cuji",
     organizacion: "PoliDevs",
-    bio: "Desarrollador full stack y tech lead. Fundador de PoliDevs.",
+    bio: "Ingeniero de software y fundador de PoliDevs, startup ecuatoriana de desarrollo tecnológico. Tiene experiencia en arquitectura y despliegue de soluciones B2B, facturación electrónica, aplicaciones móviles e IA generativa.",
     linkedin: "https://www.linkedin.com/in/luis-fernando-cuji-7178b5378/",
   },
   {
@@ -183,6 +183,24 @@ export const MENTORES: PersonaInvitada[] = [
     bio: "Fundador y director de Insight Transfer Ecuador, docente en la Universidad Central y la UISEK, y entrenador de mentores en emprendimiento acreditado por KOICA y ConQuito.",
     linkedin: "https://www.linkedin.com/in/dpalaciosz-tit",
     foto: "/media/personas/damian-palacios.jpg",
+  },
+  {
+    nombre: "Martín Ruiz",
+    organizacion: "Citus",
+    bio: "Ingeniero de producto y desarrollador de software con más de 14 años conectando necesidades de usuario con soluciones técnicas. Trabaja con arquitecturas modernas, desarrollo guiado por IA y plataformas modulares.",
+    linkedin: "https://www.linkedin.com/in/martin-ruizn/",
+  },
+  {
+    nombre: "Sebastián Márquez",
+    organizacion: "Kernel Growth",
+    bio: "Fundador de Kernel Growth. Arquitecto de automatización, IA y sistemas de crecimiento B2B.",
+    linkedin: "https://www.linkedin.com/in/smarquezbusiness/",
+  },
+  {
+    nombre: "Xavier Flores",
+    organizacion: "Tether Group",
+    bio: "Ejecutivo de producto y emprendedor con más de 15 años en tecnología e innovación digital. Ha liderado iniciativas en Waze, Telefónica, Sovos y Tether Group, y fundó GomiGuide, plataforma de turismo regenerativo.",
+    linkedin: "https://www.linkedin.com/in/xflores/",
   },
 ];
 
@@ -212,6 +230,30 @@ export const JURADO: PersonaInvitada[] = [
     organizacion: "MOA",
     bio: "Fundador de MOA, consultora de tecnología y educación corporativa, y gerente de producto de Microsoft AI Business Solutions en TD SYNNEX Ecuador. Profesor universitario y divulgador de IA.",
     linkedin: "https://www.linkedin.com/in/mateo-moreira-arias-589154203/",
+  },
+  {
+    nombre: "Leonardo Burbano",
+    organizacion: "Mercately",
+    bio: "Senior AI Engineer y Tech Lead en Mercately (Techstars), donde lidera el equipo que desarrolla agentes conversacionales con LLMs para más de 1.500 negocios en 20 países. Ingeniero en Electrónica de la EPN.",
+    linkedin: "https://www.linkedin.com/in/leoburbano/",
+  },
+  {
+    nombre: "María Isabel Vaca",
+    organizacion: "VAMI",
+    bio: "CEO de VAMI Business & Analytics Developers. Trabaja en estrategia, marketing y desarrollo de productos; es mentora en el Tec de Monterrey, profesora de maestría en la UDLA y ha sido jurado de los Effie Awards Latam.",
+    linkedin: "https://www.linkedin.com/in/mar%C3%ADa-isabel-vaca-almeida-13648327/",
+  },
+  {
+    nombre: "Daniel Jerez",
+    organizacion: "UTA",
+    bio: "Emprendedor tecnológico, docente en la UTA y la UEES y coordinador de la Oficina de Transferencia Tecnológica FISEI-UTA. Trabaja en software, educación STEAM, automatización e IA aplicada a los negocios.",
+    linkedin: "https://www.linkedin.com/in/daniel-sebastian-j-3aa6a1154/",
+  },
+  {
+    nombre: "Gabriela Cobo",
+    organizacion: "Kaito Networks",
+    bio: "Líder de producto e innovación con más de 10 años en Europa, Estados Unidos y Latinoamérica. Lidera Producto en Kaito Networks, fintech de pagos transfronterizos, y ha trabajado en Farfetch, Inditex, Thoughtworks y DeUna.",
+    linkedin: "https://www.linkedin.com/in/gcobo/",
   },
 ];
 

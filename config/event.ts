@@ -69,8 +69,8 @@ export const EVENT = {
   } satisfies Record<string, FechaClave>,
 
   cupo: {
-    // Guía §3: propuesta de 30 equipos / 150 personas, sujeto al aforo.
-    maxEquipos: 30,
+    // Guía §3 proponía 30 equipos / 150 personas; el 25 nov 2026 la organización subió el tope a 35 equipos.
+    maxEquipos: 35,
     maxPersonas: 150,
     confirmado: false,
   },

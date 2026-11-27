@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import type { Timestamp } from "firebase-admin/firestore";
-import { EVENT, fecha } from "@/config/event";
+import { fecha } from "@/config/event";
 import { requireSesion } from "@/lib/auth/session";
 import { fechaEnEcuador } from "@/lib/event/countdown";
 import { ahora } from "@/lib/event/reloj";

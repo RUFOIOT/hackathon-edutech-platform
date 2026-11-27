@@ -470,11 +470,11 @@ Con 35 equipos, 2 salas a 13 min por equipo no alcanzaban. La organización sum�
   la ronda de salas.
 - `resultadosListos` pasa a las 16:15 (cierre de salas); la premiación sigue a las 16:45.
 
-## D-50 · Lista de espera tardía hasta las 16:30 (organización, 27 nov 2026)
+## D-50 · Lista de espera tardía hasta las 17:00 (ampliada; antes 16:30) (organización, 27 nov 2026)
 
 Tras el cierre de inscripciones (09:10), quien se inscribe hasta `cierreListaEspera` (viernes
-16:30) queda **siempre en lista de espera** como respaldo, aunque haya cupo
+17:00; se amplió desde 16:30 a pedido de la organización a las 16:04) queda **siempre en lista de espera** como respaldo, aunque haya cupo
 (`listaEsperaTardiaAbierta` + `forzarListaEspera` en `confirmarRegistro`). Lo que pidió (modo,
 equipo o código) queda en `solicitudEquipo`. La organización los ve en Participantes → "Solo lista
-de espera", los **Admite** y los asigna a un equipo hasta las 16:30. Los que siguen en lista de
-espera no reciben comunicados ni cuentan en el cupo. Desde las 16:30 el registro queda cerrado.
+de espera", los **Admite** y los asigna a un equipo hasta las 17:00. Los que siguen en lista de
+espera no reciben comunicados ni cuentan en el cupo. Desde las 17:00 el registro queda cerrado.

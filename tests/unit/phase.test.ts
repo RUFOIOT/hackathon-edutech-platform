@@ -35,11 +35,11 @@ describe("ventanas", () => {
     expect(inscripcionesAbiertas(ec("2026-11-27T09:10:00"))).toBe(false);
   });
 
-  it("lista de espera tardía: del cierre de inscripciones a las 16:30 del viernes", () => {
+  it("lista de espera tardía: del cierre de inscripciones a las 17:00 del viernes", () => {
     expect(listaEsperaTardiaAbierta(ec("2026-11-27T09:09:59"))).toBe(false);
     expect(listaEsperaTardiaAbierta(ec("2026-11-27T09:10:00"))).toBe(true);
-    expect(listaEsperaTardiaAbierta(ec("2026-11-27T16:29:59"))).toBe(true);
-    expect(listaEsperaTardiaAbierta(ec("2026-11-27T16:30:00"))).toBe(false);
+    expect(listaEsperaTardiaAbierta(ec("2026-11-27T16:59:59"))).toBe(true);
+    expect(listaEsperaTardiaAbierta(ec("2026-11-27T17:00:00"))).toBe(false);
   });
 
   it("ventana de hacking: viernes 17:00 a sábado 14:00 (21 horas)", () => {

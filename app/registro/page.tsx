@@ -67,7 +67,7 @@ export default async function Registro({ searchParams }: { searchParams: Promise
         {tardia && !pase && (
         <p className="mt-4 max-w-prose rounded border border-accent bg-surface p-4">
           Las inscripciones ya cerraron. Si te inscribes ahora quedas en <strong>lista de espera</strong> como respaldo: si se
-          libera un lugar, la organización te asigna a un equipo hasta las 16:30 de hoy y te avisa por correo.
+          libera un lugar, la organización te asigna a un equipo hasta las 17:00 de hoy y te avisa por correo.
         </p>
       )}
         <p className="mt-4 max-w-prose">
@@ -102,7 +102,7 @@ export default async function Registro({ searchParams }: { searchParams: Promise
       {tardia && !pase && (
         <p className="mt-4 max-w-prose rounded border border-accent bg-surface p-4">
           Las inscripciones ya cerraron. Si te inscribes ahora quedas en <strong>lista de espera</strong> como respaldo: si se
-          libera un lugar, la organización te asigna a un equipo hasta las 16:30 de hoy y te avisa por correo.
+          libera un lugar, la organización te asigna a un equipo hasta las 17:00 de hoy y te avisa por correo.
         </p>
       )}
       <div className="mt-6">

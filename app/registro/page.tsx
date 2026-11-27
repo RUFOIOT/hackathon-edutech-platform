@@ -8,7 +8,7 @@ import { adminAuth, adminDb } from "@/lib/firebase/admin";
 import { diaEnEcuador } from "@/lib/event/countdown";
 import { faseActual, inscripcionesAbiertas } from "@/lib/event/phase";
 import { ahora } from "@/lib/event/reloj";
-import { paseTardioDe } from "@/lib/registro/pase-tardio";
+import { paseTardioDe, pasesTardios } from "@/lib/registro/pase-tardio";
 import { buscarEquipoPorCodigo, cargarBorrador, invitacionPendiente } from "@/lib/registro/servicio";
 import { CODIGO_INVITACION } from "@/lib/validation/registro";
 import { Asistente } from "./asistente";
@@ -25,7 +25,7 @@ export default async function Registro({ searchParams }: { searchParams: Promise
   const id = await getIdentidad();
   // Con las inscripciones cerradas solo entra quien tiene un pase tardío (lib/registro/pase-tardio.ts).
   const pase = !abiertas && id && !id.esParticipante ? paseTardioDe((await adminAuth().getUser(id.uid)).email) : null;
-  if (!abiertas && !pase && !id && conPase) {
+  if (!abiertas && !pase && !id && conPase && pasesTardios().length > 0) {
     return (
       <Contenedor>
         <h1 className="text-3xl font-semibold">Inscripción con cupo habilitado</h1>

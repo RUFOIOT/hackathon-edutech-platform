@@ -493,3 +493,11 @@ con "No pudimos consultar GitHub". `lib/github/cliente.ts` ahora usa, en orden: 
 están sus tres variables; si no, `GITHUB_TOKEN` (token de solo lectura); y si no hay ninguno, la API
 pública sin autenticación, que solo lee repositorios **públicos** y tiene un límite bajo de
 peticiones por IP. Mientras no haya App ni token, los repos de los equipos deben ser públicos.
+
+## D-53 · Repositorios en cualquier cuenta de GitHub (organización, 27 nov 2026)
+
+La organización `eight-academy-hackathon` no alcanzó a invitar a los equipos y estos crearon sus
+repositorios en cuentas personales. Por pedido de la organización, `validateRepo` acepta un
+repositorio **público** de cualquier cuenta: el chequeo "organizacion" pasa a ser informativo y
+siempre se verifica que exista y se pueda leer. Se mantienen el nombre `edutech26-t{track}-{slug}`
+y la creación después del kick-off. La Guía del hacker §4.1 se actualizó.

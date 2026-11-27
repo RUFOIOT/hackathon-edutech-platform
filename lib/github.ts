@@ -94,11 +94,12 @@ export async function validateRepo(
   if (!partes) return fin(null, null, null);
   const { owner, name } = partes;
 
+  // D-53: se acepta el repositorio público de cualquier cuenta; la organización ya no es obligatoria.
   const enOrg = owner.toLowerCase() === org.toLowerCase();
   chequeos.push({
     id: "organizacion",
-    ok: enOrg,
-    mensaje: enOrg ? `Pertenece a la organización ${org}.` : `El repositorio debe estar en la organización ${org}, no en ${owner}.`,
+    ok: true,
+    mensaje: enOrg ? `Pertenece a la organización ${org}.` : `Repositorio de la cuenta ${owner}.`,
   });
 
   const patron = EVENT.repoPattern.exec(name);
@@ -126,14 +127,14 @@ export async function validateRepo(
     });
   }
 
-  const info = enOrg ? await cliente.repo(owner, name) : null;
-  if (enOrg) {
-    chequeos.push({
-      id: "existe",
-      ok: !!info,
-      mensaje: info ? "El repositorio existe y la plataforma puede leerlo." : "No encontramos el repositorio o la plataforma no tiene acceso. Revisa el nombre.",
-    });
-  }
+  const info = await cliente.repo(owner, name);
+  chequeos.push({
+    id: "existe",
+    ok: !!info,
+    mensaje: info
+      ? "El repositorio existe y la plataforma puede leerlo."
+      : "No encontramos el repositorio o es privado. Revisa la URL y déjalo público (Settings → Change visibility → Public).",
+  });
   if (info) {
     const despues = info.createdAt.getTime() >= kickoff.getTime();
     chequeos.push({

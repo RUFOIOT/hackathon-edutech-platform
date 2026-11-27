@@ -10,7 +10,7 @@ Se verifica antes del Show and Tell. Un equipo que no cumple los cinco puntos no
 
 | N° | Condición | Cómo se verifica |
 |---|---|---|
-| A1 | Repositorio en la organización oficial, creado después del kick-off | GitHub API · fecha de creación |
+| A1 | Repositorio público (cuenta personal u organización oficial), creado después del kick-off | GitHub API · fecha de creación |
 | A2 | Tag `entrega` creado antes de las 14:00 del sábado y no movido después | GitHub API · fecha del commit etiquetado y registro del webhook |
 | A3 | `README.md`, `PRIOR_WORK.md` y `AI_USAGE.md` presentes | Lectura automática del árbol del repositorio |
 | A4 | El proyecto corresponde al track inscrito | Mesa técnica |

@@ -113,10 +113,11 @@ describe("validateRepo", () => {
     expect(r.chequeos.find((c) => c.id === "fecha")).toMatchObject({ ok: false, mensaje: expect.stringMatching(/antes del kick-off/) });
   });
 
-  it("rechaza fuera de la organización, con patrón o track equivocados", async () => {
+  it("acepta una cuenta personal (D-53) y rechaza patrón o track equivocados", async () => {
     const c = clienteSimulado({ creado: ec("2026-11-27T17:30:00") });
     const fuera = await validateRepo("https://github.com/ana/edutech26-t3-matricula-express", equipo, c, { kickoff: KICKOFF });
-    expect(fuera.chequeos.find((x) => x.id === "organizacion")?.ok).toBe(false);
+    expect(fuera.chequeos.find((x) => x.id === "organizacion")).toMatchObject({ ok: true, mensaje: expect.stringContaining("ana") });
+    expect(fuera.chequeos.find((x) => x.id === "existe")?.ok).toBe(true);
     const patron = await validateRepo("https://github.com/eight-academy-hackathon/mi-proyecto", equipo, c, { kickoff: KICKOFF });
     expect(patron.chequeos.find((x) => x.id === "patron")?.mensaje).toContain("edutech26-t3-matricula-express");
     const track = await validateRepo("https://github.com/eight-academy-hackathon/edutech26-t1-matricula-express", equipo, c, { kickoff: KICKOFF });

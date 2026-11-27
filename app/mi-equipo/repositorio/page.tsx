@@ -47,15 +47,11 @@ export default async function Repositorio() {
       <h1 className="text-3xl font-semibold">Repositorio</h1>
 
       <ol className="mt-6 max-w-prose list-decimal space-y-1 pl-5 text-sm">
+        <li>Una persona del equipo crea el repositorio en su cuenta de GitHub (New repository).</li>
         <li>
-          Entra a la organización <code className="font-mono">{EVENT.githubOrg}</code> con la invitación que recibiste por correo.
+          Nómbralo <code className="font-mono">{esperado}</code> y déjalo <strong>público</strong>.
         </li>
-        <li>
-          Crea el repositorio desde la plantilla <code className="font-mono">{EVENT.repoPlantilla}</code> con el botón Use this template.
-        </li>
-        <li>
-          Nómbralo <code className="font-mono">{esperado}</code>.
-        </li>
+        <li>Agrega a tus compañeros como colaboradores (Settings → Collaborators) para que cada uno haga commits con su cuenta.</li>
         <li>Pega aquí su URL.</li>
       </ol>
 

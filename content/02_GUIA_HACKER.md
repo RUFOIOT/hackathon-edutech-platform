@@ -52,12 +52,13 @@ Los roles no son exclusivos, pero cada uno debe tener un dueño.
 
 ### 4.1 Crear el repositorio (solo desde las 17:00 del viernes)
 
-1. Entra a la organización `eight-academy-hackathon` con la invitación que recibirás por correo.
-2. Crea tu repositorio desde la plantilla `edutech-2026-template` con el botón *Use this template*.
-3. Nómbralo `edutech26-t{track}-{slug}`. Ejemplo: `edutech26-t1-alerta-temprana`.
-4. Registra la URL del repositorio en la plataforma, en la pestaña de tu equipo.
+1. Una persona del equipo crea el repositorio en **su cuenta de GitHub** (o en la organización `eight-academy-hackathon` si los invitaron). Si quieren partir de la plantilla, usen *Use this template* en `edutech-2026-template`.
+2. Nómbralo `edutech26-t{track}-{slug}`. Ejemplo: `edutech26-t1-alerta-temprana`. El nombre exacto de tu equipo aparece en la plataforma.
+3. Déjalo **público**: la plataforma solo puede leer repositorios públicos.
+4. Agrega a tus compañeros como colaboradores (*Settings → Collaborators*) para que todos hagan commits con su propia cuenta.
+5. Registra la URL del repositorio en la plataforma, en **Mi equipo → Repositorio**.
 
-Un repositorio creado antes del kick-off o fuera de la organización no se acepta.
+Un repositorio creado antes del kick-off no se acepta. Si ya lo creaste con otro nombre, renómbralo en *Settings → Repository name*: los commits se conservan.
 
 ### 4.2 Estructura obligatoria
 

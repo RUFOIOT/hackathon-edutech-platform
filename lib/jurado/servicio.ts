@@ -84,6 +84,28 @@ export async function guardarJuez(datos: z.infer<typeof juezSchema>, actor: stri
   await batch.commit();
 }
 
+/**
+ * Quita a un juez (p. ej. si se registró con otro correo). Solo si aún no tiene puntajes ni
+ * conflictos declarados, para no perder evaluaciones. Su cuenta de acceso queda, pero sin rol de juez.
+ */
+export async function quitarJuez(judgeUid: string, actor: string) {
+  const ref = db().doc(`judges/${judgeUid}`);
+  const [juez, puntajes, conflictos] = await Promise.all([
+    ref.get(),
+    db().collection("scores").where("judgeId", "==", judgeUid).limit(1).get(),
+    db().collection("conflicts").where("judgeId", "==", judgeUid).limit(1).get(),
+  ]);
+  if (!juez.exists) throw new ErrorRegistro("Ese juez ya no está registrado.");
+  if (!puntajes.empty || !conflictos.empty) {
+    throw new ErrorRegistro("Este juez ya tiene evaluaciones o conflictos registrados: no se puede quitar.");
+  }
+  const batch = db().batch();
+  batch.delete(ref);
+  auditarEn(batch, { actor, accion: "judge.remove", entidad: "judges", entidadId: judgeUid, antes: { nombre: juez.get("nombre"), roomId: juez.get("roomId") } });
+  await batch.commit();
+  return String(juez.get("nombre") ?? "El juez");
+}
+
 // ---------------------------------------------------------------------------
 // Orden de presentación
 // ---------------------------------------------------------------------------

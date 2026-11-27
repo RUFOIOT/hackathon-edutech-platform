@@ -5,7 +5,7 @@ import { CampoSelect, CampoTexto, claseInput } from "@/components/formulario";
 import { requireAdmin } from "@/lib/auth/session";
 import { adminDb } from "@/lib/firebase/admin";
 import { RONDA, cargarRonda } from "@/lib/jurado/servicio";
-import { aviso, cerrarSala, crearJuez, crearSala, cronometro, generar, mover, reabrirSala, turno } from "./acciones";
+import { aviso, cerrarSala, crearJuez, crearSala, cronometro, generar, mover, quitar, reabrirSala, turno } from "./acciones";
 
 export const metadata = { title: "Jurado y salas" };
 export const dynamic = "force-dynamic";
@@ -108,7 +108,8 @@ export default async function AdminJurado() {
               <tr className="border-b border-border">
                 <th scope="col" className="py-2 pr-4">Nombre</th>
                 <th scope="col" className="py-2 pr-4">Perfil</th>
-                <th scope="col" className="py-2">Sala</th>
+                <th scope="col" className="py-2 pr-4">Sala</th>
+                <th scope="col" className="py-2">Acción</th>
               </tr>
             </thead>
             <tbody>
@@ -116,7 +117,12 @@ export default async function AdminJurado() {
                 <tr key={j.id} className="border-b border-border">
                   <td className="py-2 pr-4">{j.get("nombre")}</td>
                   <td className="py-2 pr-4">{j.get("perfil")}</td>
-                  <td className="py-2">{nombreSala[j.get("roomId")] ?? "Sin sala"}</td>
+                  <td className="py-2 pr-4">{nombreSala[j.get("roomId")] ?? "Sin sala"}</td>
+                  <td className="py-2">
+                    <BotonAccion accion={quitar.bind(null, j.id)} confirmar={`¿Quitar a ${j.get("nombre")} del jurado?`}>
+                      Quitar
+                    </BotonAccion>
+                  </td>
                 </tr>
               ))}
             </tbody>

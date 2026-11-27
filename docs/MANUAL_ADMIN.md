@@ -84,7 +84,8 @@ Ver la sección 5 (QR).
 
 ### Jurado y salas
 1. **Guardar sala** (identificador y nombre; son 3 salas y aceptan cualquier track; D-49) y **Registrar
-   juez** en su sala (3 por sala).
+   juez** en su sala (3 por sala). **Quitar** saca a un juez que aún no evaluó (por ejemplo, si se
+   registró con otro correo); si ya tiene puntajes, no se puede.
 2. **Generar orden del Show and Tell** (reparte a los equipos completos entre las salas al azar y
    reemplaza el orden actual; puedes mover equipos).
 3. Durante el Show and Tell, por sala: **Poner en pantalla** al equipo de turno y usa el

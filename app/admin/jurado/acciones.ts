@@ -13,6 +13,7 @@ import {
   moverSlot,
   prepararTurno,
   publicarAviso,
+  quitarJuez,
   salaSchema,
   type AccionCronometro,
 } from "@/lib/jurado/servicio";
@@ -55,6 +56,10 @@ export async function crearJuez(fd: FormData) {
     await guardarJuez(r.data, uid);
     return `${r.data.nombre} quedó registrado. Ingresa con su correo en /ingresar.`;
   });
+}
+
+export async function quitar(judgeUid: string) {
+  return ejecutar(async (uid) => `${await quitarJuez(judgeUid, uid)} ya no es juez.`);
 }
 
 export async function generar() {

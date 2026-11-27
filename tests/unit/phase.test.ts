@@ -7,8 +7,8 @@ const ec = (s: string) => new Date(`${s}-05:00`);
 describe("faseActual", () => {
   it.each([
     ["2026-10-15T10:00:00", "Convocatoria"],
-    ["2026-11-27T11:59:59", "Convocatoria"],
-    ["2026-11-27T12:00:00", "Pre-evento"],
+    ["2026-11-27T09:09:59", "Convocatoria"],
+    ["2026-11-27T09:10:00", "Pre-evento"],
     ["2026-11-27T16:59:59", "Pre-evento"],
     ["2026-11-27T17:00:00", "Hacking"],
     ["2026-11-28T13:59:59", "Hacking"],
@@ -31,8 +31,8 @@ describe("ventanas", () => {
   it("inscripciones abiertas solo entre apertura y cierre", () => {
     expect(inscripcionesAbiertas(ec("2026-10-04T23:59:59"))).toBe(false);
     expect(inscripcionesAbiertas(ec("2026-10-05T00:00:00"))).toBe(true);
-    expect(inscripcionesAbiertas(ec("2026-11-27T11:59:59"))).toBe(true);
-    expect(inscripcionesAbiertas(ec("2026-11-27T12:00:00"))).toBe(false);
+    expect(inscripcionesAbiertas(ec("2026-11-27T09:09:59"))).toBe(true);
+    expect(inscripcionesAbiertas(ec("2026-11-27T09:10:00"))).toBe(false);
   });
 
   it("ventana de hacking: viernes 17:00 a sábado 14:00 (21 horas)", () => {

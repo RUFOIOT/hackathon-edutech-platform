@@ -52,9 +52,10 @@ export const EVENT = {
     publicacionWeb: { iso: "2026-10-05T00:00:00-05:00", confirmada: false },
     aperturaInscripciones: { iso: "2026-10-05T00:00:00-05:00", confirmada: false },
     webinar: { iso: "2026-10-28T18:00:00-05:00", confirmada: false },
-    cierreInscripciones: { iso: "2026-11-27T12:00:00-05:00", confirmada: true },
+    // 27 nov 2026 09:10: la organización cerró inscripciones antes de lo previsto (12:00).
+    cierreInscripciones: { iso: "2026-11-27T09:10:00-05:00", confirmada: true },
     // Evento (guía §4). Agenda acordada en la reunión de staff del 10 nov 2026.
-    checkin: { iso: "2026-11-27T15:30:00-05:00", confirmada: true },
+    checkin: { iso: "2026-11-27T15:00:00-05:00", confirmada: true },
     kickoff: { iso: "2026-11-27T17:00:00-05:00", confirmada: true },
     checkpoint1: { iso: "2026-11-27T19:00:00-05:00", confirmada: true },
     cierreSedeViernes: { iso: "2026-11-27T21:00:00-05:00", confirmada: true },
@@ -285,7 +286,7 @@ export const ALIADOS: { nombre: string; url: string }[] = [
 
 /** Agenda oficial (guía §4). `hito` marca los bloques que la guía destaca en negrita. */
 export const AGENDA: { dia: "Viernes 27" | "Sábado 28"; hora: string; bloque: string; hito?: boolean }[] = [
-  { dia: "Viernes 27", hora: "15:30", bloque: "Check-in con QR y entrega de name tags" },
+  { dia: "Viernes 27", hora: "15:00", bloque: "Check-in con QR y entrega de name tags" },
   { dia: "Viernes 27", hora: "16:00", bloque: "Inauguración: presentación de tracks, aliados, mentores y jurado" },
   { dia: "Viernes 27", hora: "16:20", bloque: "Taller express de n8n (20 min)" },
   { dia: "Viernes 27", hora: "16:40", bloque: "Dinámica de integración" },

@@ -12,7 +12,7 @@ import { verificarTokenQr } from "@/lib/checkin/qr";
 import { despachar, encolarEn } from "@/lib/eventos";
 import { ahora } from "@/lib/event/reloj";
 import { adminAuth, adminDb } from "@/lib/firebase/admin";
-import { tomarSnapshot } from "@/lib/github/servicio";
+import { registrarRepositorio, tomarSnapshot } from "@/lib/github/servicio";
 import { log } from "@/lib/log";
 import { categoriaEquipo, type Categoria } from "@/lib/models/categoria";
 import type { Evento } from "@/lib/n8n";
@@ -219,10 +219,14 @@ export async function asignarAdulto(teamId: string, fd: FormData) {
 // ---------------------------------------------------------------------------
 
 export async function revalidarRepo(teamId: string) {
-  return ejecutar("/admin/repositorios", async () => {
+  return ejecutar("/admin/repositorios", async (uid) => {
+    const repo = await db().doc(`repositories/${teamId}`).get();
+    if (!repo.exists || !repo.get("url")) throw new ErrorRegistro("El equipo no tiene repositorio registrado.");
+    // Vuelve a validar la URL guardada (las reglas pueden haber cambiado, D-53) y luego toma métricas.
+    const v = await registrarRepositorio(teamId, String(repo.get("url")), uid);
+    if (!v.valido) return `Sigue sin ser válido: ${v.chequeos.filter((c) => !c.ok).map((c) => c.mensaje).join(" ")}`;
     const s = await tomarSnapshot(teamId);
-    if (!s) throw new ErrorRegistro("El equipo no tiene repositorio registrado.");
-    return `Revalidado: ${s.commitsEnVentana} commits, ${s.alertas.length} alertas.`;
+    return s ? `Válido. ${s.commitsEnVentana} commits, ${s.alertas.length} alertas.` : "Válido.";
   });
 }
 

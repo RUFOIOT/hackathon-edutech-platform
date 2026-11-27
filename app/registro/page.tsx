@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { EVENT, fecha } from "@/config/event";
 import { FormIngreso } from "@/app/ingresar/form-ingreso";
 import { getIdentidad } from "@/lib/auth/session";
-import { adminAuth } from "@/lib/firebase/admin";
+import { adminAuth, adminDb } from "@/lib/firebase/admin";
 import { diaEnEcuador } from "@/lib/event/countdown";
 import { faseActual, inscripcionesAbiertas } from "@/lib/event/phase";
 import { ahora } from "@/lib/event/reloj";
@@ -25,7 +25,7 @@ export default async function Registro({ searchParams }: { searchParams: Promise
   const id = await getIdentidad();
   // Con las inscripciones cerradas solo entra quien tiene un pase tardío (lib/registro/pase-tardio.ts).
   const pase = !abiertas && id && !id.esParticipante ? paseTardioDe((await adminAuth().getUser(id.uid)).email) : null;
-  if (!abiertas && !pase && !id && conPase && codigoValido) {
+  if (!abiertas && !pase && !id && conPase) {
     return (
       <Contenedor>
         <h1 className="text-3xl font-semibold">Inscripción con cupo habilitado</h1>
@@ -34,7 +34,7 @@ export default async function Registro({ searchParams }: { searchParams: Promise
           te llegó esta invitación: te enviamos un enlace y con él completas el formulario.
         </p>
         <div className="max-w-md">
-          <FormIngreso siguiente={`/registro?codigo=${codigoValido}&pase=1`} />
+          <FormIngreso siguiente="/registro?pase=1" />
         </div>
       </Contenedor>
     );
@@ -78,6 +78,11 @@ export default async function Registro({ searchParams }: { searchParams: Promise
   const email = user.email ?? "";
   const [borrador, invitacion] = await Promise.all([cargarBorrador(id.uid), invitacionPendiente(email)]);
   let sugerido: { codigo: string; equipo: string | null } | null = invitacion;
+  if (pase && !sugerido) {
+    // El pase tardío ya dice a qué equipo se une: el código se completa solo.
+    const eq = await adminDb().doc(`teams/${pase.teamId}`).get();
+    if (eq.exists) sugerido = { codigo: String(eq.get("codigoInvitacion")), equipo: String(eq.get("nombre")) };
+  }
   if (codigoValido && !sugerido) {
     const eq = await buscarEquipoPorCodigo(codigoValido);
     sugerido = { codigo: codigoValido, equipo: eq?.nombre ?? null };

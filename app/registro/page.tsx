@@ -8,6 +8,7 @@ import { adminAuth } from "@/lib/firebase/admin";
 import { diaEnEcuador } from "@/lib/event/countdown";
 import { faseActual, inscripcionesAbiertas } from "@/lib/event/phase";
 import { ahora } from "@/lib/event/reloj";
+import { paseTardioDe } from "@/lib/registro/pase-tardio";
 import { buscarEquipoPorCodigo, cargarBorrador, invitacionPendiente } from "@/lib/registro/servicio";
 import { CODIGO_INVITACION } from "@/lib/validation/registro";
 import { Asistente } from "./asistente";
@@ -15,17 +16,37 @@ import { Asistente } from "./asistente";
 export const metadata: Metadata = { title: "Inscripción" };
 export const dynamic = "force-dynamic";
 
-export default async function Registro({ searchParams }: { searchParams: Promise<{ codigo?: string }> }) {
-  const { codigo } = await searchParams;
+export default async function Registro({ searchParams }: { searchParams: Promise<{ codigo?: string; pase?: string }> }) {
+  const { codigo, pase: conPase } = await searchParams;
   const codigoValido = codigo && CODIGO_INVITACION.test(codigo.toUpperCase()) ? codigo.toUpperCase() : null;
   const t = ahora();
 
-  if (!inscripcionesAbiertas(t)) {
+  const abiertas = inscripcionesAbiertas(t);
+  const id = await getIdentidad();
+  // Con las inscripciones cerradas solo entra quien tiene un pase tardío (lib/registro/pase-tardio.ts).
+  const pase = !abiertas && id && !id.esParticipante ? paseTardioDe((await adminAuth().getUser(id.uid)).email) : null;
+  if (!abiertas && !pase && !id && conPase && codigoValido) {
+    return (
+      <Contenedor>
+        <h1 className="text-3xl font-semibold">Inscripción con cupo habilitado</h1>
+        <p className="mt-4 max-w-prose">
+          Las inscripciones generales están cerradas, pero la organización te habilitó un cupo. Ingresa con el correo al que
+          te llegó esta invitación: te enviamos un enlace y con él completas el formulario.
+        </p>
+        <div className="max-w-md">
+          <FormIngreso siguiente={`/registro?codigo=${codigoValido}&pase=1`} />
+        </div>
+      </Contenedor>
+    );
+  }
+  if (!abiertas && !pase) {
     return (
       <Contenedor>
         <h1 className="text-3xl font-semibold">Inscripción</h1>
         <p className="mt-4">
-          {faseActual(t) === "Convocatoria"
+          {id && conPase
+            ? "Este correo no tiene un cupo habilitado. Ingresa con el correo al que te llegó la invitación."
+            : faseActual(t) === "Convocatoria"
             ? `Las inscripciones abren el ${diaEnEcuador(fecha("aperturaInscripciones"))}${EVENT.fechas.aperturaInscripciones.confirmada ? "" : " (fecha por confirmar)"}.`
             : "Las inscripciones están cerradas."}
         </p>
@@ -36,7 +57,6 @@ export default async function Registro({ searchParams }: { searchParams: Promise
     );
   }
 
-  const id = await getIdentidad();
   if (!id) {
     const siguiente = codigoValido ? `/registro?codigo=${codigoValido}` : "/registro";
     return (

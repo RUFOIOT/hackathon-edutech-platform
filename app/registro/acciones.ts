@@ -9,6 +9,7 @@ import { verificarUsuarioGithub } from "@/lib/github-usuarios";
 import { log } from "@/lib/log";
 import { calcularCategoria, motivoCategoriaIncompatible } from "@/lib/models/categoria";
 import { ipActual, ipDe, limitar, mensajeLimite } from "@/lib/seguridad/limite";
+import { paseTardioDe, type PaseTardio } from "@/lib/registro/pase-tardio";
 import {
   buscarEquipoPorCodigo,
   cargarBorrador,
@@ -35,13 +36,20 @@ export type RespuestaConfirmar = { ok: true } | { ok: false; errores: Record<str
 const fallo = (mensaje: string, campo = "_") => ({ ok: false as const, errores: { [campo]: mensaje } });
 
 /** Comprobaciones comunes: sesión, ventana de inscripción y que no esté ya inscrito. */
-async function contexto(): Promise<{ uid: string } | { error: { ok: false; errores: Record<string, string> } }> {
+async function contexto(): Promise<
+  { uid: string; pase: PaseTardio | null } | { error: { ok: false; errores: Record<string, string> } }
+> {
   const id = await getIdentidad();
   if (!id) return { error: fallo("Tu sesión expiró. Vuelve a ingresar con tu correo.") };
   if (id.esParticipante) return { error: fallo("Ya estás inscrito. Revisa tu equipo en Mi equipo.") };
-  if (!inscripcionesAbiertas(ahora())) return { error: fallo("Las inscripciones no están abiertas en este momento.") };
-  return { uid: id.uid };
+  if (inscripcionesAbiertas(ahora())) return { uid: id.uid, pase: null };
+  // Cerradas: solo sigue quien tiene un pase tardío habilitado por la organización.
+  const pase = paseTardioDe((await adminAuth().getUser(id.uid)).email);
+  if (!pase) return { error: fallo("Las inscripciones no están abiertas en este momento.") };
+  return { uid: id.uid, pase };
 }
+
+const MENSAJE_PASE = "Tu cupo está habilitado solo para unirte al equipo que te invitó. Usa el código de la invitación.";
 
 /** Valida y guarda un paso (1 a 4). El progreso queda en el servidor. */
 export async function guardarPaso(paso: 1 | 2 | 3 | 4, datos: unknown): Promise<RespuestaPaso> {
@@ -59,8 +67,10 @@ export async function guardarPaso(paso: 1 | 2 | 3 | 4, datos: unknown): Promise<
       const eq = await buscarEquipoPorCodigo(r.data.codigo!);
       if (!eq) return fallo("No encontramos un equipo con ese código. Revisa las letras o pídelo a tu capitán.", "codigo");
       if (eq.miembros >= 5) return fallo("Ese equipo ya tiene 5 integrantes.", "codigo");
+      if (ctx.pase && eq.id !== ctx.pase.teamId) return fallo(MENSAJE_PASE, "codigo");
       equipoUnirse = { id: eq.id, nombre: eq.nombre, track: eq.track };
     }
+    if (ctx.pase && r.data.modo !== "unirse") return fallo(MENSAJE_PASE);
     const nuevo: Borrador = { ...borrador, modo: r.data.modo, paso: 2 };
     if (r.data.modo === "unirse") Object.assign(nuevo, { codigo: r.data.codigo, equipoUnirse });
     else {
@@ -145,6 +155,7 @@ export async function confirmar(formData: FormData): Promise<RespuestaConfirmar>
   const p2 = paso2Schema.safeParse(borrador.personales);
   const p3 = paso3Schema.safeParse(borrador.perfil);
   if (!p1.success) return fallo("Vuelve al paso 1 y elige cómo inscribirte.");
+  if (ctx.pase && (p1.data.modo !== "unirse" || borrador.equipoUnirse?.id !== ctx.pase.teamId)) return fallo(MENSAJE_PASE);
   if (!p2.success) return fallo("Vuelve al paso 2: faltan datos personales.");
   if (!p3.success) return fallo("Vuelve al paso 3: falta tu perfil técnico.");
   if (borrador.modo === "equipo" && !paso4Schema.safeParse(borrador.equipo).success) {

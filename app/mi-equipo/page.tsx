@@ -163,7 +163,7 @@ export default async function MiEquipo({ searchParams }: { searchParams: Promise
           <h2 id="qr" className="text-xl font-semibold">
             Tu QR de check-in
           </h2>
-          <p className="mt-2 text-sm">Muéstralo en la entrada el viernes desde las 15:30. Es personal: no lo compartas.</p>
+          <p className="mt-2 text-sm">Muéstralo en la entrada el viernes desde las 15:00. Es personal: no lo compartas.</p>
           {p.get("categoria") === "OPEN" && <p className="mt-1 text-sm text-muted">Lleva también tu documento de identidad.</p>}
         </div>
       </section>

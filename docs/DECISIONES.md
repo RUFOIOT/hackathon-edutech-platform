@@ -485,3 +485,11 @@ Equipos → "Cambiar de equipo" mueve a una persona de su equipo a otro en una s
 (`moverAEquipo`): resta del origen (si era capitán, la capitanía pasa a otro integrante), suma al
 destino con las mismas reglas de cupo (máximo 5) y categoría que al unirse con código, y audita
 `team.move`. Nació para pasar a un Junior de Los.EXE a Los (3.14)las.
+
+## D-52 · GitHub sin la App: token de respaldo o lectura pública (organización, 27 nov 2026)
+
+La GitHub App (D-04) no quedó instalada antes del kick-off y el registro de repositorios fallaba
+con "No pudimos consultar GitHub". `lib/github/cliente.ts` ahora usa, en orden: la GitHub App si
+están sus tres variables; si no, `GITHUB_TOKEN` (token de solo lectura); y si no hay ninguno, la API
+pública sin autenticación, que solo lee repositorios **públicos** y tiene un límite bajo de
+peticiones por IP. Mientras no haya App ni token, los repos de los equipos deben ser públicos.

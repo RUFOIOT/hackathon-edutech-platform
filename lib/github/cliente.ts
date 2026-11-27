@@ -19,10 +19,13 @@ function octokit(): Octokit {
   const installationId = process.env.GITHUB_APP_INSTALLATION_ID;
   if (appId && privateKey && installationId) {
     instancia = new Octokit({ baseUrl, authStrategy: createAppAuth, auth: { appId, privateKey, installationId: Number(installationId) } });
-  } else if (process.env.GITHUB_API_BASE) {
-    instancia = new Octokit({ baseUrl }); // simulado en tests
+  } else if (process.env.GITHUB_TOKEN) {
+    // Respaldo (D-52): token de solo lectura mientras la GitHub App no esté instalada.
+    instancia = new Octokit({ baseUrl, auth: process.env.GITHUB_TOKEN });
   } else {
-    throw new Error("Faltan GITHUB_APP_ID, GITHUB_APP_PRIVATE_KEY o GITHUB_APP_INSTALLATION_ID (ver .env.example).");
+    // Respaldo (D-52): sin credenciales solo se leen repositorios públicos (límite bajo de la API).
+    // También cubre el servidor simulado de los tests (GITHUB_API_BASE).
+    instancia = new Octokit({ baseUrl });
   }
   return instancia;
 }

@@ -54,6 +54,9 @@ export const EVENT = {
     webinar: { iso: "2026-10-28T18:00:00-05:00", confirmada: false },
     // 27 nov 2026 09:10: la organización cerró inscripciones antes de lo previsto (12:00).
     cierreInscripciones: { iso: "2026-11-27T09:10:00-05:00", confirmada: true },
+    // Tras el cierre, las inscripciones tardías entran solo a lista de espera (respaldos) hasta esta hora;
+    // la organización puede asignarlas a un equipo hasta entonces (D-50).
+    cierreListaEspera: { iso: "2026-11-27T16:30:00-05:00", confirmada: true },
     // Evento (guía §4). Agenda acordada en la reunión de staff del 10 nov 2026.
     checkin: { iso: "2026-11-27T15:00:00-05:00", confirmada: true },
     kickoff: { iso: "2026-11-27T17:00:00-05:00", confirmada: true },

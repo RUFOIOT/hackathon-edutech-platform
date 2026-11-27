@@ -149,6 +149,8 @@ export interface DatosConfirmacion {
   aceptaImagen: boolean;
   representante: Representante | null;
   archivo: Uint8Array | null;
+  /** Inscripción tardía (D-50): queda en lista de espera aunque haya cupo. */
+  forzarListaEspera?: boolean;
 }
 
 export interface ResultadoConfirmacion {
@@ -186,7 +188,7 @@ export async function confirmarRegistro(d: DatosConfirmacion): Promise<Resultado
       const [pSnap, stats] = await Promise.all([tx.get(pRef), tx.get(statsRef())]);
       if (pSnap.exists) throw new ErrorRegistro("Ya estás inscrito. Revisa tu equipo en Mi equipo.");
       const conteos = { personas: stats.get("personas") ?? 0, equipos: stats.get("equipos") ?? 0 };
-      const listaEspera = vaAListaEspera(conteos, borrador.modo === "equipo");
+      const listaEspera = d.forzarListaEspera === true || vaAListaEspera(conteos, borrador.modo === "equipo");
 
       let union: Awaited<ReturnType<typeof leerUnion>> | null = null;
       let slug: string | null = null;

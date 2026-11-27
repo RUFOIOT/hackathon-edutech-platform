@@ -6,7 +6,7 @@ import { FormIngreso } from "@/app/ingresar/form-ingreso";
 import { getIdentidad } from "@/lib/auth/session";
 import { adminAuth, adminDb } from "@/lib/firebase/admin";
 import { diaEnEcuador } from "@/lib/event/countdown";
-import { faseActual, inscripcionesAbiertas } from "@/lib/event/phase";
+import { faseActual, inscripcionesAbiertas, listaEsperaTardiaAbierta } from "@/lib/event/phase";
 import { ahora } from "@/lib/event/reloj";
 import { paseTardioDe, pasesTardios } from "@/lib/registro/pase-tardio";
 import { buscarEquipoPorCodigo, cargarBorrador, invitacionPendiente } from "@/lib/registro/servicio";
@@ -22,6 +22,8 @@ export default async function Registro({ searchParams }: { searchParams: Promise
   const t = ahora();
 
   const abiertas = inscripcionesAbiertas(t);
+  // Inscripción tardía (D-50): solo a lista de espera, hasta cierreListaEspera.
+  const tardia = !abiertas && listaEsperaTardiaAbierta(t);
   const id = await getIdentidad();
   // Con las inscripciones cerradas solo entra quien tiene un pase tardío (lib/registro/pase-tardio.ts).
   const pase = !abiertas && id && !id.esParticipante ? paseTardioDe((await adminAuth().getUser(id.uid)).email) : null;
@@ -39,7 +41,7 @@ export default async function Registro({ searchParams }: { searchParams: Promise
       </Contenedor>
     );
   }
-  if (!abiertas && !pase) {
+  if (!abiertas && !pase && !tardia) {
     return (
       <Contenedor>
         <h1 className="text-3xl font-semibold">Inscripción</h1>
@@ -62,6 +64,12 @@ export default async function Registro({ searchParams }: { searchParams: Promise
     return (
       <Contenedor>
         <h1 className="text-3xl font-semibold">Inscripción</h1>
+        {tardia && !pase && (
+        <p className="mt-4 max-w-prose rounded border border-accent bg-surface p-4">
+          Las inscripciones ya cerraron. Si te inscribes ahora quedas en <strong>lista de espera</strong> como respaldo: si se
+          libera un lugar, la organización te asigna a un equipo hasta las 16:30 de hoy y te avisa por correo.
+        </p>
+      )}
         <p className="mt-4 max-w-prose">
           Empieza verificando tu correo: te enviamos un enlace y con él continúas el formulario. Tu avance queda guardado en
           cada paso.
@@ -91,6 +99,12 @@ export default async function Registro({ searchParams }: { searchParams: Promise
   return (
     <Contenedor>
       <h1 className="text-3xl font-semibold">Inscripción</h1>
+      {tardia && !pase && (
+        <p className="mt-4 max-w-prose rounded border border-accent bg-surface p-4">
+          Las inscripciones ya cerraron. Si te inscribes ahora quedas en <strong>lista de espera</strong> como respaldo: si se
+          libera un lugar, la organización te asigna a un equipo hasta las 16:30 de hoy y te avisa por correo.
+        </p>
+      )}
       <div className="mt-6">
         <Asistente inicial={borrador} email={email} codigoSugerido={sugerido} />
       </div>

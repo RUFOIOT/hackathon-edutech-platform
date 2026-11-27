@@ -3,7 +3,7 @@
 import { headers } from "next/headers";
 import { getIdentidad } from "@/lib/auth/session";
 import { adminAuth } from "@/lib/firebase/admin";
-import { inscripcionesAbiertas } from "@/lib/event/phase";
+import { inscripcionesAbiertas, listaEsperaTardiaAbierta } from "@/lib/event/phase";
 import { ahora } from "@/lib/event/reloj";
 import { verificarUsuarioGithub } from "@/lib/github-usuarios";
 import { log } from "@/lib/log";
@@ -37,16 +37,18 @@ const fallo = (mensaje: string, campo = "_") => ({ ok: false as const, errores: 
 
 /** Comprobaciones comunes: sesión, ventana de inscripción y que no esté ya inscrito. */
 async function contexto(): Promise<
-  { uid: string; pase: PaseTardio | null } | { error: { ok: false; errores: Record<string, string> } }
+  { uid: string; pase: PaseTardio | null; tardia: boolean } | { error: { ok: false; errores: Record<string, string> } }
 > {
   const id = await getIdentidad();
   if (!id) return { error: fallo("Tu sesión expiró. Vuelve a ingresar con tu correo.") };
   if (id.esParticipante) return { error: fallo("Ya estás inscrito. Revisa tu equipo en Mi equipo.") };
-  if (inscripcionesAbiertas(ahora())) return { uid: id.uid, pase: null };
-  // Cerradas: solo sigue quien tiene un pase tardío habilitado por la organización.
+  if (inscripcionesAbiertas(ahora())) return { uid: id.uid, pase: null, tardia: false };
+  // Cerradas: sigue quien tiene un pase tardío habilitado por la organización...
   const pase = paseTardioDe((await adminAuth().getUser(id.uid)).email);
-  if (!pase) return { error: fallo("Las inscripciones no están abiertas en este momento.") };
-  return { uid: id.uid, pase };
+  if (pase) return { uid: id.uid, pase, tardia: false };
+  // ...o, hasta cierreListaEspera, entra a lista de espera como respaldo (D-50).
+  if (listaEsperaTardiaAbierta(ahora())) return { uid: id.uid, pase: null, tardia: true };
+  return { error: fallo("Las inscripciones no están abiertas en este momento.") };
 }
 
 const MENSAJE_PASE = "Tu cupo está habilitado solo para unirte al equipo que te invitó. Usa el código de la invitación.";
@@ -206,6 +208,7 @@ export async function confirmar(formData: FormData): Promise<RespuestaConfirmar>
       aceptaImagen: r5.data.aceptaImagen,
       representante,
       archivo,
+      forzarListaEspera: ctx.tardia,
     });
     return { ok: true };
   } catch (err) {

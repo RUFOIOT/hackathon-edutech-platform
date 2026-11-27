@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Fraunces, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import { Encabezado, type EnlaceNav, type SeccionPortada } from "@/components/encabezado";
 import { EVENT, JURADO, MENTORES } from "@/config/event";
-import { inscripcionesAbiertas } from "@/lib/event/phase";
+import { inscripcionesAbiertas, listaEsperaTardiaAbierta } from "@/lib/event/phase";
 import { ahora } from "@/lib/event/reloj";
 import { asset, enlacePlataforma } from "@/lib/sitio";
 import "./globals.css";
@@ -63,7 +63,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           logo={asset("/brand/eight-academy-logo.png")}
           enlaces={enlaces}
           secciones={SECCIONES_PORTADA}
-          registro={inscripcionesAbiertas(ahora()) ? enlacePlataforma("/registro") : null}
+          registro={inscripcionesAbiertas(ahora()) || listaEsperaTardiaAbierta(ahora()) ? enlacePlataforma("/registro") : null}
           ingresar={enlacePlataforma("/ingresar")}
           cierreInscripcionesIso={EVENT.fechas.cierreInscripciones.iso}
         />

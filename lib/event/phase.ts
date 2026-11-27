@@ -33,6 +33,15 @@ export function inscripcionesAbiertas(ahora: Date = new Date()): boolean {
   return t >= apertura && t < fecha("cierreInscripciones").getTime();
 }
 
+/**
+ * Lista de espera tardía (D-50): entre el cierre de inscripciones y `cierreListaEspera`, quien se
+ * inscribe queda siempre en lista de espera como respaldo, sin importar el cupo.
+ */
+export function listaEsperaTardiaAbierta(ahora: Date = new Date()): boolean {
+  const t = ahora.getTime();
+  return t >= fecha("cierreInscripciones").getTime() && t < fecha("cierreListaEspera").getTime();
+}
+
 /** Ventana oficial de hacking (guía §7.1). */
 export function dentroDeVentana(ahora: Date = new Date()): boolean {
   const t = ahora.getTime();

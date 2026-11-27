@@ -478,3 +478,10 @@ Tras el cierre de inscripciones (09:10), quien se inscribe hasta `cierreListaEsp
 equipo o código) queda en `solicitudEquipo`. La organización los ve en Participantes → "Solo lista
 de espera", los **Admite** y los asigna a un equipo hasta las 17:00. Los que siguen en lista de
 espera no reciben comunicados ni cuentan en el cupo. Desde las 17:00 el registro queda cerrado.
+
+## D-51 · Cambiar a una persona de equipo desde el panel (organización, 27 nov 2026)
+
+Equipos → "Cambiar de equipo" mueve a una persona de su equipo a otro en una sola transacción
+(`moverAEquipo`): resta del origen (si era capitán, la capitanía pasa a otro integrante), suma al
+destino con las mismas reglas de cupo (máximo 5) y categoría que al unirse con código, y audita
+`team.move`. Nació para pasar a un Junior de Los.EXE a Los (3.14)las.

@@ -18,7 +18,7 @@ import { categoriaEquipo, type Categoria } from "@/lib/models/categoria";
 import type { Evento } from "@/lib/n8n";
 import { anonimizarParticipante, aplicarRetencion, fechaRetencion } from "@/lib/privacidad/retencion";
 import { estadoEquipo, generarCodigo, slugEquipo } from "@/lib/registro/reglas";
-import { ErrorRegistro, unirseConCodigo } from "@/lib/registro/servicio";
+import { ErrorRegistro, moverAEquipo, unirseConCodigo } from "@/lib/registro/servicio";
 
 /**
  * Acciones de operación del evento (/admin/* y mentoría). Cada una exige el rol de su sección
@@ -133,6 +133,17 @@ export async function asignarAEquipo(participantId: string, fd: FormData) {
     await batch.commit();
     return `Asignada al equipo ${r.teamNombre}.`;
   });
+}
+
+/** Cambia a una persona de equipo (D-51): sale del origen y entra al destino en una transacción. */
+export async function moverDeEquipo(fd: FormData) {
+  return ejecutar("/admin/equipos", async (uid) => {
+    const participantId = String(fd.get("participantId") ?? "");
+    const teamId = String(fd.get("teamId") ?? "");
+    if (!participantId || !teamId) throw new ErrorRegistro("Elige la persona y el equipo destino.");
+    const r = await moverAEquipo(participantId, teamId, uid);
+    return `Movida de ${r.origen} a ${r.destino}.`;
+  }, ["/admin/equipos", "/admin/participantes"]);
 }
 
 /** Fusiona el equipo origen en el destino (máximo 5 integrantes en total). */

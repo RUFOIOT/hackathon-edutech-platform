@@ -2,7 +2,7 @@ import { TRACK_CODES, type RolEquipo } from "@/config/event";
 import { requireAdmin } from "@/lib/auth/session";
 import { FormularioAccion } from "@/components/admin/accion";
 import { CampoSelect, CampoTexto, claseInput } from "@/components/formulario";
-import { asignarAdulto, asignarAEquipo, cambiarTrackAdmin, crearEquipoAdmin, fusionarEquipos } from "@/lib/admin/acciones";
+import { asignarAdulto, asignarAEquipo, cambiarTrackAdmin, crearEquipoAdmin, fusionarEquipos, moverDeEquipo } from "@/lib/admin/acciones";
 import { NOMBRE_ROL } from "@/lib/content/perfil";
 import { construirDataset } from "@/lib/dashboard/dataset";
 import { ahora } from "@/lib/event/reloj";
@@ -17,15 +17,21 @@ const NOMBRE: Record<string, string> = { rojo: "Rojo", ambar: "Ámbar", verde: "
 export default async function Equipos() {
   await requireAdmin("/admin/equipos");
   const db = adminDb();
-  const [dataset, participantes, staff] = await Promise.all([
+  const [dataset, participantes, staff, miembros] = await Promise.all([
     construirDataset(db, { ahora: ahora(), conContacto: false, conPuntajes: false }),
     db.collection("participants").where("teamId", "==", null).get(),
     db.collection("staff").get(),
+    db.collection("team_members").get(),
   ]);
   const activos = dataset.equipos.filter((e) => e.estado !== "fusionado");
   const conLugar = activos.filter((e) => Number(e.miembros) < 5);
   const opcionesEquipo = activos.map((e) => ({ valor: String(e.team_id), etiqueta: `${String(e.nombre)} (${String(e.miembros)})` }));
   const adultos = staff.docs.filter((s) => ((s.get("roles") ?? []) as string[]).some((r) => ["mentor", "comite", "admin"].includes(r)));
+  const nombreEquipo = new Map(activos.map((e) => [String(e.team_id), String(e.nombre)]));
+  const opcionesPersona = miembros.docs
+    .filter((m) => nombreEquipo.has(String(m.get("teamId"))))
+    .map((m) => ({ valor: String(m.get("participantId")), etiqueta: `${String(m.get("nombre"))} (${nombreEquipo.get(String(m.get("teamId")))})` }))
+    .sort((a, b) => a.etiqueta.localeCompare(b.etiqueta, "es"));
   const individuales = participantes.docs.filter((p) => !p.get("enListaEspera"));
 
   return (
@@ -152,6 +158,18 @@ export default async function Equipos() {
             <FormularioAccion accion={crearEquipoAdmin} etiqueta="Crear equipo">
               <CampoTexto id="nuevo-nombre" name="nombre" etiqueta="Nombre" />
               <CampoSelect id="nuevo-track" name="track" etiqueta="Track" opciones={TRACK_CODES.map((t) => ({ valor: t, etiqueta: t }))} />
+            </FormularioAccion>
+          </div>
+        </section>
+        <section aria-labelledby="mover" className="rounded border border-border bg-surface p-4">
+          <h2 id="mover" className="text-lg font-semibold">
+            Cambiar de equipo
+          </h2>
+          <p className="mt-1 text-sm text-muted">La persona sale de su equipo y entra al destino (máximo 5, misma categoría).</p>
+          <div className="mt-3">
+            <FormularioAccion accion={moverDeEquipo} etiqueta="Cambiar de equipo">
+              <CampoSelect id="mover-persona" name="participantId" etiqueta="Persona" opciones={opcionesPersona} />
+              <CampoSelect id="mover-destino" name="teamId" etiqueta="Equipo destino" opciones={opcionesEquipo} />
             </FormularioAccion>
           </div>
         </section>

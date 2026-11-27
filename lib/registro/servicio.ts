@@ -395,3 +395,58 @@ export async function unirseConCodigo(uid: string, codigo: string): Promise<{ te
   await despachar(eventos);
   return r;
 }
+
+/**
+ * La organización cambia a una persona de equipo (D-51). Todo en una transacción: resta del equipo
+ * de origen (si era capitán, la capitanía pasa a otro integrante), suma al destino con las mismas
+ * validaciones de cupo y categoría que al unirse con código, y audita el movimiento.
+ */
+export async function moverAEquipo(uid: string, destinoId: string, actor: string): Promise<{ origen: string; destino: string }> {
+  const eventos: Evento[] = [];
+  const r = await db().runTransaction(async (tx) => {
+    eventos.length = 0;
+    const pRef = db().doc(`participants/${uid}`);
+    const p = await tx.get(pRef);
+    if (!p.exists) throw new ErrorRegistro("No encontramos a esa persona.");
+    const origenId = p.get("teamId") as string | null;
+    if (!origenId) throw new ErrorRegistro("Esa persona no tiene equipo: asígnala desde la lista de personas sin equipo.");
+    if (origenId === destinoId) throw new ErrorRegistro("Ya está en ese equipo.");
+    const categoria = p.get("categoria") as Categoria;
+    const origen = await tx.get(db().doc(`teams/${origenId}`));
+    const miembroRef = db().doc(`team_members/${origenId}_${uid}`);
+    const miembro = await tx.get(miembroRef);
+    const otros = miembro.get("esCapitan")
+      ? (await tx.get(db().collection("team_members").where("teamId", "==", origenId))).docs.filter((d) => d.id !== miembroRef.id)
+      : [];
+    const union = await leerUnion(tx, db().doc(`teams/${destinoId}`), p.get("email"), categoria);
+
+    if (origen.exists) {
+      const c = { JUNIOR: origen.get("conteoCategorias.JUNIOR") ?? 0, OPEN: origen.get("conteoCategorias.OPEN") ?? 0 };
+      c[categoria] = Math.max(0, c[categoria] - 1);
+      const quedan = Math.max(0, (origen.get("miembros") ?? 1) - 1);
+      tx.update(origen.ref, {
+        miembros: quedan,
+        estado: estadoEquipo(quedan),
+        conteoCategorias: c,
+        categoria: categoriaDesdeConteo(c),
+        requiereAdulto: c.JUNIOR > 0,
+      });
+    }
+    if (otros[0]) tx.update(otros[0].ref, { esCapitan: true });
+    tx.delete(miembroRef);
+    const nuevos = aplicarUnion(tx, union, uid, categoria, eventos);
+    tx.update(pRef, { teamId: destinoId });
+    tx.set(db().doc(`team_members/${destinoId}_${uid}`), {
+      teamId: destinoId,
+      participantId: uid,
+      nombre: `${p.get("nombres")} ${p.get("apellidos")}`,
+      githubUsername: p.get("githubUsername"),
+      rol: p.get("perfilTecnico.rolPreferido"),
+      esCapitan: false,
+    });
+    auditarEn(tx, { actor, accion: "team.move", entidad: "participants", entidadId: uid, antes: { teamId: origenId }, despues: { teamId: destinoId, miembros: nuevos } });
+    return { origen: String(origen.get("nombre") ?? origenId), destino: String(union.team.get("nombre")) };
+  });
+  await despachar(eventos);
+  return r;
+}

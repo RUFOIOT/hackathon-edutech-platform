@@ -67,7 +67,7 @@ descarga un XLSX y guárdalo como respaldo sin conexión.
 
 ### Equipos
 - **Crear equipo**, **Asignar** a alguien sin equipo (matchmaking del viernes), **Fusionar**
-  equipos pequeños y **Cambiar** el track (hasta el checkpoint 1).
+  equipos pequeños, **Cambiar de equipo** a una persona (sale de su equipo y entra a otro) y **Cambiar** el track (hasta el checkpoint 1).
 - Equipos con Junior: asigna el **mentor adulto** responsable (obligatorio por la guía).
 
 ### Repositorios

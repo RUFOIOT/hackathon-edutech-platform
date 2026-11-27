@@ -21,8 +21,8 @@ import {
 
 /**
  * Jurado y resultados (prompt §4, rúbrica §4–§8). Toda escritura pasa por aquí, con auditoría.
- * Desde la reunión de staff del 10 nov 2026 hay una sola ronda: el Show and Tell en 2 salas
- * simultáneas (3 jurados por sala), sin agrupar por track y sin final.
+ * Ronda de salas del Show and Tell en 3 salas simultáneas (3 jurados por sala), sin agrupar por
+ * track (D-49). La final de los 3 finalistas se califica fuera de la plataforma.
  */
 
 /**

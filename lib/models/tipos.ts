@@ -236,7 +236,7 @@ export interface MentorRequestDoc {
 export interface JudgeDoc {
   nombre: string;
   perfil: "tecnico" | "educativo" | "negocio";
-  roomId: string | null; // sala del Show and Tell (2 salas, 3 jurados por sala)
+  roomId: string | null; // sala del Show and Tell (3 salas, 3 jurados por sala)
 }
 
 /** rooms/{roomId}: recibe equipos de cualquier track. */

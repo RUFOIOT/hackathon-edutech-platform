@@ -59,16 +59,17 @@ La regla de oro del evento: **se premia lo que funciona en vivo y está en el re
 | | 12:30 | Plazo del checkpoint 2: demo funcional mínima desplegada o ejecutable |
 | | 13:00 | Almuerzo libre (no incluido) |
 | | **14:00** | **Entrega: se cierran el tag `entrega` y el formulario de entrega; validación automática de repositorios** |
-| | 15:00 | Show and Tell en dos salas simultáneas |
+| | 15:00 | Show and Tell: ronda de salas en 3 salas simultáneas |
+| | **16:20** | **Final: los 3 finalistas ante los 9 jurados** |
 | | 16:45 | Premiación y cierre (hasta las 17:00) |
 
 > **Reprogramación.** El hackathon se movió al viernes 27 y sábado 28 de noviembre de 2026. En la fecha original (6 y 7 de noviembre) el POA 2026-2027 asignaba el sábado 7 a la "1era Integración Padres" (SEM 009). Debe verificarse que el 27 y 28 estén libres en el POA y confirmarse el uso compartido de la sede el viernes 27, que es día lectivo. Ver sección 12.
 
 ## 5. Show and Tell
 
-Una sola ronda, de 15:00 a 16:30, en **dos salas simultáneas con 3 jurados cada una**. Los equipos no se agrupan por track: cada uno indica el track que eligió. No hay final.
+**Ronda de salas**, de 15:00 a 16:15, en **tres salas simultáneas con 3 jurados cada una** (9 jurados en total). Los equipos no se agrupan por track: cada uno indica el track que eligió. Cada equipo dispone de **6 minutos**: 3 de demo en vivo del proyecto funcionando y 2 de preguntas del jurado, más 1 de transición. El cronómetro es visible en la sala.
 
-Cada equipo dispone de **10 minutos**: 3 de demo en vivo del proyecto funcionando y 7 de preguntas del jurado. El cronómetro es visible en la sala.
+**Final**, desde las 16:20. Cada sala saca **un finalista**: el equipo con el mayor puntaje de su sala. Los **3 finalistas** presentan ante los 9 jurados: 3 minutos de demo y 3 de preguntas cada uno. El jurado delibera a las 16:40 y la premiación es a las 16:45.
 
 Con los puntajes de la rúbrica, normalizados por sala (ver Rúbrica, sección 5), el jurado delibera y define el 1.er y 2.º lugar Open y el mejor equipo Junior. Los resultados se anuncian en la premiación de las 16:45.
 

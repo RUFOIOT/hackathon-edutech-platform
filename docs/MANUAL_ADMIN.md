@@ -83,7 +83,7 @@ Ver la sección 5 (QR).
 - En rojo: más de 30 minutos esperando (también se avisa por Slack si n8n está conectado).
 
 ### Jurado y salas
-1. **Guardar sala** (identificador y nombre; son 2 salas y aceptan cualquier track) y **Registrar
+1. **Guardar sala** (identificador y nombre; son 3 salas y aceptan cualquier track; D-49) y **Registrar
    juez** en su sala (3 por sala).
 2. **Generar orden del Show and Tell** (reparte a los equipos completos entre las salas al azar y
    reemplaza el orden actual; puedes mover equipos).
@@ -127,7 +127,7 @@ Registro de cada acción sensible (quién, qué, cuándo). Filtra por entidad, a
   inscripciones**: los QR ya emitidos dejarían de servir (habría que usar la búsqueda manual).
 
 **Qué decirles a los participantes** (por ejemplo, en el comunicado previo):
-> El viernes desde las 15:30, abre https://edutech-hackathon-2026.netlify.app/mi-equipo en tu
+> El viernes desde las 15:00, abre https://edutech-hackathon-2026.netlify.app/mi-equipo en tu
 > celular y muestra tu QR en la entrada. Categoría Open: trae tu documento de identidad.
 
 ### Cómo se usa en la puerta
@@ -162,7 +162,7 @@ búsqueda manual (ver `docs/RUNBOOK.md`).
 | Antes de abrir inscripciones | Admin | Organización: dar acceso al staff. Revisar datos "Por anunciar" |
 | Convocatoria (desde el 5 oct) | Comité | Validar autorizaciones Junior a diario; admitir de lista de espera; revisar el dashboard |
 | Semana previa | Admin | Exportar XLSX de respaldo; registrar salas y jueces; probar el escáner con un QR real |
-| Viernes 15:30 | Check-in | Escanear QR en la puerta |
+| Viernes 15:00 | Check-in | Escanear QR en la puerta |
 | Viernes 16:50 | Comité | Equipos: matchmaking de inscritos individuales |
 | Hacking | Mesa técnica | Semáforo cada 30 min; mentoría; repositorios y alertas |
 | Sábado 14:00 | Mesa técnica | Revisar entregas, tags movidos y decidir A4 |

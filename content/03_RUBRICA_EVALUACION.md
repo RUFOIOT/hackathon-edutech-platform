@@ -106,11 +106,13 @@ Puntaje del equipo en la sala = promedio de los jueces de esa sala, aplicando la
 
 ## 5. Normalización entre salas
 
-El Show and Tell usa dos salas simultáneas con 3 jurados distintos en cada una. Para comparar de forma justa, el puntaje de cada equipo se normaliza dentro de su sala:
+La ronda de salas del Show and Tell usa tres salas simultáneas con 3 jurados distintos en cada una. Para comparar de forma justa, el puntaje de cada equipo se normaliza dentro de su sala:
 
 `z = (puntaje del equipo − promedio de la sala) ÷ desviación estándar de la sala`
 
-No hay final: el ranking de cada categoría (Open y Junior) se ordena por z y de ahí salen el 1.er y 2.º lugar Open y el mejor equipo Junior. Si una sala tiene menos de 4 equipos, no se normaliza y el comité decide la ubicación de sus equipos.
+**Finalistas.** El equipo con el mayor puntaje promedio de cada sala pasa a la final (si hay empate, se aplican los desempates de la sección 6). Dentro de una sala todos los equipos tienen los mismos jurados, así que no hace falta normalizar para elegir al finalista.
+
+**Final.** Los 3 finalistas presentan ante los 9 jurados (3 minutos de demo y 3 de preguntas). Cada jurado los califica con esta misma rúbrica y el orden de la final sale del promedio de los 9 jurados; los desempates siguen la sección 6. El ranking normalizado por z se usa para el premio Junior. Si una sala tiene menos de 4 equipos, no se normaliza y el comité decide la ubicación de sus equipos.
 
 ## 6. Desempates (en este orden)
 
@@ -123,10 +125,10 @@ No hay final: el ranking de cada categoría (Open y Junior) se ordena por z y de
 
 | Premio | Base de decisión |
 |---|---|
-| 1.er y 2.º lugar Open | Los dos mayores valores de z entre los equipos Open |
-| Mejor equipo Junior | Mayor valor de z entre los equipos Junior |
+| 1.er y 2.º lugar Open | Los dos mejores equipos Open de la final (promedio de los 9 jurados) |
+| Mejor equipo Junior | Mayor valor de z entre los equipos Junior en la ronda de salas |
 
-Los jurados deliberan con estos puntajes y tienen los resultados listos a las 16:30. Todos los participantes reciben un certificado digital con la retroalimentación del jurado.
+Las salas cierran a las 16:15, la final es a las 16:20 y el jurado delibera a las 16:40 para la premiación de las 16:45. Todos los participantes reciben un certificado digital con la retroalimentación del jurado.
 
 ## 8. Integridad del jurado
 

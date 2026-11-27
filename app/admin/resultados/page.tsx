@@ -78,8 +78,9 @@ export default async function AdminResultados() {
     <div className="mx-auto max-w-7xl px-4 py-8">
       <h1 className="text-2xl font-semibold">Resultados</h1>
       <p className="mt-1 text-sm text-muted">
-        Visible solo para admin y comité. {publicado ? "Los resultados ya están publicados." : "Aún no publicados."} Los resultados deben estar listos a
-        las 16:30 para la premiación de las 16:45.
+        Visible solo para admin y comité. {publicado ? "Los resultados ya están publicados." : "Aún no publicados."} Las salas cierran a las 16:15 y cada una
+        aporta su finalista (mayor puntaje de la sala). Tras la final de las 16:20, registra aquí el 1.er y 2.º lugar que decidió
+        el jurado; el mejor Junior sale del ranking normalizado. Premiación: 16:45.
       </p>
 
       <section aria-labelledby="salas" className="mt-8">

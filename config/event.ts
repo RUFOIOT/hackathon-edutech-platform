@@ -63,7 +63,7 @@ export const EVENT = {
     codeFreeze: { iso: "2026-11-28T14:00:00-05:00", confirmada: true },
     showAndTell: { iso: "2026-11-28T15:00:00-05:00", confirmada: true },
     /** Hora límite interna para que el jurado tenga los resultados (no se publica en la agenda). */
-    resultadosListos: { iso: "2026-11-28T16:30:00-05:00", confirmada: true },
+    resultadosListos: { iso: "2026-11-28T16:15:00-05:00", confirmada: true },
     premiacion: { iso: "2026-11-28T16:45:00-05:00", confirmada: true },
     cierreEvento: { iso: "2026-11-28T17:00:00-05:00", confirmada: true },
     publicacionResultadosDetallados: { iso: "2026-12-04T12:00:00-05:00", confirmada: false },
@@ -81,10 +81,13 @@ export const EVENT = {
     OPEN: { edadMin: 18, edadMax: null, nombre: "Open" },
   },
   /**
-   * Show and Tell en una sola ronda: 2 salas simultáneas con 3 jurados cada una, sin agrupar por
-   * track. 10 min por equipo (3 de demo en vivo y 7 de preguntas) más 3 de transición.
+   * Show and Tell (D-49, 27 nov 2026): ronda de salas en 3 salas simultáneas con 3 jurados cada una,
+   * sin agrupar por track. 6 min por equipo (3 de demo en vivo y 2 de preguntas) más 1 de transición.
+   * Cada sala saca un finalista (su mayor puntaje) y los 3 presentan en la final ante los 9 jurados.
    */
-  showAndTell: { minutosExposicion: 3, minutosPreguntas: 7, minutosTransicion: 3, salas: 2, juecesPorSala: 3 },
+  showAndTell: { minutosExposicion: 3, minutosPreguntas: 2, minutosTransicion: 1, salas: 3, juecesPorSala: 3 },
+  /** Final del Show and Tell: 3 finalistas, 3 min de demo y 3 de preguntas cada uno, ante los 9 jurados. */
+  finalShowAndTell: { finalistas: 3, minutosExposicion: 3, minutosPreguntas: 3 },
   /** Retención de datos personales tras el evento, en meses (Fase 8). */
   retencionMeses: 12,
 } as const;
@@ -301,7 +304,8 @@ export const AGENDA: { dia: "Viernes 27" | "Sábado 28"; hora: string; bloque: s
   { dia: "Sábado 28", hora: "12:30", bloque: "Plazo del checkpoint 2: demo funcional mínima desplegada o ejecutable" },
   { dia: "Sábado 28", hora: "13:00", bloque: "Almuerzo libre (no incluido)" },
   { dia: "Sábado 28", hora: "14:00", bloque: "Entrega: se cierran el tag entrega y el formulario de entrega; validación automática de repositorios", hito: true },
-  { dia: "Sábado 28", hora: "15:00", bloque: "Show and Tell en dos salas simultáneas" },
+  { dia: "Sábado 28", hora: "15:00", bloque: "Show and Tell: ronda de salas en 3 salas simultáneas (6 min por equipo)" },
+  { dia: "Sábado 28", hora: "16:20", bloque: "Final: los 3 finalistas, uno por sala, ante los 9 jurados", hito: true },
   { dia: "Sábado 28", hora: "16:45", bloque: "Premiación y cierre (hasta las 17:00)" },
 ];
 

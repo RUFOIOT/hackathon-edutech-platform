@@ -35,7 +35,7 @@ export default async function AdminJurado() {
     <div className="mx-auto max-w-7xl px-4 py-8">
       <h1 className="text-2xl font-semibold">Jurado y salas</h1>
       <p className="mt-1 text-sm text-muted">
-        Show and Tell en una sola ronda: 2 salas simultáneas con 3 jurados cada una. Los equipos se reparten sin agruparse por track.
+        Show and Tell: ronda de salas en 3 salas simultáneas con 3 jurados cada una (6 min por equipo), sin agrupar por track. Cada sala saca un finalista (su mayor puntaje) y los 3 presentan en la final de las 16:20 ante los 9 jurados.
       </p>
 
       <section aria-labelledby="salas" className="mt-8">

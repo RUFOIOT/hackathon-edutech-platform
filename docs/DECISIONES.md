@@ -453,3 +453,19 @@ Toda animación nueva lleva su `animation: none` bajo `prefers-reduced-motion` (
 7. **Checkpoint 2** ("algo ejecutable de punta a punta") no se puede verificar automáticamente.
    El sistema marcará indicios (commits nuevos, `src/` no vacío, URL de demo o instrucciones en el
    README) y la mesa técnica lo confirmará a mano.
+
+## D-49 · Ronda de salas en 3 salas y final de 3 equipos (organización, 27 nov 2026)
+
+Con 35 equipos, 2 salas a 13 min por equipo no alcanzaban. La organización sumó una tercera sala
+(id `aula`, "Aula por designar") y un noveno jurado: **3 salas con 3 jurados cada una**.
+
+- **Ronda de salas** 15:00–16:15: 6 min por equipo (3 de demo, 2 de preguntas, 1 de transición).
+  `generarOrden` ya reparte entre todas las salas de `rooms`, así que no cambió.
+- **Finalistas:** el mayor puntaje promedio de cada sala (mismos jurados dentro de la sala, sin
+  normalizar; desempates de la rúbrica §6).
+- **Final** 16:20: los 3 finalistas ante los 9 jurados, 3 min de demo y 3 de preguntas. Se califica
+  con la misma rúbrica **fuera de la plataforma** (hoja impresa; promedio de los 9 jurados), porque
+  cada juez solo ve su sala (D-47) y no había tiempo para reabrir la ronda final de D-32. El comité
+  registra el 1.er y 2.º lugar Open en `/admin/resultados`; el mejor Junior sigue saliendo del z de
+  la ronda de salas.
+- `resultadosListos` pasa a las 16:15 (cierre de salas); la premiación sigue a las 16:45.

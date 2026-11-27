@@ -4,8 +4,9 @@ import { RUBRICA, TOPE_C2_UNO, type CriterioCodigo } from "@/lib/models/rubrica"
 /**
  * Cálculo de puntajes (rúbrica §4–§7). Funciones puras: las usan /admin/resultados, la
  * publicación y los tests. Equivalen a las funciones SQL score_total, room_normalization y
- * tiebreak del prompt (D-01). Desde la reunión de staff del 10 nov 2026 hay una sola ronda de
- * Show and Tell (2 salas, sin final): el ranking sale de los z-scores de esa ronda.
+ * tiebreak del prompt (D-01). Desde el 27 nov 2026 (D-49) la ronda de salas es en 3 salas: el
+ * mayor puntaje de cada sala pasa a la final (fuera de la plataforma) y el comité registra el
+ * resultado en /admin/resultados. El mejor Junior sale de los z-scores de la ronda de salas.
  */
 
 export type Niveles = Record<"c1" | "c2" | "c3" | "c4" | "c5" | "c6", number>;

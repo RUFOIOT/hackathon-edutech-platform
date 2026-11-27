@@ -114,9 +114,9 @@ Luego, en la plataforma, pestaña **Entregar proyecto**:
 
 Si mueves el tag `entrega` después de las 14:00, el sistema lo detecta y el comité revisa el caso.
 
-## 7. Show and Tell: 10 minutos
+## 7. Show and Tell: 6 minutos (y la final)
 
-El sábado a las 15:00, en dos salas simultáneas con 3 jurados cada una. Tienes 10 minutos: 3 para mostrar tu proyecto funcionando en vivo y 7 para responder al jurado. El cronómetro es visible y el micrófono se apaga al minuto 10. No hay final: con estos puntajes se definen los ganadores.
+El sábado a las 15:00, en tres salas simultáneas con 3 jurados cada una. Tienes 6 minutos: 3 para mostrar tu proyecto funcionando en vivo y 2 para responder al jurado, más 1 para el cambio de equipo. El cronómetro es visible y el turno se cierra al minuto 5. El equipo con el mayor puntaje de cada sala pasa a la **final de las 16:20**: los 3 finalistas presentan ante los 9 jurados (3 minutos de demo y 3 de preguntas).
 
 | Minuto | Bloque | Lo que el jurado necesita ver |
 |---|---|---|

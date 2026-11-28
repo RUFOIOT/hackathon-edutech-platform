@@ -97,7 +97,10 @@ export async function construirDataset(db: Firestore, opts: { ahora: Date; conCo
     const t = d.data();
     const r = repo.get(d.id);
     const s = (r?.ultimoSnapshot ?? null) as Record<string, unknown> | null;
-    const a = adm.get(d.id);
+    const adm0 = adm.get(d.id);
+    // admissibility/{id} puede existir solo con la decisión A4 de la mesa técnica (antes de la entrega):
+    // A1–A3 y A5 no están calculados todavía y no deben contar como "No cumple".
+    const a = adm0 && adm0.a1 !== undefined ? adm0 : undefined;
     const e = sub.get(d.id);
     const miembros = col.participants.docs.filter((p) => p.get("teamId") === d.id);
     const presentes = miembros.filter((p) => hizoCheckin(p.id, "viernes") || hizoCheckin(p.id, "sabado")).length;
@@ -144,7 +147,7 @@ export async function construirDataset(db: Firestore, opts: { ahora: Date; conCo
       a1: a ? b(a.a1) : null,
       a2: a ? b(a.a2) : null,
       a3: a ? b(a.a3) : null,
-      a4: a && a.a4 !== null && a.a4 !== undefined ? b(a.a4) : null,
+      a4: adm0 && adm0.a4 !== null && adm0.a4 !== undefined ? b(adm0.a4) : null,
       a5: a ? b(a.a5) : null,
       presentes,
       mentorias_abiertas: abiertas.length,

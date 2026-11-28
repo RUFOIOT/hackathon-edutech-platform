@@ -183,7 +183,11 @@ export interface CacheSecretos {
 
 export const ARCHIVOS_OBLIGATORIOS = ["README.md", "PRIOR_WORK.md", "AI_USAGE.md", ".env.example", "docs/", "n8n/*.json", "LICENSE", "data/README.md"] as const;
 
-const MAX_BLOBS_POR_SNAPSHOT = 300;
+// Tope de blobs nuevos por snapshot y descargas en paralelo: con 300 en serie un repo grande
+// superaba el timeout de la función de Netlify y el registro fallaba. El resto se analiza en los
+// siguientes snapshots (la caché recuerda los SHA ya revisados).
+const MAX_BLOBS_POR_SNAPSHOT = 40;
+const DESCARGAS_PARALELAS = 10;
 
 /** Hora de Ecuador (UTC-5 fijo) como clave "AAAA-MM-DDTHH". */
 export function horaEcuador(d: Date): string {
@@ -265,16 +269,24 @@ export async function snapshotRepo(
   const candidatos = arbol.filter((a) => a.tipo === "blob" && debeAnalizarse(a.path, a.size));
   const enCache = (await opts.cache?.leer(candidatos.map((c) => c.sha))) ?? new Map<string, Omit<Hallazgo, "archivo">[]>();
   const nuevos = new Map<string, Omit<Hallazgo, "archivo">[]>();
+  const porDescargar: typeof candidatos = [];
+  for (const archivo of candidatos) {
+    if (enCache.has(archivo.sha) || porDescargar.some((p) => p.sha === archivo.sha)) continue;
+    if (porDescargar.length >= MAX_BLOBS_POR_SNAPSHOT) break; // el resto se analiza en el siguiente snapshot
+    porDescargar.push(archivo);
+  }
+  for (let i = 0; i < porDescargar.length; i += DESCARGAS_PARALELAS) {
+    await Promise.all(
+      porDescargar.slice(i, i + DESCARGAS_PARALELAS).map(async (archivo) => {
+        const contenido = archivo.sha === readme?.sha ? textoReadme : await cliente.contenido(owner, name, archivo.sha);
+        nuevos.set(archivo.sha, detectarSecretos(archivo.path, contenido).map(({ tipo, linea, muestra }) => ({ tipo, linea, muestra })));
+      }),
+    );
+  }
   const secretos: Hallazgo[] = [];
   for (const archivo of candidatos) {
-    let hallazgos = enCache.get(archivo.sha) ?? nuevos.get(archivo.sha);
-    if (!hallazgos) {
-      if (nuevos.size >= MAX_BLOBS_POR_SNAPSHOT) continue; // el resto se analiza en el siguiente snapshot
-      const contenido = archivo.sha === readme?.sha ? textoReadme : await cliente.contenido(owner, name, archivo.sha);
-      hallazgos = detectarSecretos(archivo.path, contenido).map(({ tipo, linea, muestra }) => ({ tipo, linea, muestra }));
-      nuevos.set(archivo.sha, hallazgos);
-    }
-    secretos.push(...hallazgos.map((h) => ({ ...h, archivo: archivo.path })));
+    const hallazgos = enCache.get(archivo.sha) ?? nuevos.get(archivo.sha);
+    if (hallazgos) secretos.push(...hallazgos.map((h) => ({ ...h, archivo: archivo.path })));
   }
   if (nuevos.size) await opts.cache?.guardar(nuevos);
 

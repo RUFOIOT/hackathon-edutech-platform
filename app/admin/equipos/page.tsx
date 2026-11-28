@@ -55,6 +55,11 @@ export default async function Equipos() {
                 <td className="py-2 pr-3 font-medium">
                   {String(e.nombre)}
                   <span className="block text-xs text-muted">{String(e.categoria)}</span>
+                  {capitan.has(String(e.team_id)) && (
+                    <span className="block text-xs text-muted" data-capitan>
+                      Capitán: {capitan.get(String(e.team_id))}
+                    </span>
+                  )}
                 </td>
                 <td className="py-2 pr-3 tabular-nums">
                   {String(e.miembros)} · {e.estado === "completo" ? "completo" : "incompleto"}

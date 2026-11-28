@@ -33,6 +33,7 @@ export default async function Equipos() {
     .map((m) => ({ valor: String(m.get("participantId")), etiqueta: `${String(m.get("nombre"))} (${nombreEquipo.get(String(m.get("teamId")))})` }))
     .sort((a, b) => a.etiqueta.localeCompare(b.etiqueta, "es"));
   const individuales = participantes.docs.filter((p) => !p.get("enListaEspera"));
+  const capitan = new Map(miembros.docs.filter((m) => m.get("esCapitan")).map((m) => [String(m.get("teamId")), String(m.get("nombre"))]));
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">

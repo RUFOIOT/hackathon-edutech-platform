@@ -2,7 +2,7 @@ import { TRACK_CODES, type RolEquipo } from "@/config/event";
 import { requireAdmin } from "@/lib/auth/session";
 import { FormularioAccion } from "@/components/admin/accion";
 import { CampoSelect, CampoTexto, claseInput } from "@/components/formulario";
-import { asignarAdulto, asignarAEquipo, cambiarTrackAdmin, crearEquipoAdmin, fusionarEquipos, moverDeEquipo } from "@/lib/admin/acciones";
+import { asignarAdulto, asignarAEquipo, cambiarTrackAdmin, crearEquipoAdmin, fusionarEquipos, marcarAusente, moverDeEquipo, nombrarCapitan } from "@/lib/admin/acciones";
 import { NOMBRE_ROL } from "@/lib/content/perfil";
 import { construirDataset } from "@/lib/dashboard/dataset";
 import { ahora } from "@/lib/event/reloj";
@@ -32,7 +32,7 @@ export default async function Equipos() {
     .filter((m) => nombreEquipo.has(String(m.get("teamId"))))
     .map((m) => ({ valor: String(m.get("participantId")), etiqueta: `${String(m.get("nombre"))} (${nombreEquipo.get(String(m.get("teamId")))})` }))
     .sort((a, b) => a.etiqueta.localeCompare(b.etiqueta, "es"));
-  const individuales = participantes.docs.filter((p) => !p.get("enListaEspera"));
+  const individuales = participantes.docs.filter((p) => !p.get("enListaEspera") && !p.get("ausente"));
   const capitan = new Map(miembros.docs.filter((m) => m.get("esCapitan")).map((m) => [String(m.get("teamId")), String(m.get("nombre"))]));
 
   return (
@@ -176,6 +176,30 @@ export default async function Equipos() {
             <FormularioAccion accion={moverDeEquipo} etiqueta="Cambiar de equipo">
               <CampoSelect id="mover-persona" name="participantId" etiqueta="Persona" opciones={opcionesPersona} />
               <CampoSelect id="mover-destino" name="teamId" etiqueta="Equipo destino" opciones={opcionesEquipo} />
+            </FormularioAccion>
+          </div>
+        </section>
+        <section aria-labelledby="ausente" className="rounded border border-border bg-surface p-4">
+          <h2 id="ausente" className="text-lg font-semibold">
+            Marcar ausente
+          </h2>
+          <p className="mt-1 text-sm text-muted">
+            La persona sale de su equipo y queda inscrita como ausente (no aparece para asignar). Si era capitán, la capitanía pasa a otro integrante.
+          </p>
+          <div className="mt-3">
+            <FormularioAccion accion={marcarAusente} etiqueta="Marcar ausente">
+              <CampoSelect id="ausente-persona" name="participantId" etiqueta="Persona" opciones={opcionesPersona} />
+            </FormularioAccion>
+          </div>
+        </section>
+        <section aria-labelledby="capitan" className="rounded border border-border bg-surface p-4">
+          <h2 id="capitan" className="text-lg font-semibold">
+            Cambiar capitán
+          </h2>
+          <p className="mt-1 text-sm text-muted">La persona elegida pasa a ser capitán de su equipo.</p>
+          <div className="mt-3">
+            <FormularioAccion accion={nombrarCapitan} etiqueta="Nombrar capitán">
+              <CampoSelect id="capitan-persona" name="participantId" etiqueta="Persona" opciones={opcionesPersona} />
             </FormularioAccion>
           </div>
         </section>

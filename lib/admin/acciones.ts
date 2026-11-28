@@ -18,7 +18,7 @@ import { categoriaEquipo, type Categoria } from "@/lib/models/categoria";
 import type { Evento } from "@/lib/n8n";
 import { anonimizarParticipante, aplicarRetencion, fechaRetencion } from "@/lib/privacidad/retencion";
 import { estadoEquipo, generarCodigo, slugEquipo } from "@/lib/registro/reglas";
-import { ErrorRegistro, moverAEquipo, unirseConCodigo } from "@/lib/registro/servicio";
+import { cambiarCapitan, ErrorRegistro, moverAEquipo, retirarPorAusencia, unirseConCodigo } from "@/lib/registro/servicio";
 
 /**
  * Acciones de operación del evento (/admin/* y mentoría). Cada una exige el rol de su sección
@@ -144,6 +144,24 @@ export async function moverDeEquipo(fd: FormData) {
     const r = await moverAEquipo(participantId, teamId, uid);
     return `Movida de ${r.origen} a ${r.destino}.`;
   }, ["/admin/equipos", "/admin/participantes"]);
+}
+
+export async function marcarAusente(fd: FormData) {
+  return ejecutar("/admin/equipos", async (uid) => {
+    const participantId = String(fd.get("participantId") ?? "");
+    if (!participantId) throw new ErrorRegistro("Elige a la persona.");
+    const r = await retirarPorAusencia(participantId, uid);
+    return `${r.nombre} quedó como ausente y salió de ${r.equipo}.`;
+  }, ["/admin/equipos", "/admin/participantes"]);
+}
+
+export async function nombrarCapitan(fd: FormData) {
+  return ejecutar("/admin/equipos", async (uid) => {
+    const participantId = String(fd.get("participantId") ?? "");
+    if (!participantId) throw new ErrorRegistro("Elige a la persona.");
+    const r = await cambiarCapitan(participantId, uid);
+    return `${r.nombre} es ahora capitán de ${r.equipo}.`;
+  }, ["/admin/equipos"]);
 }
 
 /** Fusiona el equipo origen en el destino (máximo 5 integrantes en total). */

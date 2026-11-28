@@ -450,3 +450,61 @@ export async function moverAEquipo(uid: string, destinoId: string, actor: string
   await despachar(eventos);
   return r;
 }
+
+/**
+ * Saca a una persona de su equipo por ausencia (decisión del comité). Queda inscrita, sin equipo y
+ * marcada como ausente; el equipo de origen descuenta el cupo y, si era capitán, la capitanía pasa
+ * a otro integrante. Todo en una transacción con auditoría.
+ */
+export async function retirarPorAusencia(uid: string, actor: string): Promise<{ nombre: string; equipo: string }> {
+  return db().runTransaction(async (tx) => {
+    const pRef = db().doc(`participants/${uid}`);
+    const p = await tx.get(pRef);
+    if (!p.exists) throw new ErrorRegistro("No encontramos a esa persona.");
+    const origenId = p.get("teamId") as string | null;
+    if (!origenId) throw new ErrorRegistro("Esa persona ya no tiene equipo.");
+    const categoria = p.get("categoria") as Categoria;
+    const origen = await tx.get(db().doc(`teams/${origenId}`));
+    const miembroRef = db().doc(`team_members/${origenId}_${uid}`);
+    const miembro = await tx.get(miembroRef);
+    const otros = (await tx.get(db().collection("team_members").where("teamId", "==", origenId))).docs.filter((d) => d.id !== miembroRef.id);
+    const eraCapitan = miembro.get("esCapitan") === true || origen.get("capitanId") === uid;
+    if (origen.exists) {
+      const c = { JUNIOR: origen.get("conteoCategorias.JUNIOR") ?? 0, OPEN: origen.get("conteoCategorias.OPEN") ?? 0 };
+      c[categoria] = Math.max(0, c[categoria] - 1);
+      const quedan = Math.max(0, (origen.get("miembros") ?? 1) - 1);
+      tx.update(origen.ref, {
+        miembros: quedan,
+        estado: estadoEquipo(quedan),
+        conteoCategorias: c,
+        categoria: categoriaDesdeConteo(c),
+        requiereAdulto: c.JUNIOR > 0,
+        ...(eraCapitan ? { capitanId: otros[0]?.get("participantId") ?? null } : {}),
+      });
+    }
+    if (eraCapitan && otros[0]) tx.update(otros[0].ref, { esCapitan: true });
+    tx.delete(miembroRef);
+    tx.update(pRef, { teamId: null, ausente: true, equipoAnterior: origenId });
+    auditarEn(tx, { actor, accion: "team.absent", entidad: "participants", entidadId: uid, antes: { teamId: origenId }, despues: { teamId: null, ausente: true } });
+    return { nombre: `${p.get("nombres")} ${p.get("apellidos")}`, equipo: String(origen.get("nombre") ?? origenId) };
+  });
+}
+
+/** Nombra capitán a un integrante del equipo (y le quita la capitanía al anterior). */
+export async function cambiarCapitan(uid: string, actor: string): Promise<{ nombre: string; equipo: string }> {
+  return db().runTransaction(async (tx) => {
+    const p = await tx.get(db().doc(`participants/${uid}`));
+    const teamId = p.get("teamId") as string | null;
+    if (!p.exists || !teamId) throw new ErrorRegistro("Esa persona no tiene equipo.");
+    const team = await tx.get(db().doc(`teams/${teamId}`));
+    const miembros = await tx.get(db().collection("team_members").where("teamId", "==", teamId));
+    if (!miembros.docs.some((m) => m.get("participantId") === uid)) throw new ErrorRegistro("Esa persona no figura como integrante del equipo.");
+    for (const m of miembros.docs) {
+      const debe = m.get("participantId") === uid;
+      if (m.get("esCapitan") !== debe) tx.update(m.ref, { esCapitan: debe });
+    }
+    tx.update(team.ref, { capitanId: uid });
+    auditarEn(tx, { actor, accion: "team.captain", entidad: "teams", entidadId: teamId, antes: { capitanId: team.get("capitanId") ?? null }, despues: { capitanId: uid } });
+    return { nombre: `${p.get("nombres")} ${p.get("apellidos")}`, equipo: String(team.get("nombre") ?? teamId) };
+  });
+}

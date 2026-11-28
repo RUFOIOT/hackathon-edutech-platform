@@ -116,7 +116,7 @@ async function leerUnion(tx: Transaction, teamRef: DocumentReference, email: str
   if (!team.exists) throw new ErrorRegistro("Ese equipo ya no existe. Pide un código nuevo a tu capitán.", "codigo");
   const miembros: number = team.get("miembros") ?? 0;
   if (!hayLugar(miembros)) throw new ErrorRegistro("Ese equipo ya tiene 5 integrantes.", "codigo");
-  const choque = motivoCategoriaIncompatible(team.get("conteoCategorias"), categoria);
+  const choque = EVENT.equiposMixtosAutorizados.includes(team.id) ? null : motivoCategoriaIncompatible(team.get("conteoCategorias"), categoria);
   if (choque) throw new ErrorRegistro(choque, "codigo");
   const invRef = db().doc(`invitations/${invitacionId(team.id, email)}`);
   const inv = await tx.get(invRef);

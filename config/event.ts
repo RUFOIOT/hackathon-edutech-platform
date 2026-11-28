@@ -79,6 +79,11 @@ export const EVENT = {
     confirmado: false,
   },
   equipo: { min: 2, max: 5 },
+  /**
+   * Excepción a "una sola categoría por equipo" (D-54): equipos donde el comité autorizó integrar a un
+   * Junior junto a su padre o representante. Compiten como MIXTO, que cuenta como Open (D-47).
+   */
+  equiposMixtosAutorizados: ["vibeeduki"] as string[],
   categorias: {
     JUNIOR: { edadMin: 14, edadMax: 17, nombre: "Junior" },
     OPEN: { edadMin: 18, edadMax: null, nombre: "Open" },

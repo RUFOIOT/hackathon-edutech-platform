@@ -501,3 +501,10 @@ repositorios en cuentas personales. Por pedido de la organización, `validateRep
 repositorio **público** de cualquier cuenta: el chequeo "organizacion" pasa a ser informativo y
 siempre se verifica que exista y se pueda leer. Se mantienen el nombre `edutech26-t{track}-{slug}`
 y la creación después del kick-off. La Guía del hacker §4.1 se actualizó.
+
+## D-54 · Excepción de equipo mixto: VibeEduki (organización, 27 nov 2026)
+
+Se autoriza que un participante Junior se integre a VibeEduki porque allí está su padre y
+representante. `EVENT.equiposMixtosAutorizados` lista los equipos exceptuados de
+`motivoCategoriaIncompatible`; el resto sigue siendo de una sola categoría. El equipo queda MIXTO,
+compite como Open (D-47) y no opta al premio Junior (rúbrica §7). Requiere adulto responsable.

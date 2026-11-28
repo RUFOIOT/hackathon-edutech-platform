@@ -85,12 +85,15 @@ function serializarSnapshot(teamId: string, s: Snapshot) {
 export async function tomarSnapshot(teamId: string): Promise<(Snapshot & { teamId: string }) | null> {
   const repo = await db().doc(`repositories/${teamId}`).get();
   if (!repo.exists || !repo.get("owner") || !repo.get("createdAtGithub")) return null;
+  // La rama principal puede cambiar después del registro: se lee la actual de GitHub en cada snapshot.
+  const info = await clienteGithub.repo(repo.get("owner"), repo.get("name")).catch(() => null);
+  const defaultBranch = info?.defaultBranch ?? repo.get("defaultBranch") ?? "main";
   const s = await snapshotRepo(
     {
       owner: repo.get("owner"),
       name: repo.get("name"),
       createdAt: (repo.get("createdAtGithub") as Timestamp).toDate(),
-      defaultBranch: repo.get("defaultBranch") ?? "main",
+      defaultBranch,
     },
     clienteGithub,
     { ahora: ahora(), cache: cacheFirestore },
@@ -98,7 +101,7 @@ export async function tomarSnapshot(teamId: string): Promise<(Snapshot & { teamI
   const datos = serializarSnapshot(teamId, s);
   const batch = db().batch();
   batch.set(db().collection("repo_snapshots").doc(), datos);
-  batch.update(repo.ref, { ultimoSnapshot: datos });
+  batch.update(repo.ref, { ultimoSnapshot: datos, ...(defaultBranch !== repo.get("defaultBranch") ? { defaultBranch } : {}) });
   await batch.commit();
   return { ...s, teamId };
 }

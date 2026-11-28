@@ -136,6 +136,27 @@ describe("snapshotRepo", () => {
   const base = { owner: "eight-academy-hackathon", name: "edutech26-t3-matricula-express", createdAt: ec("2026-11-27T17:10:00") };
   const opts = { kickoff: KICKOFF, freeze: FREEZE };
 
+  it("cuenta los commits de todas las ramas sin duplicarlos (equipos con una rama por persona)", async () => {
+    const principal = commitsSanos.filter((c) => c.autor === "ana");
+    const rama = [commitsSanos[1]!, commitsSanos[3]!, principal[0]!]; // c1 también está en main
+    const c = {
+      ...clienteSimulado({ commits: commitsSanos, arbol: arbolCompleto, blobs: { readme: README_COMPLETO } }),
+      async ramas() {
+        return ["main", "p2-luis"];
+      },
+      async commits(_o: string, _n: string, { ref, since, until, max }: { ref?: string; since?: Date; until?: Date; max?: number }) {
+        const lista = ref === "p2-luis" ? rama : principal;
+        const r = lista.filter((x) => (!since || x.fecha >= since) && (!until || x.fecha <= until));
+        return max ? r.slice(0, max) : r;
+      },
+    };
+    const s = await snapshotRepo(base, c, { ...opts, ahora: ec("2026-11-28T11:45:00") });
+    expect(s.commitsEnVentana).toBe(4);
+    expect(s.autores).toEqual(["ana", "luis"]);
+    expect(s.ultimoCommitAt).toEqual(ec("2026-11-28T11:30:00"));
+    expect(s.alertas.some((a) => a.tipo === "un-solo-autor" || a.tipo === "sin-commits-3h")).toBe(false);
+  });
+
   it("repo sano: métricas, archivos obligatorios, checkpoints cumplidos y sin alertas", async () => {
     const c = clienteSimulado({ commits: commitsSanos, arbol: arbolCompleto, blobs: { readme: README_COMPLETO, index: "export const ok = true;" } });
     const s = await snapshotRepo(base, c, { ...opts, ahora: ec("2026-11-28T11:45:00") });

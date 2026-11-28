@@ -30,7 +30,9 @@ export interface ArchivoArbol {
 
 export interface GitHubCliente {
   repo(owner: string, name: string): Promise<RepoInfo | null>;
-  commits(owner: string, name: string, opts: { since?: Date; until?: Date; path?: string; max?: number }): Promise<CommitInfo[]>;
+  commits(owner: string, name: string, opts: { since?: Date; until?: Date; path?: string; max?: number; ref?: string }): Promise<CommitInfo[]>;
+  /** Ramas del repositorio (los equipos suelen trabajar en una rama por persona). */
+  ramas?(owner: string, name: string): Promise<string[]>;
   arbol(owner: string, name: string, ref: string): Promise<ArchivoArbol[]>;
   contenido(owner: string, name: string, blobSha: string): Promise<string>;
   /** Commit al que apunta un tag (resuelve tags anotados). null si no existe. */
@@ -284,8 +286,18 @@ export async function snapshotRepo(
   const arbol = await cliente.arbol(owner, name, ref);
   // README en la raíz, sin importar mayúsculas (README.md, Readme.md, readme.md).
   const readme = arbol.find((a) => a.tipo === "blob" && /^readme\.md$/i.test(a.path));
-  const [enVentana, previos, readmeAntesCp1] = await Promise.all([
-    cliente.commits(owner, name, { since: kickoff, until: freeze }),
+  // Commits de todas las ramas (hasta 20), sin duplicados: un equipo que trabaja en ramas por persona
+  // no debe aparecer "sin commits" ni con "un solo autor" por mirar solo la rama principal.
+  const ramas = cliente.ramas ? (await cliente.ramas(owner, name).catch(() => [ref])).slice(0, 20) : [ref];
+  const porRama = await Promise.all(
+    (ramas.includes(ref) ? ramas : [ref, ...ramas]).map((r) =>
+      cliente.commits(owner, name, { since: kickoff, until: freeze, ref: r }).catch(() => [] as CommitInfo[]),
+    ),
+  );
+  const vistos = new Map<string, CommitInfo>();
+  for (const c of porRama.flat()) vistos.set(c.sha, c);
+  const enVentana = [...vistos.values()];
+  const [previos, readmeAntesCp1] = await Promise.all([
     cliente.commits(owner, name, { until: new Date(kickoff.getTime() - 1000), max: 1 }),
     readme ? cliente.commits(owner, name, { since: kickoff, until: cp1, path: readme.path, max: 1 }) : Promise.resolve([]),
   ]);

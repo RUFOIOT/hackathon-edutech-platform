@@ -64,13 +64,14 @@ export const clienteGithub: GitHubCliente = {
     }
   },
 
-  async commits(owner, name, { since, until, path, max }): Promise<CommitInfo[]> {
+  async commits(owner, name, { since, until, path, max, ref }): Promise<CommitInfo[]> {
     const params = {
       owner,
       repo: name,
       since: since?.toISOString(),
       until: until?.toISOString(),
       path,
+      sha: ref,
       per_page: max && max < 100 ? max : 100,
     };
     try {
@@ -90,6 +91,11 @@ export const clienteGithub: GitHubCliente = {
       if (estado(e) === 409 || estado(e) === 404) return [];
       throw e;
     }
+  },
+
+  async ramas(owner, name): Promise<string[]> {
+    const { data } = await octokit().rest.repos.listBranches({ owner, repo: name, per_page: 100 });
+    return data.map((b) => b.name);
   },
 
   async arbol(owner, name, ref): Promise<ArchivoArbol[]> {

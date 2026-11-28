@@ -155,7 +155,7 @@ export async function validateRepo(
 export type EstadoCheckpoint = "cumplido" | "pendiente" | "vencido";
 
 export interface Alerta {
-  tipo: "repo-antes-kickoff" | "commits-antes-kickoff" | "secreto" | "env-versionado" | "sin-commits-3h" | "un-solo-autor" | "checkpoint-vencido";
+  tipo: "repo-antes-kickoff" | "commits-antes-kickoff" | "secreto" | "env-versionado" | "sin-commits-3h" | "un-solo-autor" | "checkpoint-vencido" | "checkpoint-tarde";
   nivel: "roja" | "ambar";
   detalle: string;
 }
@@ -199,26 +199,69 @@ export function estadoCheckpoint(cumple: boolean, limite: Date, ahora: Date): Es
   return ahora.getTime() < limite.getTime() ? "pendiente" : "vencido";
 }
 
-/** Secciones "## Título" del README con su texto, sin comentarios HTML (los marcadores COMPLETAR de la plantilla). */
+const normalizarTitulo = (t: string) =>
+  t
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[*_`:#]/g, " ")
+    .replace(/\s+/g, " ")
+    .toLowerCase()
+    .trim();
+
+/**
+ * Secciones del README con su texto, sin comentarios HTML (los marcadores COMPLETAR de la plantilla).
+ * Acepta títulos de cualquier nivel (#, ##, ###…) y líneas en negrita sueltas ("**Problema**"); el
+ * cuerpo llega hasta el siguiente título del mismo nivel o superior, así que incluye subsecciones.
+ * Se ignoran los "#" dentro de bloques de código y el título principal del documento.
+ */
 export function seccionesReadme(md: string): Map<string, string> {
+  const lineas = md.replace(/<!--[\s\S]*?-->/g, "").split(/\r?\n/);
+  const titulos: { i: number; nivel: number; clave: string }[] = [];
+  let enCodigo = false;
+  lineas.forEach((l, i) => {
+    if (/^\s*(```|~~~)/.test(l)) enCodigo = !enCodigo;
+    if (enCodigo) return;
+    const h = /^\s{0,3}(#{1,6})\s+(.+?)\s*#*\s*$/.exec(l);
+    if (h) return void titulos.push({ i, nivel: (h[1] ?? "#").length, clave: normalizarTitulo(h[2] ?? "") });
+    const negrita = /^\s*\*\*([^*]{3,60})\*\*\s*:?\s*$/.exec(l);
+    if (negrita) titulos.push({ i, nivel: 7, clave: normalizarTitulo(negrita[1] ?? "") });
+  });
+  if (titulos[0]?.nivel === 1 && titulos.filter((t) => t.nivel === 1).length === 1) titulos.shift();
   const secciones = new Map<string, string>();
-  for (const parte of md.split(/^##\s+/m).slice(1)) {
-    const [titulo = "", ...resto] = parte.split("\n");
-    const cuerpo = resto.join("\n").replace(/<!--[\s\S]*?-->/g, "").trim();
-    const clave = titulo
-      .normalize("NFD")
-      .replace(/[̀-ͯ]/g, "")
-      .toLowerCase()
-      .trim();
-    secciones.set(clave, cuerpo);
-  }
+  titulos.forEach((t, k) => {
+    const fin = titulos.slice(k + 1).find((s) => s.nivel <= t.nivel)?.i ?? lineas.length;
+    const cuerpo = lineas.slice(t.i + 1, fin).join("\n").trim();
+    const previo = secciones.get(t.clave);
+    if (!previo || cuerpo.length > previo.length) secciones.set(t.clave, cuerpo);
+  });
   return secciones;
+}
+
+/** Títulos equivalentes que aceptamos para cada sección pedida (español e inglés). */
+const SINONIMOS: Record<string, string[]> = {
+  problema: ["problema", "problem"],
+  usuario: ["usuario", "user", "publico objetivo", "beneficiari", "persona objetivo", "a quien ayuda", "a quien va dirigido", "dirigido a"],
+  evidencia: ["evidencia", "evidence", "entrevista", "interview", "validacion", "investigacion"],
+  arquitectura: ["arquitectura", "architecture"],
+  "como correrlo": [
+    "como correrlo", "como correr", "como ejecutar", "ejecucion", "ejecutar", "instalacion", "install", "como usar",
+    "como probar", "demo", "despliegue", "deploy", "getting started", "quick start", "inicio rapido", "how to run", "setup",
+    "ponerlo en marcha", "puesta en marcha", "como levantar", "como iniciar", "en local",
+  ],
+};
+
+/** Secciones pedidas que faltan o no tienen contenido propio (al menos 40 caracteres). */
+export function seccionesFaltantes(md: string, claves: string[]): string[] {
+  const secciones = [...seccionesReadme(md).entries()];
+  return claves.filter((clave) => {
+    const alias = SINONIMOS[clave] ?? [clave];
+    return !secciones.some(([titulo, cuerpo]) => alias.some((a) => titulo.includes(a)) && cuerpo.length >= 40);
+  });
 }
 
 /** ¿El README tiene las secciones pedidas con contenido propio (no el de la plantilla)? */
 export function readmeCompleto(md: string, claves: string[]): boolean {
-  const secciones = [...seccionesReadme(md).entries()];
-  return claves.every((clave) => secciones.some(([titulo, cuerpo]) => titulo.includes(clave) && cuerpo.length >= 40));
+  return seccionesFaltantes(md, claves).length === 0;
 }
 
 /** Guía del Hacker §5 · checkpoint 1: README con problema, usuario, evidencia y arquitectura. */
@@ -238,12 +281,13 @@ export async function snapshotRepo(
   const { owner, name } = repo;
   const ref = repo.defaultBranch ?? "main";
 
-  const [enVentana, previos, readmeAntesCp1, codigoAntesCp2, arbol] = await Promise.all([
+  const arbol = await cliente.arbol(owner, name, ref);
+  // README en la raíz, sin importar mayúsculas (README.md, Readme.md, readme.md).
+  const readme = arbol.find((a) => a.tipo === "blob" && /^readme\.md$/i.test(a.path));
+  const [enVentana, previos, readmeAntesCp1] = await Promise.all([
     cliente.commits(owner, name, { since: kickoff, until: freeze }),
     cliente.commits(owner, name, { until: new Date(kickoff.getTime() - 1000), max: 1 }),
-    cliente.commits(owner, name, { since: kickoff, until: cp1, path: "README.md", max: 1 }),
-    cliente.commits(owner, name, { since: kickoff, until: cp2, path: "src", max: 1 }),
-    cliente.arbol(owner, name, ref),
+    readme ? cliente.commits(owner, name, { since: kickoff, until: cp1, path: readme.path, max: 1 }) : Promise.resolve([]),
   ]);
 
   const autores = [...new Set(enVentana.map((c) => c.autor).filter((a): a is string => !!a))].sort();
@@ -262,7 +306,6 @@ export async function snapshotRepo(
   }
 
   // README actual (para los checkpoints).
-  const readme = arbol.find((a) => a.path === "README.md" && a.tipo === "blob");
   const textoReadme = readme ? await cliente.contenido(owner, name, readme.sha) : "";
 
   // Secretos: solo blobs de texto nuevos (la caché recuerda los SHA ya analizados).
@@ -290,10 +333,18 @@ export async function snapshotRepo(
   }
   if (nuevos.size) await opts.cache?.guardar(nuevos);
 
-  const cumpleCp1 = readmeAntesCp1.length > 0 && readmeCompleto(textoReadme, SECCIONES_CHECKPOINT1);
-  const cumpleCp2 = codigoAntesCp2.length > 0 && readmeCompleto(textoReadme, SECCIONES_CHECKPOINT2);
+  // Un checkpoint se cumple si el README actual tiene las secciones y hubo trabajo durante el evento.
+  // Si se completó después del plazo, cuenta como cumplido con un aviso ámbar (no queda en rojo para
+  // siempre con un motivo que ya no es cierto).
+  const faltanCp1 = seccionesFaltantes(textoReadme, SECCIONES_CHECKPOINT1);
+  const faltanCp2 = seccionesFaltantes(textoReadme, SECCIONES_CHECKPOINT2);
+  const cumpleCp1 = faltanCp1.length === 0 && enVentana.length > 0;
+  const cumpleCp2 = faltanCp2.length === 0 && enVentana.length > 0;
+  const cp1Tarde = cumpleCp1 && readmeAntesCp1.length === 0 && opts.ahora >= cp1;
+  const cp2Tarde = cumpleCp2 && !enVentana.some((c) => c.fecha < cp2) && opts.ahora >= cp2;
   const checkpoint1 = estadoCheckpoint(cumpleCp1, cp1, opts.ahora);
   const checkpoint2 = estadoCheckpoint(cumpleCp2, cp2, opts.ahora);
+  const nombresSeccion: Record<string, string> = { problema: "Problema", usuario: "Usuario", evidencia: "Evidencia", arquitectura: "Arquitectura" };
 
   const alertas: Alerta[] = [];
   if (repo.createdAt < kickoff) alertas.push({ tipo: "repo-antes-kickoff", nivel: "roja", detalle: "El repositorio se creó antes del kick-off." });
@@ -318,11 +369,26 @@ export async function snapshotRepo(
     alertas.push({ tipo: "un-solo-autor", nivel: "ambar", detalle: `Todos los commits son de ${autores[0]}.` });
   }
   if (checkpoint1 === "vencido") {
-    alertas.push({ tipo: "checkpoint-vencido", nivel: "roja", detalle: "Checkpoint 1 vencido: el README no tiene problema, usuario, evidencia y arquitectura." });
+    const detalle = !readme
+      ? "Checkpoint 1 vencido: no hay README.md en la raíz del repositorio."
+      : faltanCp1.length
+        ? `Checkpoint 1 vencido: al README le falta contenido en ${faltanCp1.map((f) => nombresSeccion[f] ?? f).join(", ")}.`
+        : "Checkpoint 1 vencido: no hay commits durante el evento.";
+    alertas.push({ tipo: "checkpoint-vencido", nivel: "roja", detalle });
   }
+  if (cp1Tarde) alertas.push({ tipo: "checkpoint-tarde", nivel: "ambar", detalle: "Checkpoint 1 completado después del plazo (viernes 19:00)." });
   if (checkpoint2 === "vencido") {
-    alertas.push({ tipo: "checkpoint-vencido", nivel: "roja", detalle: "Checkpoint 2 sin indicios: no hay código en src/ ni instrucciones para ejecutarlo." });
+    alertas.push({
+      tipo: "checkpoint-vencido",
+      nivel: "roja",
+      detalle: !readme
+        ? "Checkpoint 2 sin indicios: no hay README.md en la raíz del repositorio."
+        : faltanCp2.length
+          ? "Checkpoint 2 sin indicios: el README no explica cómo ejecutar la demo (sección \"Cómo correrlo\")."
+          : "Checkpoint 2 sin indicios: no hay commits durante el evento.",
+    });
   }
+  if (cp2Tarde) alertas.push({ tipo: "checkpoint-tarde", nivel: "ambar", detalle: "Checkpoint 2 completado después del plazo (sábado 12:30)." });
 
   return {
     tomadoEn: opts.ahora,

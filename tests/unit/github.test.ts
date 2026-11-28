@@ -6,6 +6,7 @@ import {
   horaEcuador,
   parsearUrlRepo,
   readmeCompleto,
+  seccionesFaltantes,
   resolveDeliveryTag,
   snapshotRepo,
   validateRepo,
@@ -323,6 +324,26 @@ describe("utilidades", () => {
   it("README de plantilla no cuenta como completo", () => {
     expect(readmeCompleto("## Problema\n<!-- COMPLETAR -->", ["problema"])).toBe(false);
     expect(readmeCompleto(README_COMPLETO, ["problema", "usuario", "evidencia", "arquitectura"])).toBe(true);
+  });
+
+  it("acepta títulos de cualquier nivel, en negrita y con sinónimos (quejas del sábado)", () => {
+    const relleno = "Texto suficiente para contar como contenido propio de la sección.";
+    const md = [
+      "# Mi proyecto", relleno,
+      "# El problema", relleno,
+      "### ¿A quién ayudamos?", relleno,
+      "**Evidencia de la entrevista**", relleno,
+      "## Arquitectura", "### Capas", relleno,
+      "## Ponerlo en marcha", relleno,
+    ].join("\n");
+    expect(seccionesFaltantes(md, ["problema", "usuario", "evidencia", "arquitectura"])).toEqual([]);
+    expect(readmeCompleto(md, ["como correrlo"])).toBe(true);
+  });
+
+  it("dice qué sección falta y no se deja engañar por # dentro de bloques de código", () => {
+    const relleno = "Texto suficiente para contar como contenido propio de la sección.";
+    const md = ["## Problema", relleno, "```bash", "# Usuario", "npm run dev", "```", "## Arquitectura", relleno].join("\n");
+    expect(seccionesFaltantes(md, ["problema", "usuario", "evidencia", "arquitectura"])).toEqual(["usuario", "evidencia"]);
   });
 
   it("secretos: .env.example no es alerta, .env sí", () => {

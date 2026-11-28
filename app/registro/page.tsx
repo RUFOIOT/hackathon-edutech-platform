@@ -52,6 +52,12 @@ export default async function Registro({ searchParams }: { searchParams: Promise
             ? `Las inscripciones abren el ${diaEnEcuador(fecha("aperturaInscripciones"))}${EVENT.fechas.aperturaInscripciones.confirmada ? "" : " (fecha por confirmar)"}.`
             : "Las inscripciones están cerradas."}
         </p>
+        {!id && faseActual(t) !== "Convocatoria" && (
+          <div className="mt-6 max-w-md rounded border border-accent bg-surface p-4">
+            <p className="font-medium">¿Ya estás inscrito? Ingresa con tu correo para ir a Mi equipo.</p>
+            <FormIngreso siguiente="/mi-equipo" />
+          </div>
+        )}
         <Link href="/guia-hacker" className="mt-4 inline-block font-medium text-positive-text underline">
           Lee la Guía del hacker mientras tanto
         </Link>
